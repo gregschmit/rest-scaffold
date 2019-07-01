@@ -1,0 +1,191 @@
+/* Simple CSS for REST Scaffolding */
+
+[data-rest-scaffold] {
+  margin-top: 1.8em;
+  font-family: arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+[data-rest-scaffold] a,
+[data-rest-scaffold] a:link,
+[data-rest-scaffold] a:visited { color: #06c; text-decoration: none; }
+[data-rest-scaffold] a:hover,
+[data-rest-scaffold] a:active { color: #036; text-decoration: none; }
+
+[data-rest-scaffold] div {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  display: block;
+  box-sizing: border-box;
+}
+
+.rest-scaffold-head {
+  font-size: 1.3em;
+  font-weight: bold;
+  padding-right: 1.3em;
+}
+
+.rest-scaffold-secondary {
+  font-size: .6em;
+  color: #bbb;
+}
+
+.rest-scaffold-menu {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  float: right;
+  white-space: nowrap;
+  font-size: .9em;
+  font-weight: bold;
+}
+
+.rest-scaffold-menu li {
+  white-space: nowrap;
+  display: inline;
+  padding: 0 .4em 0 .4em;
+}
+
+.rest-scaffold-menu li:first-child { padding: 0 .4em 0 0; }
+.rest-scaffold-menu li:last-child { padding: 0 0 0 .4em; }
+
+[data-rest-scaffold] [data-rest-scaffold-close-message],
+[data-rest-scaffold] [data-rest-scaffold-close-message]:link,
+[data-rest-scaffold] [data-rest-scaffold-close-message]:visited,
+[data-rest-scaffold] [data-rest-scaffold-close-message]:hover,
+[data-rest-scaffold] [data-rest-scaffold-close-message]:active,
+[data-rest-scaffold] [data-rest-scaffold-close-create],
+[data-rest-scaffold] [data-rest-scaffold-close-create]:link,
+[data-rest-scaffold] [data-rest-scaffold-close-create]:visited,
+[data-rest-scaffold] [data-rest-scaffold-close-create]:hover,
+[data-rest-scaffold] [data-rest-scaffold-close-create]:active,
+[data-rest-scaffold] [data-rest-scaffold-close-update],
+[data-rest-scaffold] [data-rest-scaffold-close-update]:link,
+[data-rest-scaffold] [data-rest-scaffold-close-update]:visited,
+[data-rest-scaffold] [data-rest-scaffold-close-update]:hover,
+[data-rest-scaffold] [data-rest-scaffold-close-update]:active {
+  color: black;
+  float: right;
+}
+
+[data-rest-scaffold] .rest-scaffold-menu .rest-scaffold-link-disabled {
+  pointer-events: none;
+  color: #777;
+}
+
+[data-rest-scaffold] .rest-scaffold-create-form {
+  font-size: 1rem;
+  padding: .5em;
+  background-color: #ccc;
+  /*border-bottom: solid 1px #555;*/
+}
+
+[data-rest-scaffold] .rest-scaffold-update-form {
+  font-size: 1rem;
+  padding: .5em;
+  background-color: #ccc;
+  border-bottom: solid 1px #555;
+}
+
+[data-rest-scaffold] [data-rest-scaffold-ref-pk] td {
+  margin: 0;
+  padding: 0;
+}
+
+.rest-scaffold-error { background-color: #f99; }
+
+.rest-scaffold-info td { text-align: center; }
+
+.rest-scaffold-pages { float: right; }
+
+[data-rest-scaffold] table {
+  border-collapse: collapse;
+  font-size: .8em;
+  max-width: 100%;
+  overflow: auto;
+  width: 100%;
+}
+
+[data-rest-scaffold] table .rest-scaffold-records > tr:nth-child(odd) {
+  background-color: #eee;
+}
+
+[data-rest-scaffold] table thead { background-color: #555; }
+
+[data-rest-scaffold] table thead tr th {
+  color: white;
+  font-size: .85em;
+}
+
+/* table spacing */
+[data-rest-scaffold] table td {
+  padding: .4em;
+  word-wrap: break-word;
+  word-break: break-all;
+}
+[data-rest-scaffold] table th { padding: .5em; }
+
+/* column dividers */
+[data-rest-scaffold] table tbody td { border: 1px solid #aaa; }
+
+/* ensure first and last column are not wrapped */
+[data-rest-scaffold] table .rest-scaffold-records > td:first-child,
+[data-rest-scaffold] table .rest-scaffold-records > td:last-child {
+  word-wrap: normal;
+  word-break: normal;
+  white-space: nowrap;
+}
+
+/* messages */
+[data-rest-scaffold] table .rest-scaffold-messages * { white-space: normal; }
+[data-rest-scaffold] table .rest-scaffold-messages pre { white-space: pre-wrap; }
+
+/* actions column hydroxycut */
+[data-rest-scaffold] table .rest-scaffold-headers tr > th:last-child { width: 4em; }
+
+/* padding for 'x' button */
+[data-rest-scaffold] table .rest-scaffold-messages > tr td { padding-right: .5em; }
+
+/* form table */
+[data-rest-scaffold] .rest-scaffold-form-head {
+  font-weight: bold;
+  color: #666;
+  display: block;
+  margin-bottom: .55em;
+}
+[data-rest-scaffold] .rest-scaffold-form-table tr,
+[data-rest-scaffold] .rest-scaffold-form-table tbody,
+[data-rest-scaffold] .rest-scaffold-form-table td {
+  background-color: transparent;
+  border: none;
+  margin: 0;
+  padding: .3em;
+}
+[data-rest-scaffold] .rest-scaffold-form-table tr td:first-child {
+  color: #444;
+  width: 1%;
+  white-space: nowrap;
+}
+[data-rest-scaffold] select { resize: both; }
+
+/* loading spinner */
+.rest-scaffold-spinner {
+  display: inline-block;
+  width: .6em;
+  height: .6em;
+  border: .2em solid #ccc;
+  border-radius: 50%;
+  border-top: .2em solid #06c;
+  animation: rest-scaffold-load 1s linear infinite;
+  -webkit-animation: rest-scaffold-load 1s linear infinite;
+}
+@keyframes rest-scaffold-load {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+@-webkit-keyframes rest-scaffold-load {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
