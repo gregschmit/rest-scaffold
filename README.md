@@ -1,6 +1,13 @@
 # REST-Scaffold.js
 
-`rest-scaffold.js` is a JavaScript library for building scaffolds (tables + actions) that represent objects which are exposed by a RESTful API. The basic idea is that you have some API at `https://example.com/api/thing` and you provide a `div` with a configuration in the form of a JSON, like:
+`rest-scaffold.js` is a JavaScript library for building scaffolds (tables +
+actions) that represent objects which are exposed by a RESTful API.
+
+## How It Works
+
+The basic idea is that you have some API at `https://example.com/api/thing` and
+you provide a `div` with a `data-rest-scaffold` property which is a
+configuration in the form of a JSON, like:
 
 ```json
 {
@@ -9,8 +16,20 @@
   "recordTitle": "Thing",
   "pkField": "id",
   "url": "https://example.com/api/thing",
-  "csrfToken": "blahblah",
+  "csrfToken": "blahblah"
 }
+```
+
+If you're using a tool like `django-rest-scaffold` to generate all this, then
+the tool can escape the quotes in the JSON. Otherwise, using single quotes for
+the property is helpful.
+
+The `div` would look like this:
+
+```html
+<div data-rest-scaffold='{"title": "Things","subtitle": "that go in the kitchen"
+,"recordTitle": "Thing","pkField": "id","url": "https://example.com/api/thing",
+"csrfToken": "blahblah"}'></div>
 ```
 
 The library will assume the following endpoints exist:
@@ -23,7 +42,7 @@ The latest version should be available at:
 - https://cdn.jsdelivr.net/gh/gregschmit/rest-scaffold@master/rest-scaffold.js
 - https://cdn.jsdelivr.net/gh/gregschmit/rest-scaffold@master/rest-scaffold.css
 
-# To Do
+## To Do
 
 - Make the endpoints configurable rather than workable only with Django.
 - FK Mappings to better show foreignkey fields the verbose names in the listing
