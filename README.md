@@ -27,9 +27,14 @@ the property is helpful.
 The `div` would look like this:
 
 ```html
-<div data-rest-scaffold='{"title": "Things","subtitle": "that go in the kitchen"
-,"recordTitle": "Thing","pkField": "id","url": "https://example.com/api/thing",
-"csrfToken": "blahblah"}'></div>
+<div data-rest-scaffold='{
+  "title": "Things",
+  "subtitle": "that go in the kitchen",
+  "recordTitle": "Thing",
+  "pkField": "id",
+  "url": "https://example.com/api/thing",
+  "csrfToken": "blahblah"
+}'></div>
 ```
 
 The library will assume the following endpoints exist:
