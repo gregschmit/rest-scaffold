@@ -1,5 +1,5 @@
 {
-  "name": "restScaffold",
+  "name": "rest-scaffold",
   "version": "0.1.0",
   "main": "dist/rest-scaffold.js",
   "style": "dist/rest-scaffold.css",

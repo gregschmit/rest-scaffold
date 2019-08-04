@@ -1,6 +1,6 @@
 "use strict";
 /*
- * restScaffold: A library for rendering tables from REST APIs and providing
+ * rest-scaffold: A library for rendering tables from REST APIs and providing
  *  the basic CRUD actions and extensibility for more actions.
  * Copyright 2019, Gregory N. Schmit
  * MIT Licensed

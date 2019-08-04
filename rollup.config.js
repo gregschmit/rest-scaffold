@@ -5,7 +5,7 @@ export default {
   output: {
     format: "umd",
     file: "dist/rest-scaffold.js",
-    name: "restScaffold"
+    name: "rest-scaffold"
   },
   plugins: [buble({namedFunctionExpressions: false})]
 };
