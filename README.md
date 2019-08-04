@@ -44,7 +44,7 @@ The library will assume the following endpoints exist:
 - `PUT`->`thing/pk` A update of a single object
 - `DELETE`->`thing/pk` A deletion of a single object
 
-## CDN Urls
+## CDN Links
 
 https://cdn.jsdelivr.net/npm/rest-scaffold/dist/rest-scaffold.js
 https://cdn.jsdelivr.net/npm/rest-scaffold/dist/rest-scaffold.css
@@ -53,40 +53,40 @@ https://cdn.jsdelivr.net/npm/rest-scaffold/dist/rest-scaffold.css
 
 ### Common Options
 
-`title` | string (default: `""`) | The main bold text shown at the top of the
+`title` (string, default: `""`): The main bold text shown at the top of the
 scaffold.
 
-`subtitle` | string (default: `""`) | Lighter text shown after the title at the
+`subtitle` (string, default: `""`): Lighter text shown after the title at the
 top of the scaffold.
 
-`url` | string (default: `"/"`) | The url that we should use to access the REST
+`url` (string, default: `"/"`): The url that we should use to access the REST
 API.
 
-`csrfToken` | string (default: `""`) | Cross-Site Request Forgery token to use
+`csrfToken` (string, default: `""`): Cross-Site Request Forgery token to use
 during `POST`/`PUT` requests.
 
-`debug` | boolean (default: `true`) | Whether debugging information (including
+`debug` (boolean, default: `true`): Whether debugging information (including
 request payload) should be displayed in scaffold error messages.
 
-`fields` | array (default: `[]`) | The fields that we should expect. If this is
+`fields` (array, default: `[]`): The fields that we should expect. If this is
 falsy, then the scaffold will try to infer them from a listing.
 
-`pkField` | string (default: `"id"`) | The field that we can use as a primary
+`pkField` (string, default: `"id"`): The field that we can use as a primary
 key.
 
 ### Other Options
 
-`actionsLabel` | string (default: `"."`) | The label for the actions column in
+`actionsLabel` (string, default: `"."`): The label for the actions column in
 the scaffold.
 
-`csrfTokenHeader` | string (default: `"X-CSRFToken"`) | The HTTP header for
+`csrfTokenHeader` (string, default: `"X-CSRFToken"`): The HTTP header for
 passing the CSRF Token.
 
-`rawCreateForm` | string (default: `null`) | The HTML create form.
+`rawCreateForm` (string, default: `null`): The HTML create form.
 
-`rawUpdateForm` | string (default: `null`) | The HTML update form.
+`rawUpdateForm` (string, default: `null`): The HTML update form.
 
-`recordTitle` | string (default: `"Record"`) | The name for a single record.
+`recordTitle` (string, default: `"Record"`): The name for a single record.
 
 ## To Do
 
