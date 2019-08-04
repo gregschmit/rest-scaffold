@@ -62,6 +62,25 @@ function initScaffold(rsDiv, index, args) {
     return scaffold;
   }
 
+  /* load args into scaffold with sensible defaults */
+  scaffold.actionsLabel = args.actionsLabel || '.';
+  scaffold.csrfToken = args.csrfToken || '';
+  scaffold.csrfTokenHeader = args.csrfTokenHeader || 'X-CSRFToken';
+  scaffold.debug = args.debug || true;
+  scaffold.fields = args.fields || [];
+  scaffold.pkField = args.pkField || 'id';
+  scaffold.rawCreateForm = args.createForm || args.addForm || null;
+  scaffold.rawUpdateForm = args.updateForm || args.editForm || null;
+  scaffold.recordTitle = args.recordTitle || 'Record';
+  scaffold.subtitle = args.subtitle || '';
+  scaffold.title = args.title || '';
+  scaffold.url = args.url || '/';
+
+  /* ensure slash at end of url */
+  if (scaffold.url.slice(-1) !== '/') {
+    scaffold.url = scaffold.url + '/';
+  }
+
   /* build pagination defaults */
   scaffold.pag = {
     "count": undefined,
@@ -79,30 +98,9 @@ function initScaffold(rsDiv, index, args) {
     'lastListing': null
   };
 
-  /* load args into scaffold with sensible defaults */
-  scaffold.csrfToken = args.csrfToken || '';
-  scaffold.debug = args.debug || true;
-  scaffold.fields = args.fields || null;
-  scaffold.pkField = args.pkField || 'id';
-  scaffold.rawCreateForm = args.createForm || args.addForm || null;
-  scaffold.rawUpdateForm = args.updateForm || args.editForm || null;
-  scaffold.recordTitle = args.recordTitle || 'Record';
-  scaffold.fields = args.fields || [];
-  scaffold.actionsLabel = args.actionsLabel || '.';
-
   /* inject title/subtitle */
-  rsDiv.find('.rest-scaffold-head').text(args.title);
-  rsDiv.find('.rest-scaffold-secondary').text(args.subtitle);
-
-  /* parse url */
-  if (args.url) {
-    scaffold.url = args.url;
-  } else {
-    scaffold.url = '/';
-  }
-  if (scaffold.url.slice(-1) !== '/') {
-    scaffold.url = scaffold.url + '/';
-  }
+  rsDiv.find('.rest-scaffold-head').text(scaffold.title);
+  rsDiv.find('.rest-scaffold-secondary').text(scaffold.subtitle);
 
   addDOMHelpers(rsDiv, scaffold);
 

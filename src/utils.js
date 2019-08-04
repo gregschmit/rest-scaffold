@@ -154,7 +154,7 @@ function closeNthParent(element, n) {
   p.removeChild(c);
 }
 
-/* exports */
+
 export default {
   'getUniqueId': getUniqueId,
   'addListLink': addListLink,
@@ -167,5 +167,5 @@ export default {
   'getField': getField,
   'applyFieldDefaults': applyFieldDefaults,
   'getScaffold': getScaffold,
-  'closeNthParent': closeNthParent
+  'closeNthParent': closeNthParent,
 };

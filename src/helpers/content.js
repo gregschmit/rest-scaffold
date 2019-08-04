@@ -17,7 +17,14 @@ function addContentHelpers(rsDiv, scaffold) {
       var p = scaffold.pag.getOffset(args.page);
       target += '?offset=' + p;
     }
-    var method = args.method || 'GET';
+    var method = args.method;
+    if (!method) {
+      if (args.payload) {
+        method = 'POST';
+      } else {
+        method = 'GET';
+      }
+    }
     if (args.useCache && scaffold.cache.lastListing) {
       args.success(scaffold.cache.lastListing, 0, 0);
       return;
@@ -25,9 +32,7 @@ function addContentHelpers(rsDiv, scaffold) {
     var opts = {
       "method": method,
       "contentType": 'application/json',
-      "headers": {
-        "X-CSRFToken": scaffold.csrfToken
-      },
+      "headers": {},
       "success": [function(data, status, xhr) {
         /* if it's a listing, cache it */
         var pkField = scaffold.pkField;
@@ -57,8 +62,8 @@ function addContentHelpers(rsDiv, scaffold) {
         });
       }, args.error]
     };
+    opts.headers[scaffold.csrfTokenHeader] = scaffold.csrfToken;
     if (args.payload) {
-      if (!args.method) { opts.method = 'POST'; }
       opts.data = JSON.stringify(args.payload);
     }
     $.ajax(target, opts);
@@ -227,11 +232,11 @@ function addContentHelpers(rsDiv, scaffold) {
   scaffold.deleteRecord = function(deletingElement) {
     if (!confirm("Are you sure you want to delete this record?")) { return; }
     var tr = $(deletingElement).closest("tr")[0];
-    changeSpinner(tr, 'show');
+    U.changeSpinner(tr, 'show');
     scaffold.ajax({
       "method": "DELETE",
       "pk": tr.dataset.restScaffoldPk,
-      "error": function() { changeSpinner(tr, 'hide'); },
+      "error": function() { U.changeSpinner(tr, 'hide'); },
       "success": function(data, status, xhr) {
         /* delete row */
         tr.parentElement.removeChild(tr);
