@@ -1,0 +1,29 @@
+{
+  "name": "restScaffold",
+  "version": "0.1.0",
+  "main": "dist/rest-scaffold.js",
+  "style": "dist/rest-scaffold.css",
+  "author": "Gregory N. Schmit <me@gregschmit.com> (https://gregschmit.com)",
+  "description": "Scaffolds for CRUD operations on REST APIs",
+  "license": "MIT",
+  "scripts": {
+    "build": "rollup -c",
+    "watch": "rollup -w -c"
+  },
+  "devDependencies": {
+    "rollup": "^1.0.0",
+    "rollup-plugin-buble": "^0.19.2"
+  },
+  "bugs": "https://github.com/gregschmit/rest-scaffold/issues",
+  "keywords": [
+    "JavaScript",
+    "Scaffold",
+    "REST",
+    "API"
+  ],
+  "homepage": "https://github.com/gregschmit/rest-scaffold",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gregschmit/rest-scaffold.git"
+  }
+}

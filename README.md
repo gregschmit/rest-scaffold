@@ -41,14 +41,13 @@ The library will assume the following endpoints exist:
 - `GET`->`thing` A listing of the objects
 - `POST`->`thing` A creation of a single object
 - `GET`->`thing/pk` A retrieval of a single object
-- `POST`->`thing/pk` A update of a single object
+- `PUT`->`thing/pk` A update of a single object
 
-The latest version should be available at:
-- https://cdn.jsdelivr.net/gh/gregschmit/rest-scaffold@master/rest-scaffold.js
-- https://cdn.jsdelivr.net/gh/gregschmit/rest-scaffold@master/rest-scaffold.css
+TODO: put cdn urls here after publishing first version.
 
 ## To Do
 
+- convert jQuery stuff to vanilla javascript
 - Make the endpoints configurable rather than workable only with Django.
 - FK Mappings to better show foreignkey fields the verbose names in the listing
   - Configurable for list to be comma/separated or lf-separated
