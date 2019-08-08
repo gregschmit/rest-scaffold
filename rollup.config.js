@@ -7,5 +7,5 @@ export default {
     file: "dist/rest-scaffold.js",
     name: "rest-scaffold"
   },
-  plugins: [buble({namedFunctionExpressions: false})]
+  plugins: [buble()]
 };

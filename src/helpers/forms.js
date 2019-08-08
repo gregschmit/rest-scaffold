@@ -22,10 +22,10 @@ function addFormHelpers(scaffold) {
     if (args.body) {
       var formBody = args.body;
     } else {
-      var formBody = scaffold.genericFormBody;
+      var formBody = this.genericFormBody;
     }
     /* add form header */
-    var t = scaffold.recordTitle;
+    var t = this.recordTitle;
     var f = '<span class="rest-scaffold-form-head">' + submitText;
     f += ' ' + t + '</span>\n';
     formBody = f + formBody;

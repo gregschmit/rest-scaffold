@@ -9,12 +9,12 @@ import U from '../utils.js';
 function addContentHelpers(rsDiv, scaffold) {
   /* interface for AJAX */
   scaffold.ajax = function(args) {
-    var target = scaffold.url;
+    var target = this.url;
     if (args.hasOwnProperty('pk')) {
       target += args.pk + '/';
     }
     if (args.page && args.page > 1) {
-      var p = scaffold.pag.getOffset(args.page);
+      var p = this.pag.getOffset(args.page);
       target += '?offset=' + p;
     }
     var method = args.method;
@@ -25,10 +25,11 @@ function addContentHelpers(rsDiv, scaffold) {
         method = 'GET';
       }
     }
-    if (args.useCache && scaffold.cache.lastListing) {
-      args.success(scaffold.cache.lastListing, 0, 0);
+    if (args.useCache && this.cache.lastListing) {
+      args.success(this.cache.lastListing, 0, 0);
       return;
     }
+    var scaffold = this;
     var opts = {
       "method": method,
       "contentType": 'application/json',
@@ -64,11 +65,11 @@ function addContentHelpers(rsDiv, scaffold) {
     };
 
     /* load CSRF token */
-    opts.headers[scaffold.csrfTokenHeader] = scaffold.csrfToken;
+    opts.headers[this.csrfTokenHeader] = this.csrfToken;
 
     /* load misc headers */
-    for (var k in scaffold.requestHeaders) {
-      opts.headers[k] = scaffold.requestHeaders[k];
+    for (var k in this.requestHeaders) {
+      opts.headers[k] = this.requestHeaders[k];
     }
     /* if we have a payload, stringify it and include it in data */
     if (args.payload) {
@@ -81,9 +82,9 @@ function addContentHelpers(rsDiv, scaffold) {
 
   /* interface for pushing a record to the table */
   scaffold.pushRecord = function(content) {
-    var r = scaffold.records.insertRow(-1);
+    var r = this.records.insertRow(-1);
     var i;
-    var h = scaffold.getHeaderElements();
+    var h = this.getHeaderElements();
     for (i=0; i<h.length-1; i++) { /* for each header */
       /* get the name of the field */
       if (h[i].hasAttribute("data-rest-scaffold-field-name")) {
@@ -99,13 +100,13 @@ function addContentHelpers(rsDiv, scaffold) {
       c.innerHTML = v;
     }
     /* store meta-data for actions, such as the id of the resource */
-    if (content[scaffold.pkField]) {
-      r.dataset.restScaffoldPk = content[scaffold.pkField];
+    if (content[this.pkField]) {
+      r.dataset.restScaffoldPk = content[this.pkField];
       /* TODO: then push actions */
       var c = r.insertCell(h.length-1);
       var a = '<ul class="rest-scaffold-menu">';
       a += '<li><span class="rest-scaffold-spinner" style="display: none"></span></li>';
-      if (scaffold.updateForm) {
+      if (this.updateForm) {
         a += '<li><a href="#" data-rest-scaffold-render-update>Update</a></li>';
       }
       a += '<li><a href="#" data-rest-scaffold-delete>Delete</a></li>';
@@ -117,7 +118,7 @@ function addContentHelpers(rsDiv, scaffold) {
   /* interface for updating a row on the table */
   scaffold.updateRow = function(content, row) {
     var i;
-    var h = scaffold.getHeaderElements();
+    var h = this.getHeaderElements();
     var c = row.cells;
     for (i=0; i<h.length-1; i++) { /* for each header */
       /* get the name of the field */
@@ -136,13 +137,13 @@ function addContentHelpers(rsDiv, scaffold) {
 
   /* interface for updating the footer */
   scaffold.updateFooter = function() {
-    var p = scaffold.pag;
+    var p = this.pag;
     /* render record count */
     var count_txt = p.displayCount + " records";
     if (p.count) {
       count_txt += " / " + p.count + " total";
     }
-    scaffold.footer_count.innerHTML = count_txt;
+    this.footer_count.innerHTML = count_txt;
     /* render page links, if needed */
     if (p.count && p.displayCount < p.count) {
       /* need pagination */
@@ -165,16 +166,16 @@ function addContentHelpers(rsDiv, scaffold) {
         /* render "next" link */
         pageLinks = pageLinks + ' | <a href="#" data-rest-scaffold-page="' + (pg+1) + '">Next</a>';
       }
-      scaffold.footer_pages.innerHTML = pageLinks;
+      this.footer_pages.innerHTML = pageLinks;
     } else {
       /* don't need pagination */
-      scaffold.footer_pages.innerHTML = '';
+      this.footer_pages.innerHTML = '';
     }
   };
 
   /* interface for populating the table */
   scaffold.populate = function(args) {
-    $(scaffold.spinner).show();
+    $(this.spinner).show();
 
     /* convert page string to int if needed */
     if (typeof args.page === 'string') {
@@ -182,7 +183,7 @@ function addContentHelpers(rsDiv, scaffold) {
     }
 
     /* if we don't get the page in the args, set the page to currentPage */
-    var p = scaffold.pag;
+    var p = this.pag;
     if (args.page) {
       p.currentPage = parseInt(args.page, 10);
     } else if (p.currentPage) {
@@ -190,7 +191,8 @@ function addContentHelpers(rsDiv, scaffold) {
     }
 
     /* execute the ajax request */
-    scaffold.ajax({
+    var scaffold = this;
+    this.ajax({
       "useCache": args.useCache,
       "page": args.page || 1,
       "success": function(data, status, xhr) {
@@ -209,7 +211,8 @@ function addContentHelpers(rsDiv, scaffold) {
           $(scaffold.records).empty();
           var count = j.results.length;
           /* store pagination meta-data TODO: FIXME!!! */
-          if (j.count && j.results.length )
+          /*scaffold.pag.*/
+          /*if (j.count && j.results.length) */
           /* push record */
           for (i=0; i<j.results.length; i++) {
             scaffold.pushRecord(j.results[i]);
@@ -243,7 +246,8 @@ function addContentHelpers(rsDiv, scaffold) {
     if (!confirm("Are you sure you want to delete this record?")) { return; }
     var tr = $(deletingElement).closest("tr")[0];
     U.changeSpinner(tr, 'show');
-    scaffold.ajax({
+    var scaffold = this;
+    this.ajax({
       "method": "DELETE",
       "pk": tr.dataset.restScaffoldPk,
       "error": function() { U.changeSpinner(tr, 'hide'); },
@@ -282,7 +286,7 @@ function addContentHelpers(rsDiv, scaffold) {
         fieldProps.on_form = false;
       }
 
-      scaffold.fields.push(fieldProps);
+      this.fields.push(fieldProps);
     }
   }
 }

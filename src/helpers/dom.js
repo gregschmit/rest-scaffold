@@ -17,13 +17,13 @@ function addDOMHelpers(rsDiv, scaffold) {
   scaffold.footer_count = rsDiv.find('.rest-scaffold-count')[0];
   scaffold.footer_pages = rsDiv.find('.rest-scaffold-pages')[0];
   scaffold.getRecordRows = function() {
-    return scaffold.records.getElementsByTagName('tr');
+    return this.records.getElementsByTagName('tr');
   };
   scaffold.getHeaderElements = function() {
-    return scaffold.headers.getElementsByTagName('th');
+    return this.headers.getElementsByTagName('th');
   };
   scaffold.getNumberOfHeaders = function() {
-    return scaffold.getHeaderElements().length;
+    return this.getHeaderElements().length;
   };
 
   /* helper for disabling/enabling links */
@@ -35,16 +35,16 @@ function addDOMHelpers(rsDiv, scaffold) {
       cls = '[data-rest-scaffold-render-create]';
     }
     if (state == 'disable') {
-      $(scaffold.menu).find(cls)[0].classList.add('rest-scaffold-link-disabled');
+      $(this.menu).find(cls)[0].classList.add('rest-scaffold-link-disabled');
     } else { /* enable */
-      $(scaffold.menu).find(cls)[0].classList.remove('rest-scaffold-link-disabled');
+      $(this.menu).find(cls)[0].classList.remove('rest-scaffold-link-disabled');
     }
   }
 
   /* helper for getting a row by the Pk (primary key) */
   scaffold.getRowByPk = function(pk) {
     var i;
-    var rows = scaffold.getRecordRows();
+    var rows = this.getRecordRows();
     for (i=0; i<rows.length; i++) {
       if (rows[i].dataset.restScaffoldPk == pk) {
         return rows[i];

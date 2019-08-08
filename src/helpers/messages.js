@@ -8,10 +8,10 @@ import U from '../utils.js';
 function addMessageHelpers(rsDiv, scaffold) {
   /* interface for pushing messages (error and info) */
   scaffold.pushMessage = function(args) {
-    var r = scaffold.messages.insertRow(-1);
+    var r = this.messages.insertRow(-1);
     r.className = "rest-scaffold-" + args.type;
     var c = r.insertCell(0);
-    var h = scaffold.getHeaderElements();
+    var h = this.getHeaderElements();
     /* TODO: why did I comment this out?! */
     /*if (h) {
       c.colSpan = h.length || 1;
@@ -29,9 +29,9 @@ function addMessageHelpers(rsDiv, scaffold) {
 
   /* helper for throwing errors */
   scaffold.throwError = function(args) {
-    $(scaffold.messages).empty();
-    if (!scaffold.debug) {
-      scaffold.pushMessage({"type": "error", "text": args.msg});
+    $(this.messages).empty();
+    if (!this.debug) {
+      this.pushMessage({"type": "error", "text": args.msg});
       return;
     }
     var p = document.createElement("pre");
@@ -57,7 +57,7 @@ function addMessageHelpers(rsDiv, scaffold) {
         p.insertAdjacentHTML("beforeend", "\n");
       }
     }
-    scaffold.pushMessage({"type": "error", "element": p});
+    this.pushMessage({"type": "error", "element": p});
   };
 }
 
