@@ -62,10 +62,20 @@ function addContentHelpers(rsDiv, scaffold) {
         });
       }, args.error]
     };
+
+    /* load CSRF token */
     opts.headers[scaffold.csrfTokenHeader] = scaffold.csrfToken;
+
+    /* load misc headers */
+    for (var k in scaffold.requestHeaders) {
+      opts.headers[k] = scaffold.requestHeaders[k];
+    }
+    /* if we have a payload, stringify it and include it in data */
     if (args.payload) {
       opts.data = JSON.stringify(args.payload);
     }
+
+    /* call the AJAX */
     $.ajax(target, opts);
   }
 

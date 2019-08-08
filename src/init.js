@@ -75,6 +75,7 @@ function initScaffold(rsDiv, index, args) {
   scaffold.subtitle = args.subtitle || '';
   scaffold.title = args.title || '';
   scaffold.url = args.url || '/';
+  scaffold.requestHeaders = args.headers || {};
 
   /* ensure slash at end of url */
   if (scaffold.url.slice(-1) !== '/') {
