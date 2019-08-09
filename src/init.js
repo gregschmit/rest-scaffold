@@ -90,7 +90,9 @@ function initScaffold(rsDiv, index, args) {
     "currentPage": 1,
     "getTotal": function() { return this.count || this.displayCount; },
     "getOffset": function(page) { return this.pageSize*(page-1); },
-    "getMaxPage": function() { return (~~((this.getTotal()-1)/this.pageSize) + 1) || 1; }
+    "getMaxPage": function() {
+      return (~~((this.getTotal()-1)/this.pageSize) + 1) || 1;
+    }
   };
 
   /* build data cache */

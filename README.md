@@ -91,9 +91,14 @@ passing the CSRF Token.
 ## To Do
 
 - convert jQuery stuff to vanilla javascript
-- Make the endpoints configurable rather than workable only with Django.
+- I'm a C programmer, so some style issues could be fixed:
+    - for loops don't have `i` initialized inside them, and the spacing is
+      C-like
+- Make the endpoints configurable rather than workable only with Django (methods/verbs/etc).
 - FK Mappings to better show foreignkey fields the verbose names in the listing
   - Configurable for list to be comma/separated or lf-separated
+  - Also, not even foreign key but just fields that map to choices in a select
+    field
 - Add detail view
 - Sorting (both from the server and client side)
 - Make pagination details configurable

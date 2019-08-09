@@ -210,22 +210,18 @@ function addContentHelpers(rsDiv, scaffold) {
           var i;
           $(scaffold.records).empty();
           var count = j.results.length;
-          /* store pagination meta-data TODO: FIXME!!! */
-          /*scaffold.pag.*/
-          /*if (j.count && j.results.length) */
           /* push record */
           for (i=0; i<j.results.length; i++) {
             scaffold.pushRecord(j.results[i]);
           }
-          /* update footer */
+          /* update pagination meta-data */
           p.count = j.count;
           p.displayCount = j.results.length;
           if (p.currentPage == 1 || p.currentPage != p.getMaxPage()) {
-            /* update page size (only allow growth of page size) */
-            if (p.pageSize < j.results.length) {
-              p.pageSize = j.results.length;
-            }
+            /* update page size */
+            p.pageSize = j.results.length;
           }
+          /* update footer */
           scaffold.updateFooter();
         } else {
           /* if we requested a page and it's not there, try to go to page 1 */
