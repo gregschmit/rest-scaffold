@@ -8,7 +8,8 @@
   "license": "MIT",
   "scripts": {
     "build": "rollup -c",
-    "watch": "rollup -w -c"
+    "prepublish": "npm run build",
+    "watch": "npm run build -- -w"
   },
   "devDependencies": {
     "rollup": "^1.0.0",
