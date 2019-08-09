@@ -1,5 +1,7 @@
 # REST-Scaffold.js
 
+![npm](https://img.shields.io/npm/v/rest-scaffold)
+
 `rest-scaffold.js` is a JavaScript library for building scaffolds (tables +
 actions) that represent objects which are exposed by a RESTful API.
 
