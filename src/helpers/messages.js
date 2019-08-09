@@ -12,12 +12,6 @@ function addMessageHelpers(rsDiv, scaffold) {
     r.className = "rest-scaffold-" + args.type;
     var c = r.insertCell(0);
     var h = this.getHeaderElements();
-    /* TODO: why did I comment this out?! */
-    /*if (h) {
-      c.colSpan = h.length || 1;
-    } else {
-      c.colSpan = 1;
-    }*/
     var x = '<a href="#" data-rest-scaffold-close-message> X </a>';
     c.innerHTML = x;
     if (args.text) {
