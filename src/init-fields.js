@@ -5,6 +5,8 @@
 import U from './utils.js';
 
 import addFormHelpers from './helpers/forms.js';
+import addRecordActionHelpers from './helpers/actions/record.js';
+import addScaffoldActionHelpers from './helpers/actions/scaffold.js';
 
 
 /**
@@ -53,10 +55,9 @@ function fieldsInitScaffold(scaffold) {
     'body': scaffold.rawUpdateForm
   });
 
-  /* render create link if we have a form */
-  if (scaffold.createForm) {
-    U.addListLink(scaffold.menu, 'render-create', 'Create');
-  }
+  /* add action helpers */
+  addRecordActionHelpers(scaffold);
+  addScaffoldActionHelpers(scaffold);
 
   /* populate table, using the cache if we have cached values */
   scaffold.populate({"useCache": true});

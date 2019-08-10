@@ -56,103 +56,14 @@ function registerEventListeners(scaffolds) {
   $(document).on("submit", "[data-rest-scaffold-create-record]", function() {
     U.changeButtonState(this, 'disable');
     var s = U.getScaffold(this, scaffolds);
-
-    /* show the spinner for status */
-    $(s.spinner).show();
-
-    /* create the record */
-    var formContents = U.serializeForm(this);
-    var elem = this;
-    s.ajax({
-      "method": "POST",
-      "payload": formContents,
-      "error": function() {
-        U.changeButtonState(elem, 'enable');
-      },
-      "success": function(data, status, xhr) {
-        /* check if this was an empty table and now needs to do postInit */
-        if (!s.state) {
-          /* get fields from data */
-          s.interpolateFields(data);
-
-          postInitScaffold(s);
-        } else {
-          /* add row */
-          s.pushRecord(data);
-
-          /* delete form */
-          $(elem.parentElement).remove();
-
-          /* update counts */
-          s.count += 1;
-          s.displayCount += 1;
-
-          /* update footer */
-          s.updateFooter();
-        }
-
-        /* remove messages */
-        $(s.messages).empty();
-
-        /* re-enable create button */
-        s.changeLinkState('create', 'enable');
-      }
-    });
-
+    s.createRecord(this);
     return false;
   });
 
   /* render the update form */
   $(document).on("click", "[data-rest-scaffold-render-update]", function() {
     var s = U.getScaffold(this, scaffolds);
-
-    /* get record row */
-    var tr = this.closest('tr');
-    var pk = tr.dataset.restScaffoldPk;
-
-    /* build form */
-    var form = s.updateForm;
-    form = '<a href="#" data-rest-scaffold-close-update> X </a>\n' + form;
-    form = '<div class="rest-scaffold-update-form">' + form + "</div>";
-    form = "<td colspan=" + s.getNumberOfHeaders() + ">" + form + "</td>";
-
-    /* wrap in row with reference to record row */
-    form = '<tr data-rest-scaffold-ref-pk="' + pk + '">' + form + '</tr>';
-
-    /* insert form above rendering element tr */
-    var tr = this.closest('tr');
-    tr.insertAdjacentHTML('beforebegin', form);
-
-    /* fill out form */
-    form = tr.previousSibling;
-    var fields = Array.from(form.getElementsByTagName('input')).concat(
-      Array.from(form.getElementsByTagName('select')),
-      Array.from(form.getElementsByTagName('textarea'))
-    );
-    var i;
-    var rc = s.cache.records[pk];
-    for (i=0; i<fields.length; i++) {
-      if (rc.record[fields[i].name]) {
-        if (fields[i].type && fields[i].type == 'checkbox') {
-          if (rc.record[fields[i].name] === true) {
-            fields[i].checked = true;
-          } else {
-            fields[i].checked = false;
-          }
-        } else if (fields[i].multiple) {
-          U.setSelected(fields[i], rc.record[fields[i].name]);
-        } else {
-          fields[i].value = rc.record[fields[i].name];
-        }
-      }
-    }
-
-    /* hide the original record */
-    $(tr).hide();
-
-    /* put focus on form */
-    $(s.rsDiv).find('.rest-scaffold-update-form :input:enabled:visible:first')[0].focus();
-
+    s.renderUpdateForm(this);
     return false;
   });
 
@@ -195,6 +106,13 @@ function registerEventListeners(scaffolds) {
       }
     });
 
+    return false;
+  });
+
+  /* render the detail view */
+  $(document).on("click", "[data-rest-scaffold-render-detail]", function() {
+    var s = U.getScaffold(this, scaffolds);
+    s.renderDetailView(this);
     return false;
   });
 

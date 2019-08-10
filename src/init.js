@@ -163,9 +163,6 @@ function initScaffold(rsDiv, index, args) {
   /* show that we're loading things */
   $(scaffold.spinner).show();
 
-  /* inject scaffold refresh url */
-  U.addListLink(scaffold.menu, 'refresh', 'Refresh');
-
   addContentHelpers(rsDiv, scaffold);
 
   /* if we don't have fields, get them from an AJAX request */
@@ -186,8 +183,10 @@ function initScaffold(rsDiv, index, args) {
         });
       }
     });
+
     return scaffold;
   }
+
   fieldsInitScaffold(scaffold);
   return scaffold;
 }

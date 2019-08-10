@@ -144,32 +144,12 @@ function addContentHelpers(rsDiv, scaffold) {
       var c = r.insertCell(h.length-1);
       var a = '<ul class="rest-scaffold-menu">';
       a += '<li><span class="rest-scaffold-spinner" style="display: none"></span></li>';
-      if (this.updateForm) {
-        a += '<li><a href="#" data-rest-scaffold-render-update>Update</a></li>';
+      var actionLinks = this.renderActionLinks();
+      for (var i=0; i<actionLinks.length; i++) {
+        a += actionLinks[i];
       }
-      a += '<li><a href="#" data-rest-scaffold-delete>Delete</a></li>';
       a += '</ul>';
       c.innerHTML = a;
-    }
-  };
-
-  /* interface for updating a row on the table */
-  scaffold.updateRow = function(content, row) {
-    var i;
-    var h = this.getHeaderElements();
-    var c = row.cells;
-    for (i=0; i<h.length-1; i++) { /* for each header */
-      /* get the name of the field */
-      if (h[i].hasAttribute("data-rest-scaffold-field-name")) {
-        var name = h[i].dataset.restScaffoldFieldName;
-      } else {
-        var name = h[i].textContent;
-      }
-      /* then get the value from content, if it exists */
-      var v = content[name];
-      if (typeof v === 'undefined') { v = ''; }
-      /* push the cell */
-      c[i].innerHTML = v;
     }
   };
 

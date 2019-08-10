@@ -1,9 +1,16 @@
+/**
+ * This module implements helper utilities for the entire project. We should
+ * not import anything here to prevent circular imports.
+ */
+
 
 var uniqueId = 1000;
+
 
 function getUniqueId() {
   return uniqueId++;
 }
+
 
 function addListLink(e, data, text) {
   var li = document.createElement('li');
@@ -16,6 +23,7 @@ function addListLink(e, data, text) {
   e.appendChild(li);
 }
 
+
 /* change the state of the first spinner element */
 function changeSpinner(element, state) {
   if (state == 'show' || state == 'display') {
@@ -24,6 +32,7 @@ function changeSpinner(element, state) {
     $($(element).find('.rest-scaffold-spinner')[0]).hide();
   }
 }
+
 
 /* change the state of button elements */
 function changeButtonState(element, state) {
@@ -40,6 +49,7 @@ function changeButtonState(element, state) {
   }
 }
 
+
 function getSelected(selectElement) {
   var options = selectElement.options;
   var r = [];
@@ -51,6 +61,7 @@ function getSelected(selectElement) {
   }
   return r;
 }
+
 
 function setSelected(selectElement, selected) {
   var options = selectElement.options;
@@ -67,6 +78,7 @@ function setSelected(selectElement, selected) {
   }
   return r;
 }
+
 
 function serializeForm(form) {
   var i;
@@ -89,9 +101,10 @@ function serializeForm(form) {
   return obj;
 }
 
+
 function buildGenericFormBody(fields) {
   if (!fields) { return ''; }
-  var form = '<table class="rest-scaffold-form-table">\n';
+  var form = '<table class="rest-scaffold-page-table">\n';
   var i;
   for (i=0; i<fields.length; i++) {
     if (fields[i].on_form && fields[i].html && fields[i].title && fields[i].id) {
@@ -102,6 +115,11 @@ function buildGenericFormBody(fields) {
   return form + '</table>\n';
 }
 
+
+/**
+ * This function takes a `type`, `name`, and `id`, and returns an HTML input
+ * element with appropriate properties.
+ */
 function getField(type, name, id) {
   var t = "text";
   if (type === 'number') {
@@ -111,6 +129,7 @@ function getField(type, name, id) {
   }
   return '<input type="' + t + '" id="' + id + '" name="' + name + '">';
 }
+
 
 function applyFieldDefaults(fields) {
   var defaults = {
@@ -131,17 +150,26 @@ function applyFieldDefaults(fields) {
   }
 }
 
-/* getting scaffold object from an element in a scaffold */
-function getScaffold(e, scaffolds) {
-  while (!e.dataset.restScaffold) { e = e.parentElement; }
+
+/**
+ * This function figured out which scaffold (if any) an element is in, and
+ * returns that scaffold.
+ */
+function getScaffold(el, scaffolds) {
+  while (!el.dataset.restScaffold) { el = el.parentElement; }
   var i;
   for (i=0; i<scaffolds.length; i++) {
-    if (scaffolds[i].rsDiv === e) { return scaffolds[i]; }
+    if (scaffolds[i].rsDiv === el) { return scaffolds[i]; }
   }
   return null;
 }
 
-/* close nth parent container (n > 0) */
+
+/**
+ * This is a helper that destroys the Nth parent of the calling object. This is
+ * mainly used for 'X' buttons but they are sometimes nested at different
+ * depths, so they rely on this method to keep their logic simple.
+ */
 function closeNthParent(element, n) {
   if (!n) { n = 1; }
   var i;

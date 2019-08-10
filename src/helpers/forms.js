@@ -38,6 +38,58 @@ function addFormHelpers(scaffold) {
     }
     return "<form data-rest-scaffold-create-record>" + formBody + "</form>";
   };
+
+  /* render update form helper */
+  scaffold.renderUpdateForm = function(renderUpdateElement) {
+    /* get record row */
+    var tr = renderUpdateElement.closest('tr');
+    var pk = tr.dataset.restScaffoldPk;
+
+    /* build form */
+    var form = this.updateForm;
+    form = '<a href="#" data-rest-scaffold-close-update> X </a>\n' + form;
+    form = '<div class="rest-scaffold-update-form">' + form + "</div>";
+    form = "<td colspan=" + scaffold.getNumberOfHeaders() + ">" + form;
+    form += "</td>";
+
+    /* wrap in row with reference to record row */
+    form = '<tr data-rest-scaffold-ref-pk="' + pk + '">' + form + '</tr>';
+
+    /* insert form above rendering element tr */
+    var tr = renderUpdateElement.closest('tr');
+    tr.insertAdjacentHTML('beforebegin', form);
+
+    /* fill out form */
+    form = tr.previousSibling;
+    var fields = Array.from(form.getElementsByTagName('input')).concat(
+      Array.from(form.getElementsByTagName('select')),
+      Array.from(form.getElementsByTagName('textarea'))
+    );
+    var rc = scaffold.cache.records[pk];
+    for (var i=0; i<fields.length; i++) {
+      if (rc.record[fields[i].name]) {
+        if (fields[i].type && fields[i].type == 'checkbox') {
+          if (rc.record[fields[i].name] === true) {
+            fields[i].checked = true;
+          } else {
+            fields[i].checked = false;
+          }
+        } else if (fields[i].multiple) {
+          U.setSelected(fields[i], rc.record[fields[i].name]);
+        } else {
+          fields[i].value = rc.record[fields[i].name];
+        }
+      }
+    }
+
+    /* hide the original record */
+    $(tr).hide();
+
+    /* put focus on form */
+    $(scaffold.rsDiv).find(
+      '.rest-scaffold-update-form :input:enabled:visible:first'
+    )[0].focus();
+  }
 }
 
 

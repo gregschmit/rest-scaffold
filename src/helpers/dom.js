@@ -26,21 +26,6 @@ function addDOMHelpers(rsDiv, scaffold) {
     return this.getHeaderElements().length;
   };
 
-  /* helper for disabling/enabling links */
-  scaffold.changeLinkState = function(linkName, state) {
-    var cls;
-    if (linkName == 'update') {
-      cls = '[data-rest-scaffold-render-update]';
-    } else { /* create */
-      cls = '[data-rest-scaffold-render-create]';
-    }
-    if (state == 'disable') {
-      $(this.menu).find(cls)[0].classList.add('rest-scaffold-link-disabled');
-    } else { /* enable */
-      $(this.menu).find(cls)[0].classList.remove('rest-scaffold-link-disabled');
-    }
-  }
-
   /* helper for getting a row by the Pk (primary key) */
   scaffold.getRowByPk = function(pk) {
     var i;

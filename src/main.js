@@ -9,6 +9,7 @@
 import initScaffold from './init.js';
 import registerEventListeners from './event-listeners.js';
 
+
 /**
  * This is the entry point, and we need to detect restScaffold elements and
  * process them. Afterwards, we need to ensure that the event listeners are
