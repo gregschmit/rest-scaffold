@@ -53,6 +53,7 @@ function initScaffold(rsDiv, index, args) {
 
   /* if args are bad, throw error and exit */
   if (args.e) {
+    scaffold.state = -1;
     scaffold.throwError({
       "msg": "Scaffold configuration is not valid JSON",
       "e": args.e,
@@ -62,38 +63,90 @@ function initScaffold(rsDiv, index, args) {
     return scaffold;
   }
 
+  /* evaluate API type */
+  scaffold.apiType = args.apiType || args.APIType || 'plain';
+  var typeSettings = {};
+  if (scaffold.apiType == 'django-paged') {
+    typeSettings.resultsName = 'results';
+    typeSettings.isPaged = true;
+  } else {  /* plain */
+    typeSettings.resultsName = null;
+    typeSettings.isPaged = false;
+  }
+
   /* load args into scaffold with sensible defaults */
-  scaffold.actionsLabel = args.actionsLabel || '.';
-  scaffold.csrfToken = args.csrfToken || '';
-  scaffold.csrfTokenHeader = args.csrfTokenHeader || 'X-CSRFToken';
-  scaffold.debug = args.debug || true;
-  scaffold.fields = args.fields || [];
-  scaffold.pkField = args.pkField || 'id';
-  scaffold.rawCreateForm = args.createForm || args.addForm || null;
-  scaffold.rawUpdateForm = args.updateForm || args.editForm || null;
-  scaffold.recordTitle = args.recordTitle || 'Record';
-  scaffold.subtitle = args.subtitle || '';
-  scaffold.title = args.title || '';
-  scaffold.url = args.url || '/';
-  scaffold.requestHeaders = args.headers || {};
+  var defaultSettings = {
+    'actionsLabel': '.',
+    'csrfToken': '',
+    'csrfTokenHeader': 'X-CSRFToken',
+    'debug': true,
+    'fields': [],
+    'isPaged': false,
+    'pkField': 'id',
+    'rawCreateForm': null,
+    'rawUpdateForm': null,
+    'recordTitle': 'Record',
+    'requestHeaders': {},
+    'resultsName': null,
+    'subtitle': '',
+    'title': '',
+    'url': '/'
+  }
+  function setScaffoldProperty(k) {
+    var found = false;
+    if (!(k instanceof Array)) {
+      k = [k];
+    }
+    for (var i=0; i<k.length; i++) {
+      var p = k[i];
+      if (p && args.hasOwnProperty(p)) {
+        scaffold[p] = args[p];
+        found = true;
+        break;
+      }
+    }
+    if (!found) {
+      k = k[0];
+      if (typeSettings.hasOwnProperty(k)) {
+        scaffold[k] = typeSettings[k];
+      } else {
+        scaffold[k] = defaultSettings[k];
+      }
+    }
+  }
+  for (var k in defaultSettings) {
+    if (k == 'rawCreateForm') {
+      setScaffoldProperty(['createForm', 'addForm']);
+    } else if (k == 'rawUpdateForm') {
+      setScaffoldProperty(['updateForm', 'editForm']);
+    } else {
+      setScaffoldProperty(k);
+    }
+  }
 
   /* ensure slash at end of url */
   if (scaffold.url.slice(-1) !== '/') {
     scaffold.url = scaffold.url + '/';
   }
 
-  /* build pagination defaults */
-  scaffold.pag = {
-    "count": undefined,
-    "displayCount": 1,
-    "pageSize": 1,
-    "currentPage": 1,
-    "getTotal": function() { return this.count || this.displayCount; },
-    "getOffset": function(page) { return this.pageSize*(page-1); },
-    "getMaxPage": function() {
-      return (~~((this.getTotal()-1)/this.pageSize) + 1) || 1;
-    }
-  };
+  /* build count meta (these will be the same if no paging) */
+  scaffold.count = 0;
+  scaffold.displayCount = 0;
+
+  /* build pagination meta */
+  scaffold.pag = null;
+  if (scaffold.isPaged) {
+    scaffold.pag = {
+      "schema": "normal",
+      "pageSize": 1,
+      "currentPage": 1,
+      "getTotal": function() { return scaffold.count || scaffold.displayCount; },
+      "getOffset": function(page) { return this.pageSize*(page-1); },
+      "getMaxPage": function() {
+        return (~~((this.getTotal()-1)/this.pageSize) + 1) || 1;
+      }
+    };
+  }
 
   /* build data cache */
   scaffold.cache = {
@@ -119,23 +172,13 @@ function initScaffold(rsDiv, index, args) {
   if (!scaffold.fields) {
     scaffold.ajax({
       "success": function(data, status, xhr) {
-        /* parse fields or throw error */
-        if (typeof data == 'string') {
-          try {
-            var j = JSON.parse(data);
-          } catch (e) {
-            scaffold.throwError({"msg": "Couldn't parse JSON", "e": e, "dump": data});
-            return;
-          }
-        } else {
-          var j = data;
-        }
-        if (j.results) {
-          if (j.results[0]) {
-            scaffold.interpolateFields(j.results[0]);
-            fieldsInitScaffold(scaffold);
-            return scaffold;
-          }
+        var dataObject = scaffold.ensureObject(data, true);
+        var results = scaffold.getResults(dataObject);
+        var first_result = results[0];
+        if (first_result) {
+          scaffold.interpolateFields(first_result);
+          fieldsInitScaffold(scaffold);
+          return scaffold;
         }
         scaffold.pushMessage({
           "type": "info",

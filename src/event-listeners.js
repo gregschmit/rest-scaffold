@@ -83,9 +83,11 @@ function registerEventListeners(scaffolds) {
           /* delete form */
           $(elem.parentElement).remove();
 
+          /* update counts */
+          s.count += 1;
+          s.displayCount += 1;
+
           /* update footer */
-          s.pag.count += 1;
-          s.pag.displayCount += 1;
           s.updateFooter();
         }
 

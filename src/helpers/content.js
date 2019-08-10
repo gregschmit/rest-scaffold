@@ -7,13 +7,43 @@ import U from '../utils.js';
 
 
 function addContentHelpers(rsDiv, scaffold) {
+  /**
+   * Attempt to ensure that the object is a JS object, not a string.
+   */
+  scaffold.ensureObject = function(data, throwError) {
+    if (typeof data == 'string') {
+      try {
+        return JSON.parse(data);
+      } catch (e) {
+        if (throwError) {
+          this.throwError({"msg": "Couldn't parse JSON", "e": e, "dump": data});
+        }
+        return null;
+      }
+    }
+    return data;
+  }
+
+  /**
+   * If the scaffold `resultsName` is null, then data itself should be the
+   * results, else we need to get the `resultsName` property.
+   */
+  scaffold.getResults = function(dataObject) {
+    if (!dataObject) { return dataObject; }
+    if (this.resultsName) {
+      return dataObject[this.resultsName];
+    } else {
+      return dataObject;
+    }
+  };
+
   /* interface for AJAX */
   scaffold.ajax = function(args) {
     var target = this.url;
     if (args.hasOwnProperty('pk')) {
       target += args.pk + '/';
     }
-    if (args.page && args.page > 1) {
+    if (this.pag && args.page && args.page > 1) {
       var p = this.pag.getOffset(args.page);
       target += '?offset=' + p;
     }
@@ -35,21 +65,28 @@ function addContentHelpers(rsDiv, scaffold) {
       "contentType": 'application/json',
       "headers": {},
       "success": [function(data, status, xhr) {
-        /* if it's a listing, cache it */
-        var pkField = scaffold.pkField;
-        if (!args.hasOwnProperty('pk') && method == 'GET') {
-          scaffold.cache.lastListing = data;
-          var i;
-          for (i=0; i<data.results.length; i++) {
-            scaffold.cache.records[data.results[i][pkField]] = {
-              record: data.results[i],
-              detail: false
-            };
-          }
-        } else if (args.hasOwnProperty('pk') && method == 'GET') {
-          scaffold.cache.records[data[pkField]] = {
-            record: data,
-            detail: true
+        if (method == 'GET') {
+          /* try to cache, fail silently */
+          var pkField = scaffold.pkField;
+          var dataObject = scaffold.ensureObject(data, false);
+          if (dataObject) {
+            if (args.hasOwnProperty('pk')) {
+              /* not listing */
+              scaffold.cache.records[dataObject[pkField]] = {
+                record: dataObject,
+                detail: true
+              };
+            } else {
+              /* listing */
+              scaffold.cache.lastListing = dataObject;
+              var results = scaffold.getResults(dataObject);
+              for (var i=0; i<results.length; i++) {
+                scaffold.cache.records[results[i][pkField]] = {
+                  record: results[i],
+                  detail: false
+                };
+              }
+            }
           }
         }
       }, args.success],
@@ -71,6 +108,7 @@ function addContentHelpers(rsDiv, scaffold) {
     for (var k in this.requestHeaders) {
       opts.headers[k] = this.requestHeaders[k];
     }
+
     /* if we have a payload, stringify it and include it in data */
     if (args.payload) {
       opts.data = JSON.stringify(args.payload);
@@ -138,14 +176,18 @@ function addContentHelpers(rsDiv, scaffold) {
   /* interface for updating the footer */
   scaffold.updateFooter = function() {
     var p = this.pag;
-    /* render record count */
-    var count_txt = p.displayCount + " records";
-    if (p.count) {
-      count_txt += " / " + p.count + " total";
+    if (p) {
+      var count_txt = this.displayCount + " records";
+      if (this.count) {
+        count_txt += " / " + this.count + " total";
+      }
+    } else {
+      var count_txt = this.count + " total"
     }
+    /* render record count */
     this.footer_count.innerHTML = count_txt;
     /* render page links, if needed */
-    if (p.count && p.displayCount < p.count) {
+    if (p && this.count && this.displayCount < this.count) {
       /* need pagination */
       var i;
       var pg = p.currentPage;
@@ -183,11 +225,12 @@ function addContentHelpers(rsDiv, scaffold) {
     }
 
     /* if we don't get the page in the args, set the page to currentPage */
-    var p = this.pag;
-    if (args.page) {
-      p.currentPage = parseInt(args.page, 10);
-    } else if (p.currentPage) {
-      args.page = p.currentPage;
+    if (this.pag) {
+      if (args.page) {
+        this.pag.currentPage = parseInt(args.page, 10);
+      } else if (this.pag.currentPage) {
+        args.page = this.pag.currentPage;
+      }
     }
 
     /* execute the ajax request */
@@ -196,36 +239,31 @@ function addContentHelpers(rsDiv, scaffold) {
       "useCache": args.useCache,
       "page": args.page || 1,
       "success": function(data, status, xhr) {
-        if (typeof data == 'string') {
-          try {
-            var j = JSON.parse(data);
-          } catch (e) {
-            scaffold.throwError({"msg": "Couldn't parse JSON", "e": e, "dump": data});
-            return;
-          }
-        } else {
-          var j = data;
-        }
-        if (j.results) {
-          var i;
+        var dataObject = scaffold.ensureObject(data, true);
+        var results = scaffold.getResults(dataObject);
+        if (results) {
           $(scaffold.records).empty();
-          var count = j.results.length;
           /* push record */
-          for (i=0; i<j.results.length; i++) {
-            scaffold.pushRecord(j.results[i]);
+          for (var i=0; i<results.length; i++) {
+            scaffold.pushRecord(results[i]);
           }
           /* update pagination meta-data */
-          p.count = j.count;
-          p.displayCount = j.results.length;
-          if (p.currentPage == 1 || p.currentPage != p.getMaxPage()) {
-            /* update page size */
-            p.pageSize = j.results.length;
+          var p = scaffold.pag;
+          if (p) {
+            scaffold.count = dataObject.count;
+            scaffold.displayCount = results.length;
+            if (p.currentPage == 1 || p.currentPage != p.getMaxPage()) {
+              /* update page size */
+              p.pageSize = results.length;
+            }
+          } else {
+            scaffold.count = scaffold.displayCount = results.length;
           }
           /* update footer */
           scaffold.updateFooter();
         } else {
           /* if we requested a page and it's not there, try to go to page 1 */
-          if (args.page && args.page > 1) {
+          if (scaffold.pag && args.page && args.page > 1) {
             args.page = 1;
             args.useCache = false;
             scaffold.populate(args);
@@ -250,19 +288,22 @@ function addContentHelpers(rsDiv, scaffold) {
       "success": function(data, status, xhr) {
         /* delete row */
         tr.parentElement.removeChild(tr);
-        /* update footer */
-        scaffold.pag.count -= 1;
-        scaffold.pag.displayCount -= 1;
-        scaffold.updateFooter();
+        /* update counts */
+        scaffold.count -= 1;
+        scaffold.displayCount -= 1;
         /* go to previous page if this one is empty now */
-        if (!scaffold.pag.displayCount && scaffold.pag.currentPage > 1) {
-          scaffold.pag.currentPage -= 1;
-          scaffold.populate({});
+        if (scaffold.pag) {
+          if (!scaffold.pag.displayCount && scaffold.pag.currentPage > 1) {
+            scaffold.pag.currentPage -= 1;
+            scaffold.populate({});
+          }
+          /* refresh the page if we are on page 1 and count is <= page size */
+          if (scaffold.pag.currentPage == 1 && scaffold.count <= scaffold.pag.pageSize) {
+            scaffold.populate({})
+          }
         }
-        /* refresh the page if we are on page 1 and count is <= page size */
-        if (scaffold.pag.currentPage == 1 && scaffold.pag.count <= scaffold.pag.pageSize) {
-          scaffold.populate({})
-        }
+        /* update footer */
+        scaffold.updateFooter();
       }
     });
   }

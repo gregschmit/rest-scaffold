@@ -167,5 +167,5 @@ export default {
   'getField': getField,
   'applyFieldDefaults': applyFieldDefaults,
   'getScaffold': getScaffold,
-  'closeNthParent': closeNthParent,
+  'closeNthParent': closeNthParent
 };
