@@ -53,8 +53,7 @@ function changeButtonState(element, state) {
 function getSelected(selectElement) {
   var options = selectElement.options;
   var r = [];
-  var i;
-  for (i=0; i<options.length; i++) {
+  for (var i=0; i<options.length; i++) {
     if (options[i].selected) {
       r.push(options[i].value);
     }
@@ -66,9 +65,8 @@ function getSelected(selectElement) {
 function setSelected(selectElement, selected) {
   var options = selectElement.options;
   var r = [];
-  var i;
   var j;
-  for (i=0; i<options.length; i++) {
+  for (var i=0; i<options.length; i++) {
     options[i].selected = false;
     for (j=0; j<selected.length; j++) {
       if (options[i].value == selected[j]) {
@@ -81,11 +79,9 @@ function setSelected(selectElement, selected) {
 
 
 function serializeForm(form) {
-  var i;
-  var j;
   var obj = {};
   var nodes = form.querySelectorAll('input,select,textarea');
-  for (i=0; i<nodes.length; i++) {
+  for (var i=0; i<nodes.length; i++) {
     if (!nodes[i].tagName) { continue; }
     var tg = nodes[i].tagName.toLowerCase();
     if (nodes[i].name) {
@@ -105,8 +101,7 @@ function serializeForm(form) {
 function buildGenericFormBody(fields) {
   if (!fields) { return ''; }
   var form = '<table class="rest-scaffold-page-table">\n';
-  var i;
-  for (i=0; i<fields.length; i++) {
+  for (var i=0; i<fields.length; i++) {
     if (fields[i].on_form && fields[i].html && fields[i].title && fields[i].id) {
       form += '<tr><td><label for="' + fields[i].id + '">' + fields[i].title
         + ': </label></td><td>' + fields[i].html + '</td></tr>\n';
@@ -137,8 +132,7 @@ function applyFieldDefaults(fields) {
     "on_form": true,
     "on_detail": true
   };
-  var i;
-  for (i=0; i<fields.length; i++) {
+  for (var i=0; i<fields.length; i++) {
     if (!fields[i].hasOwnProperty("title")) {
       fields[i].title = fields[i].name;
     }
@@ -158,7 +152,7 @@ function applyFieldDefaults(fields) {
 function getScaffold(el, scaffolds) {
   while (!el.dataset.restScaffold) { el = el.parentElement; }
   var i;
-  for (i=0; i<scaffolds.length; i++) {
+  for (var i=0; i<scaffolds.length; i++) {
     if (scaffolds[i].rsDiv === el) { return scaffolds[i]; }
   }
   return null;
@@ -172,10 +166,9 @@ function getScaffold(el, scaffolds) {
  */
 function closeNthParent(element, n) {
   if (!n) { n = 1; }
-  var i;
   var p = element;
   var c;
-  for (i=0; i<n; i++) {
+  for (var i=0; i<n; i++) {
     c = p;
     p = p.parentElement;
   }

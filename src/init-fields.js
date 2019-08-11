@@ -23,9 +23,8 @@ function fieldsInitScaffold(scaffold) {
   U.applyFieldDefaults(scaffold.fields);
 
   /* build the headers (+ actions) */
-  var i;
   var tr = document.createElement('tr');
-  for (i=0; i<scaffold.fields.length; i++) {
+  for (var i=0; i<scaffold.fields.length; i++) {
     if (scaffold.fields[i].on_table) {
       var h = document.createElement('th');
       h.innerHTML = scaffold.fields[i].title || scaffold.fields[i].name;

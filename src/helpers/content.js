@@ -121,9 +121,8 @@ function addContentHelpers(rsDiv, scaffold) {
   /* interface for pushing a record to the table */
   scaffold.pushRecord = function(content) {
     var r = this.records.insertRow(-1);
-    var i;
     var h = this.getHeaderElements();
-    for (i=0; i<h.length-1; i++) { /* for each header */
+    for (var i=0; i<h.length-1; i++) { /* for each header */
       /* get the name of the field */
       if (h[i].hasAttribute("data-rest-scaffold-field-name")) {
         var name = h[i].dataset.restScaffoldFieldName;
@@ -155,10 +154,9 @@ function addContentHelpers(rsDiv, scaffold) {
 
   /* interface for updating a row on the table */
   scaffold.updateRow = function(content, row) {
-    var i;
     var h = scaffold.getHeaderElements();
     var c = row.cells;
-    for (i=0; i<h.length-1; i++) { /* for each header */
+    for (var i=0; i<h.length-1; i++) { /* for each header */
       /* get the name of the field */
       if (h[i].hasAttribute("data-rest-scaffold-field-name")) {
         var name = h[i].dataset.restScaffoldFieldName;
@@ -189,11 +187,10 @@ function addContentHelpers(rsDiv, scaffold) {
     /* render page links, if needed */
     if (p && this.count && this.displayCount < this.count) {
       /* need pagination */
-      var i;
       var pg = p.currentPage;
       var max = p.getMaxPage();
       var pageLinks = '';
-      for (i=1; i<=max; i++) {
+      for (var i=1; i<=max; i++) {
         if (pg == i) {
           pageLinks += ' ' +  i + ' ';
         } else {

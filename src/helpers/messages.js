@@ -45,8 +45,7 @@ function addMessageHelpers(rsDiv, scaffold) {
         args.dump = JSON.stringify(args.dump);
       }
       var lines = args.dump.split("\n");
-      var i;
-      for (i=0; i<lines.length; i++) {
+      for (var i=0; i<lines.length; i++) {
         p.appendChild(document.createTextNode(lines[i]));
         p.insertAdjacentHTML("beforeend", "\n");
       }

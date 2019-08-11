@@ -28,9 +28,8 @@ function addDOMHelpers(rsDiv, scaffold) {
 
   /* helper for getting a row by the Pk (primary key) */
   scaffold.getRowByPk = function(pk) {
-    var i;
     var rows = this.getRecordRows();
-    for (i=0; i<rows.length; i++) {
+    for (var i=0; i<rows.length; i++) {
       if (rows[i].dataset.restScaffoldPk == pk) {
         return rows[i];
       }
