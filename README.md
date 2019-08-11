@@ -50,6 +50,7 @@ The library will assume the following endpoints exist:
 ## CDN Links
 
 https://cdn.jsdelivr.net/npm/rest-scaffold/dist/rest-scaffold.js
+
 https://cdn.jsdelivr.net/npm/rest-scaffold/dist/rest-scaffold.css
 
 ## Configuration Options
