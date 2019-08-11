@@ -22,9 +22,10 @@ configuration in the form of a JSON, like:
 }
 ```
 
-If you're using a tool like `django-rest-scaffold` to generate all this, then
-the tool can escape the quotes in the JSON. Otherwise, using single quotes for
-the property is helpful.
+If you're using a tool like
+[`django-rest-scaffolds`](https://github.com/gregschmit/django-rest-scaffold)
+to generate all this, then the tool can escape the quotes in the JSON.
+Otherwise, using single quotes for the property is helpful.
 
 The `div` would look like this:
 

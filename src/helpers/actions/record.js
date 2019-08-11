@@ -149,7 +149,7 @@ function addRecordActionHelpers(scaffold) {
     }
     /* render detail action */
     recordActions.push(
-      '<li><a href="#" data-rest-scaffold-render-detail>Show</a></li>'
+      '<li><a href="#" data-rest-scaffold-render-detail>Detail</a></li>'
     );
     /* render delete action */
     recordActions.push(
