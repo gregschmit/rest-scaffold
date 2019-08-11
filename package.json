@@ -1,6 +1,6 @@
 {
   "name": "rest-scaffold",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "main": "dist/rest-scaffold.js",
   "style": "dist/rest-scaffold.css",
   "author": "Gregory N. Schmit <me@gregschmit.com> (https://gregschmit.com)",
