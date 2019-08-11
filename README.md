@@ -55,6 +55,13 @@ https://cdn.jsdelivr.net/npm/rest-scaffold/dist/rest-scaffold.css
 
 ### Common Options
 
+`apiType` (string, default: `"plain"`) : This defines the structure of the API
+that we are interacting with. `plain` indicates that a listing should return a
+JSON list with no pagination. If you use Django with the Rest Framework
+paginator, then you should put `django-paged`. This is a shortcut configuration
+option and the individual attributes that this affects can all be edited
+selectively.
+
 `title` (string, default: `""`): The main bold text shown at the top of the
 scaffold.
 
@@ -84,25 +91,11 @@ the scaffold.
 `csrfTokenHeader` (string, default: `"X-CSRFToken"`): The HTTP header for
 passing the CSRF Token.
 
+`isPaged` (boolean, default: `false`): Whether the API listing returns results
+in a paged format.
+
 `rawCreateForm` (string, default: `null`): The HTML create form.
 
 `rawUpdateForm` (string, default: `null`): The HTML update form.
 
 `recordTitle` (string, default: `"Record"`): The name for a single record.
-
-## To Do
-
-- convert jQuery stuff to vanilla javascript
-- I'm a C programmer, so some style issues could be fixed:
-    - for loops don't have `i` initialized inside them, and the spacing is
-      C-like
-- Make the endpoints configurable rather than workable only with Django (methods/verbs/etc).
-- FK Mappings to better show foreignkey fields the verbose names in the listing
-  - Configurable for list to be comma/separated or lf-separated
-  - Also, not even foreign key but just fields that map to choices in a select
-    field
-- Add detail view
-- Sorting (both from the server and client side)
-- Make pagination details configurable
-- Multi-select with multi-delete, bulk-edit?
-- expand scaffold option to see a larger data set

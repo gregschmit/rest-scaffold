@@ -30,7 +30,8 @@ function registerEventListeners(scaffolds) {
     /* build form */
     var form = s.createForm;
     form = '<a href="#" data-rest-scaffold-close-create> X </a>\n' + form;
-    form = '<div class="rest-scaffold-create-form">' + form + "</div>";
+    form = '<div class="rest-scaffold-create-form rest-scaffold-page">' + form;
+    form += "</div>";
 
     /* insert the form */
     s.topbar.insertAdjacentHTML('afterend', form);
@@ -38,6 +39,15 @@ function registerEventListeners(scaffolds) {
     /* put focus on form */
     $(s.rsDiv).find('.rest-scaffold-create-form :input:enabled:visible:first')[0].focus();
 
+    return false;
+  });
+
+  /* close button on detail view, and show original record */
+  $(document).on("click", "[data-rest-scaffold-close-detail]", function() {
+    var s = U.getScaffold(this, scaffolds);
+    console.log(this.closest('tr'));
+    $(s.getRowByPk(this.closest('tr').dataset.restScaffoldRefPk)).show();
+    U.closeNthParent(this, 3);
     return false;
   });
 
@@ -53,7 +63,7 @@ function registerEventListeners(scaffolds) {
   });
 
   /* create record */
-  $(document).on("submit", "[data-rest-scaffold-create-record]", function() {
+  $(document).on("submit", "[data-rest-scaffold-create-form]", function() {
     U.changeButtonState(this, 'disable');
     var s = U.getScaffold(this, scaffolds);
     s.createRecord(this);
@@ -70,16 +80,13 @@ function registerEventListeners(scaffolds) {
   /* close button on update forms */
   $(document).on("click", "[data-rest-scaffold-close-update]", function() {
     var s = U.getScaffold(this, scaffolds);
-    U.closeNthParent(this, 4);
-
-    /* show the record row */
     $(s.getRowByPk(this.closest('tr').dataset.restScaffoldRefPk)).show();
-
+    U.closeNthParent(this, 4);
     return false;
   });
 
   /* update record */
-  $(document).on("submit", "[data-rest-scaffold-update-record]", function() {
+  $(document).on("submit", "[data-rest-scaffold-update-form]", function() {
     U.changeButtonState(this, 'disable');
     var s = U.getScaffold(this, scaffolds);
 

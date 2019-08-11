@@ -26,7 +26,7 @@ function addFormHelpers(scaffold) {
     }
     /* add form header */
     var t = this.recordTitle;
-    var f = '<span class="rest-scaffold-form-head">' + submitText;
+    var f = '<span class="rest-scaffold-page-head">' + submitText;
     f += ' ' + t + '</span>\n';
     formBody = f + formBody;
     /* inject submit and close button */
@@ -34,9 +34,9 @@ function addFormHelpers(scaffold) {
     formBody += '<input type="reset" value="Reset"></span></div>';
     /* ok, have body, now render form */
     if (args.type == 'update') {
-      return "<form data-rest-scaffold-update-record>" + formBody + "</form>";
+      return "<form data-rest-scaffold-update-form>" + formBody + "</form>";
     }
-    return "<form data-rest-scaffold-create-record>" + formBody + "</form>";
+    return "<form data-rest-scaffold-create-form>" + formBody + "</form>";
   };
 
   /* render update form helper */
@@ -48,7 +48,7 @@ function addFormHelpers(scaffold) {
     /* build form */
     var form = this.updateForm;
     form = '<a href="#" data-rest-scaffold-close-update> X </a>\n' + form;
-    form = '<div class="rest-scaffold-update-form">' + form + "</div>";
+    form = '<div class="rest-scaffold-page">' + form + "</div>";
     form = "<td colspan=" + scaffold.getNumberOfHeaders() + ">" + form;
     form += "</td>";
 
@@ -87,7 +87,7 @@ function addFormHelpers(scaffold) {
 
     /* put focus on form */
     $(scaffold.rsDiv).find(
-      '.rest-scaffold-update-form :input:enabled:visible:first'
+      '[data-rest-scaffold-update-form] :input:enabled:visible:first'
     )[0].focus();
   }
 }

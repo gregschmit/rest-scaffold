@@ -153,6 +153,26 @@ function addContentHelpers(rsDiv, scaffold) {
     }
   };
 
+  /* interface for updating a row on the table */
+  scaffold.updateRow = function(content, row) {
+    var i;
+    var h = scaffold.getHeaderElements();
+    var c = row.cells;
+    for (i=0; i<h.length-1; i++) { /* for each header */
+      /* get the name of the field */
+      if (h[i].hasAttribute("data-rest-scaffold-field-name")) {
+        var name = h[i].dataset.restScaffoldFieldName;
+      } else {
+        var name = h[i].textContent;
+      }
+      /* then get the value from content, if it exists */
+      var v = content[name];
+      if (typeof v === 'undefined') { v = ''; }
+      /* push the cell */
+      c[i].innerHTML = v;
+    }
+  };
+
   /* interface for updating the footer */
   scaffold.updateFooter = function() {
     var p = this.pag;

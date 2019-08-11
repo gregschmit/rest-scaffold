@@ -108,19 +108,28 @@ function addRecordActionHelpers(scaffold) {
     var rc = scaffold.cache.records[pk].record;
     /* TODO: check if this is detail, if not then get detail! */
     for (var i=0; i<scaffold.fields.length; i++) {
-      table += '<tr><td>' + scaffold.fields[i].name + '</td><td>';
+      var title = scaffold.fields[i].title || scaffold.fields[i].name;
+      table += '<tr><td>' + title + '</td><td>';
       table += rc[scaffold.fields[i].name] + '</td></tr>';
     }
 
-    /* build table */
+    /* wrap rows in a table */
     table = '<table>' + table + '</table>';
+
+    /* add header */
+    table = '<span class="rest-scaffold-page-head">Update ' + this.recordTitle +
+      '</span>' + table;
+
+    /* add close cutton */
     table = '<a href="#" data-rest-scaffold-close-detail> X </a>\n' + table;
-    table = '<div class="rest-scaffold-page-table">' + table + "</div>";
-    table = "<td colspan=" + scaffold.getNumberOfHeaders() + ">" + table;
+
+    /* wrap in a div, then td */
+    table = '<td colspan="' + scaffold.getNumberOfHeaders() + '">' + table;
     table += "</td>";
 
     /* wrap in row with reference to record row */
-    table = '<tr data-rest-scaffold-ref-pk="' + pk + '">' + table + '</tr>';
+    table = '<tr class="rest-scaffold-page" data-rest-scaffold-ref-pk="' + pk +
+      '">' + table + '</tr>';
 
     /* insert table above rendering element tr */
     var tr = renderDetailElement.closest('tr');
