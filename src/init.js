@@ -158,10 +158,10 @@ function initScaffold(rsDiv, index, args) {
   rsDiv.find('.rest-scaffold-head').text(scaffold.title);
   rsDiv.find('.rest-scaffold-secondary').text(scaffold.subtitle);
 
-  addDOMHelpers(rsDiv, scaffold);
+  addDOMHelpers(rsDiv[0], scaffold);
 
   /* show that we're loading things */
-  $(scaffold.spinner).show();
+  scaffold.spinner.style.display = 'inline-block';
 
   addContentHelpers(rsDiv, scaffold);
 

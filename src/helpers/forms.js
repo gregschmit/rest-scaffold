@@ -83,12 +83,12 @@ function addFormHelpers(scaffold) {
     }
 
     /* hide the original record */
-    $(tr).hide();
+    tr.style.display = 'none';
 
     /* put focus on form */
-    $(scaffold.rsDiv).find(
-      '[data-rest-scaffold-update-form] :input:enabled:visible:first'
-    )[0].focus();
+    scaffold.rsDiv.querySelector(
+      '[data-rest-scaffold-update-form] input:enabled'
+    ).focus();
   }
 }
 

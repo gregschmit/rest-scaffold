@@ -101,3 +101,13 @@ in a paged format.
 `rawUpdateForm` (string, default: `null`): The HTML update form.
 
 `recordTitle` (string, default: `"Record"`): The name for a single record.
+
+## Development
+
+To build:
+
+    $ npm run-script build
+
+For watch/compile for any changes:
+
+    $ npm run-script watch

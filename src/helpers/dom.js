@@ -7,15 +7,15 @@ import U from '../utils.js';
 
 function addDOMHelpers(rsDiv, scaffold) {
   /* helpers for getting elements */
-  scaffold.headers = rsDiv.find('.rest-scaffold-headers')[0];
-  scaffold.menu = rsDiv.find('.rest-scaffold-menu')[0];
-  scaffold.spinner = $(scaffold.menu).find('.rest-scaffold-spinner')[0];
-  scaffold.topbar = rsDiv.find('.rest-scaffold-topbar')[0];
-  scaffold.messages = rsDiv.find('.rest-scaffold-messages')[0];
-  scaffold.records = rsDiv.find('.rest-scaffold-records')[0];
-  scaffold.footer = rsDiv.find('.rest-scaffold-footer')[0];
-  scaffold.footer_count = rsDiv.find('.rest-scaffold-count')[0];
-  scaffold.footer_pages = rsDiv.find('.rest-scaffold-pages')[0];
+  scaffold.headers = rsDiv.querySelector('.rest-scaffold-headers');
+  scaffold.menu = rsDiv.querySelector('.rest-scaffold-menu');
+  scaffold.spinner = scaffold.menu.querySelector('.rest-scaffold-spinner');
+  scaffold.topbar = rsDiv.querySelector('.rest-scaffold-topbar');
+  scaffold.messages = rsDiv.querySelector('.rest-scaffold-messages');
+  scaffold.records = rsDiv.querySelector('.rest-scaffold-records');
+  scaffold.footer = rsDiv.querySelector('.rest-scaffold-footer');
+  scaffold.footer_count = rsDiv.querySelector('.rest-scaffold-count');
+  scaffold.footer_pages = rsDiv.querySelector('.rest-scaffold-pages');
   scaffold.getRecordRows = function() {
     return this.records.getElementsByTagName('tr');
   };

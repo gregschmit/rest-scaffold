@@ -23,7 +23,7 @@ function addMessageHelpers(rsDiv, scaffold) {
 
   /* helper for throwing errors */
   scaffold.throwError = function(args) {
-    $(this.messages).empty();
+    this.messages.innerHTML = '';
     if (!this.debug) {
       this.pushMessage({"type": "error", "text": args.msg});
       return;
