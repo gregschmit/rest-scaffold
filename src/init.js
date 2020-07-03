@@ -90,7 +90,7 @@ function initScaffold(rsDiv, index, args) {
     'resultsName': null,
     'subtitle': '',
     'title': '',
-    'url': '/'
+    'url': '/',
   }
   function setScaffoldProperty(k) {
     var found = false;

@@ -131,6 +131,11 @@ function addContentHelpers(rsDiv, scaffold) {
       }
       /* then get the value from content, if it exists */
       var v = content[name];
+      /* convert to choice display if needed */
+      var fieldConfig = this.fields.find(e => e["name"] == name);
+      if (fieldConfig && fieldConfig.hasOwnProperty('choices')) {
+        v = fieldConfig.choices.find(e => e[0] == v)[1];
+      }
       if (typeof v === 'undefined') { v = ''; }
       /* push the cell */
       var c = r.insertCell(i);

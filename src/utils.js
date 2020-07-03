@@ -175,7 +175,6 @@ function closeNthParent(element, n) {
   p.removeChild(c);
 }
 
-
 export default {
   'getUniqueId': getUniqueId,
   'addListLink': addListLink,
