@@ -44,14 +44,12 @@ function fieldsInitScaffold(scaffold) {
 
   addFormHelpers(scaffold);
 
-  /* if we were given a createForm, use it, otherwise build one */
+  /* Build our forms. */
   scaffold.createForm = scaffold.buildForm({
     'type': 'create',
-    'body': scaffold.rawCreateForm
   });
   scaffold.updateForm = scaffold.buildForm({
     'type': 'update',
-    'body': scaffold.rawUpdateForm
   });
 
   /* add action helpers */

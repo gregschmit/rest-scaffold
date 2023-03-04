@@ -83,8 +83,6 @@ function initScaffold(rsDiv, index, args) {
     'fields': [],
     'isPaged': false,
     'pkField': 'id',
-    'rawCreateForm': null,
-    'rawUpdateForm': null,
     'recordTitle': 'Record',
     'requestHeaders': {},
     'resultsName': null,
@@ -115,13 +113,7 @@ function initScaffold(rsDiv, index, args) {
     }
   }
   for (var k in defaultSettings) {
-    if (k == 'rawCreateForm') {
-      setScaffoldProperty(['createForm', 'addForm']);
-    } else if (k == 'rawUpdateForm') {
-      setScaffoldProperty(['updateForm', 'editForm']);
-    } else {
-      setScaffoldProperty(k);
-    }
+    setScaffoldProperty(k);
   }
 
   /* ensure slash at end of url */
