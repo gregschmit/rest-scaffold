@@ -1,36 +1,16 @@
 <script setup lang="ts">
-import HelloWorld from "./components/HelloWorld.vue"
-import TestTable from "./components/TestTable.vue"
+import Spinner from "./components/Spinner.vue"
+import { reactive, ref, onMounted } from "vue"
+
+const props = defineProps(["target", "apiType", "debug"])
+const isLoaded = ref(false)
+
+onMounted(() => {})
 </script>
 
 <template>
-  <header>
-    <div class="wrapper">
-      <HelloWorld msg="You did it!!!" />
-    </div>
-  </header>
-
-  <div class="wrapper">
-    <TestTable />
-  </div>
+  <Spinner />
+  <div>{{ JSON.stringify(props) }}</div>
 </template>
 
-<style scoped>
-header {
-  line-height: 1.5;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-}
-</style>
+<style scoped></style>

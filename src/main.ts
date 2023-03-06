@@ -1,12 +1,14 @@
-import { createApp } from "vue"
 import RESTScaffold from "./RESTScaffold.vue"
+import { type InputConfig, Config } from "./config"
+import { createApp } from "vue"
 
 function initialize() {
   document.querySelectorAll("[data-rest-scaffold]").forEach((el: any) => {
     if (el.__vue_app__) {
       return
     }
-    const app = createApp(RESTScaffold)
+    const config = new Config(JSON.parse(el.dataset.restScaffold) as InputConfig)
+    const app = createApp(RESTScaffold, config.toObject())
     app.mount(el)
   })
 }

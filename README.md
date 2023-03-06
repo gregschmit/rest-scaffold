@@ -2,8 +2,8 @@
 
 ![npm](https://img.shields.io/npm/v/rest-scaffold)
 
-REST Scaffold is a TypeScript/JavaScript library for building scaffolds (tables + actions) that
-represent objects which are exposed by a RESTful API.
+REST Scaffold is a frontend application for building table-based user interfaces (called scaffolds)
+that interact with RESTful JSON APIs.
 
 ## How It Works
 
@@ -27,20 +27,23 @@ You can also select an `apiType` that support autoconfiguration with an `OPTIONS
 ```json
 {
   "url": "https://example.com/api/things",
-  "apiType": "rrf",
+  "apiType": "rrf"
 }
 ```
 
 The `div` would look like this:
 
 ```html
-<div data-rest-scaffold='{
+<div
+  data-rest-scaffold='{
   "url": "https://example.com/api/things",
   "apiType": "rrf",
-}'></div>
+}'
+></div>
 ```
 
 The library will assume the following endpoints exist:
+
 - `GET`->`things` A listing of the objects
 - `POST`->`things` A creation of a single object
 - `GET`->`things/pk` A retrieval of a single object
@@ -60,8 +63,8 @@ https://cdn.jsdelivr.net/npm/rest-scaffold/dist/rest-scaffold.css
 `url` (`string`, default: `"/"`): The url that we should use to access the REST API.
 
 `apiType` (`string`, default: `"plain"`): Defines the type of API we are interacting with. `"plain"
-provides very little functionality and doesn't attempt an `OPTIONS` preflight request. `"rrf"` is
-for using Rails REST Framework, and assumes an `OPTIONS` verb is available to get API metadata.
+provides very little functionality and doesn't attempt an `OPTIONS`preflight request.`"rrf"`is
+for using Rails REST Framework, and assumes an`OPTIONS` verb is available to get API metadata.
 
 While not implemented yet, `"drf"` is also planned for using Django REST Framework, and would also
 depend on the `OPTIONS` verb being available to get API metadata.
@@ -99,8 +102,18 @@ in a paged format.
 
 To build:
 
-    $ npm run-script build
+```sh
+npm run-script build
+```
 
-For watch/compile for any changes:
+To run prettier code formatter:
 
-    $ npm run-script watch
+```sh
+npm run-script format
+```
+
+To run dev server:
+
+```sh
+npm run-script dev
+```
