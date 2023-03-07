@@ -1,4 +1,4 @@
-import type { Config } from "./config"
+import { type Args, Config } from "./config"
 
 const BUILTIN_COLLECTION_ACTIONS = {
   create: { method: "POST" },
@@ -20,30 +20,69 @@ export type APICallOptions = {
 export type Response = {
   success: boolean
   payload: any
-  error: any
+  error: string | null
+}
+
+export type Pagination = {
+  count: number
+  page: number
+  pageSize: number
+  totalPages: number
+}
+
+export type Listing = {
+  results: object[]
+  pagination?: Pagination
 }
 
 export class API {
+  args: Args
   config: Config
 
-  // Setup during initialization.
-  initializationError?: string
-  fields?: any
-  disabled_actions?: any
-  extra_actions?: any
-
   // Build an API object.
-  constructor(config: Config) {
-    this.config = config
+  constructor(args: Args) {
+    this.args = args
+    this.config = new Config(args)
   }
 
   // Initialize should set up any configuration that is determined by the API itself.
-  async initialize() {
-    let records = await this.get_records()
+  async initialize(): Promise<string | undefined> {
+    let listing = await this.list()
+
+    if (typeof listing === "string") {
+      return listing
+    }
   }
 
-  async get_records(): Promise<Response> {
-    return this.call({ method: "GET", path: "" })
+  async list(): Promise<Listing | string> {
+    let response = await this.call({ method: "GET", path: "" })
+
+    if (!response.success) {
+      return "Error fetching records."
+    }
+    let data = response.payload
+
+    if (Array.isArray(data)) {
+      return { results: data } as Listing
+    } else {
+      if (
+        !["results", "count", "page", "pageSize", "totalPages"].every((item) =>
+          data.hasOwnProperty(item),
+        )
+      ) {
+        return "Invalid paginated response from API."
+      }
+
+      return {
+        results: data.results,
+        pagination: {
+          count: parseInt(data.count),
+          page: parseInt(data.page),
+          pageSize: parseInt(data.page_size),
+          totalPages: parseInt(data.total_pages),
+        },
+      }
+    }
   }
 
   async call(opts: APICallOptions): Promise<Response> {

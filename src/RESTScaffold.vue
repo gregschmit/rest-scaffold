@@ -1,16 +1,39 @@
-<script setup lang="ts">
+<script lang="ts">
+import { API } from "./api"
 import Spinner from "./components/Spinner.vue"
-import { reactive, ref, onMounted } from "vue"
+import type { Args } from "./config"
+import { is } from "@babel/types"
 
-const props = defineProps(["target", "apiType", "debug"])
-const isLoaded = ref(false)
+export default {
+  props: {
+    args: { type: Object as () => Args, required: true },
+  },
+  components: {
+    Spinner,
+  },
 
-onMounted(() => {})
+  data() {
+    return {
+      isLoaded: false,
+      api: null,
+    } as {
+      isLoaded: boolean
+      api: API | null
+    }
+  },
+  async mounted() {
+    this.api = new API(this.args)
+    await this.api.initialize()
+  },
+}
 </script>
 
 <template>
-  <Spinner />
-  <div>{{ JSON.stringify(props) }}</div>
+  <div>
+    <div>{{ JSON.stringify($props) }}</div>
+    <div v-if="isLoaded"></div>
+    <Spinner v-else />
+  </div>
 </template>
 
 <style scoped></style>

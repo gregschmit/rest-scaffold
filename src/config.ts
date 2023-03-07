@@ -1,28 +1,33 @@
-export type InputConfig = {
+// Raw arguments provided in `data-rest-scaffold` as a JSON string.
+export type Args = {
   target: string
-  apiType: "rrf" | "plain"
-  debug?: boolean
+  apiType?: "rrf" | "drf"
+  pkField?: string
   title?: string
-  subtitle?: string
+  debug?: boolean
+  updateSeconds?: number | null
 
-  fields?: any
-
-  action_permission_field?: string
+  fields?: object
+  listFields?: string[]
+  showFields?: string[]
+  actionPermissionField?: string
 }
 
+// Represents scaffold configuration, which is derived from `Args`, but with tighter contraints,
+// default values, and properties hydrated from the API.
 export class Config {
   target: string
-  apiType: "rrf" | "plain"
-  debug: boolean
+  apiType?: "rrf" | "drf"
+  pkField: string
   title: string
-  subtitle: string
-  // debug: boolean
-  // pkField: string
+  debug: boolean
+  updateSeconds: number | null
   // recordTitle?: string
 
   fields: object
-
-  action_permission_field: string
+  listFields: string[]
+  showFields: string[]
+  actionPermissionField: string
 
   // disabled_builtin_actions: string[]
   // extra_collection_actions: object
@@ -32,25 +37,24 @@ export class Config {
   // csrfToken?: string
   // csrfTokenHeader?: string
 
-  constructor(input_config: InputConfig) {
-    // Ensure the target has no trailing slashes.
-    this.target = input_config.target.replace(/\/+$/, "")
-    switch (input_config.apiType) {
-      case "rrf": {
-        this.apiType = "rrf"
-        break
-      }
-      default:
-        this.apiType = "plain"
-    }
-    this.debug = input_config.debug || false
-    this.title = input_config.title || ""
-    this.subtitle = input_config.subtitle || ""
-    this.fields = input_config.fields || {}
-    this.action_permission_field = input_config.action_permission_field || "can_$action?"
-  }
+  constructor(args: Args) {
+    let fields: any = Array.isArray(args.fields)
+      ? args.fields.reduce((acc, x) => {
+          acc[x] = {}
+          return acc
+        }, {})
+      : args.fields || {}
 
-  toObject() {
-    return Object.assign({}, this) as any
+    this.target = args.target.replace(/\/+$/, "")
+    this.apiType = args.apiType
+    this.pkField = args.pkField || "id"
+    this.title = args.title || ""
+    this.debug = args.debug || false
+    this.updateSeconds = args.updateSeconds === undefined ? 5 : args.updateSeconds
+
+    this.fields = fields
+    this.listFields = args.listFields || []
+    this.showFields = args.showFields || []
+    this.actionPermissionField = args.actionPermissionField || "can_$action?"
   }
 }

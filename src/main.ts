@@ -1,5 +1,5 @@
 import RESTScaffold from "./RESTScaffold.vue"
-import { type InputConfig, Config } from "./config"
+import type { Args } from "./config"
 import { createApp } from "vue"
 
 function initialize() {
@@ -7,8 +7,8 @@ function initialize() {
     if (el.__vue_app__) {
       return
     }
-    const config = new Config(JSON.parse(el.dataset.restScaffold) as InputConfig)
-    const app = createApp(RESTScaffold, config.toObject())
+    const args = JSON.parse(el.dataset.restScaffold) as Args
+    const app = createApp(RESTScaffold, { args: args })
     app.mount(el)
   })
 }
