@@ -1,10 +1,7 @@
 import { USERS } from "./data"
-import express from "express"
-
-const app = express()
 
 // Setup local data, and a function to reset it.
-let users = JSON.parse(JSON.stringify(USERS)) as typeof USERS
+let users = JSON.parse(JSON.stringify(USERS))
 function reset() {
   users = JSON.parse(JSON.stringify(USERS))
 }
@@ -33,15 +30,19 @@ app.post("/api/plain/users", express.json(), (req, res) => {
 
   // Validates presence of login.
   if (!user.login) {
-    res.status(400).json({ message: "Login is required.", errors: [{ login: "is required." }] })
+    res.status(400).json({
+      message: "Login is required.",
+      errors: [{ login: "is required." }],
+    })
     return
   }
 
   // Validates uniqueness of login.
   if (users.find((u) => u.login === user.login)) {
-    res
-      .status(400)
-      .json({ message: "Login is already taken.", errors: [{ login: "is already taken." }] })
+    res.status(400).json({
+      message: "Login is already taken.",
+      errors: [{ login: "is already taken." }],
+    })
     return
   }
 
