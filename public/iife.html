@@ -4,9 +4,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>REST Scaffold Test App</title>
-    <script type="module">
-      import RESTScaffold from "./dist/rest-scaffold.js"
-      RESTScaffold.setup()
+    <script src="dist/rest-scaffold.iife.js"></script>
+    <script>
+      RESTScaffold.setup({defer: true})
     </script>
   </head>
   <body>
