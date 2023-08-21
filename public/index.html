@@ -8,10 +8,61 @@
       import RESTScaffold from "./dist/rest-scaffold.js"
       RESTScaffold.setup()
     </script>
+    <style>
+      .wrapper { display: flex }
+      .left, .right {
+        width: 50%;
+        min-height: 50px;
+        min-width: 50px;
+      }
+      .left {
+        overflow-x: auto;
+        resize: horizontal;
+        border: 2px dashed #f0f;
+      }
+      .right {
+        flex: 1;
+        border: 2px dashed #00f;
+      }
+    </style>
   </head>
   <body>
     <h1>REST Scaffold Test App</h1>
-    <div data-rest-scaffold='{"target": "/api/plain/users"}'></div>
-    <div data-rest-scaffold='{"target": "/api/plain/users"}'></div>
+    <ul>
+      <li>Home</li>
+      <li><a href="/iife.html">IIFE</a></li>
+    </ul>
+    <hr>
+
+    <div style="width: 100%; padding: 0 10em"></div>
+      <div data-rest-scaffold='{"debug": true, "target": "/api/plain/users", "fieldConfig": {"id": {}, "login": {}, "first_name": {}, "last_name": {}, "note": {}}}'></div>
+
+      <div class="wrapper">
+        <div class="left">
+          <div id="usersScaffold">
+            <script type="module">
+              import RESTScaffold from "./dist/rest-scaffold.js"
+              RESTScaffold.setup({
+                el: document.getElementById("usersScaffold"),
+                args: {
+                  debug: true,
+                  target: "/api/plain/users",
+                  fieldConfig: {
+                    id: {},
+                    login: {},
+                    first_name: {},
+                    last_name: {},
+                    note: {},
+                  },
+                },
+              })
+            </script>
+          </div>
+        </div>
+        <div class="right"></div>
+      </div>
+
+      <div data-rest-scaffold='{"debug": true, "target": "/api/plain/userz", "fields": ["id", "login"]}'></div>
+    </div>
   </body>
 </html>

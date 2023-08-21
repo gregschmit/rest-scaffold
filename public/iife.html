@@ -11,7 +11,11 @@
   </head>
   <body>
     <h1>REST Scaffold Test App</h1>
-    <div data-rest-scaffold='{"target": "/api/plain/users"}'></div>
-    <div data-rest-scaffold='{"target": "/api/plain/users"}'></div>
+    <ul>
+      <li><a href="/">Home</a></li>
+      <li>IIFE</li>
+    </ul>
+    <hr>
+    <div data-rest-scaffold='{"debug": true, "target": "/api/plain/users", "fields": ["id", "login"]}'></div>
   </body>
 </html>

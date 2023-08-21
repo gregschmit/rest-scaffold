@@ -1,4 +1,6 @@
-import { USERS } from "./data"
+import express from "express"
+
+import { USERS } from "./data.js"
 
 // Setup local data, and a function to reset it.
 let users = JSON.parse(JSON.stringify(USERS))
@@ -6,16 +8,24 @@ function reset() {
   users = JSON.parse(JSON.stringify(USERS))
 }
 
-app.post("/api/reset", (_req, res) => {
+// Setup the router.
+let router = express.Router()
+
+router.get("/", (_req, res) => {
+  res.send("Development API.")
+})
+
+router.post("/reset", (_req, res) => {
   reset()
   res.json({ message: "Data reset." })
 })
 
-app.get("/api/plain/users", (_req, res) => {
+router.get("/plain/users", async (_req, res) => {
+  await new Promise((r) => setTimeout(r, 700))
   res.json(users)
 })
 
-app.get("/api/plain/users/:id", (req, res) => {
+router.get("/plain/users/:id", (req, res) => {
   const id = parseInt(req.params.id)
   const user = users.find((user) => user.id === id)
   if (user) {
@@ -25,7 +35,7 @@ app.get("/api/plain/users/:id", (req, res) => {
   }
 })
 
-app.post("/api/plain/users", express.json(), (req, res) => {
+router.post("/plain/users", express.json(), (req, res) => {
   const user = req.body
 
   // Validates presence of login.
@@ -51,7 +61,7 @@ app.post("/api/plain/users", express.json(), (req, res) => {
   res.status(201).json({ message: "Created." })
 })
 
-app.put("/api/plain/users/:id", express.json(), (req, res) => {
+router.put("/plain/users/:id", express.json(), (req, res) => {
   const id = parseInt(req.params.id)
   const user = users.find((user) => user.id === id)
   if (user) {
@@ -62,7 +72,7 @@ app.put("/api/plain/users/:id", express.json(), (req, res) => {
   }
 })
 
-app.delete("/api/plain/users/:id", (req, res) => {
+router.delete("/plain/users/:id", (req, res) => {
   const id = parseInt(req.params.id)
   const index = users.findIndex((user) => user.id === id)
   if (index >= 0) {
@@ -73,4 +83,4 @@ app.delete("/api/plain/users/:id", (req, res) => {
   }
 })
 
-export const handler = app
+export default router
