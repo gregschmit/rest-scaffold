@@ -1,4 +1,6 @@
 <script>
+  import { onMount } from "svelte"
+
   const VALID_TYPES = ["info", "warning", "error"]
   const DEFAULT_COLORS = {
     info: { bg: "#cff4fc", fg: "#055160" },
@@ -8,9 +10,8 @@
 
   export let type = "info"
   export let message
-  export let dismiss = () => {
-    console.log("dismiss")
-  }
+  export let dismiss
+  export let dismissAfter
   export let colors
 
   colors = { ...DEFAULT_COLORS, ...colors }
@@ -18,6 +19,12 @@
   if (!VALID_TYPES.includes(type)) {
     type = "info"
   }
+
+  onMount(() => {
+    if (dismiss && dismissAfter) {
+      setTimeout(dismiss, dismissAfter)
+    }
+  })
 </script>
 
 <div
@@ -27,10 +34,10 @@
     --error-bg: {colors.error.bg}; --error-fg: {colors.error.fg};"
 >
   <div>
-    <span>{message}</span>
     {#if dismiss}
-      <div><button on:click={dismiss}>&#x2715</button></div>
+      <button on:click={dismiss} />
     {/if}
+    <span>{message}</span>
   </div>
 
   {#if $$slots["default"]}
@@ -40,50 +47,43 @@
 
 <style>
   .rs-alert {
-    width: 100%;
     margin: 0;
     padding: 0.2em;
+    width: 100%;
 
     box-sizing: border-box;
     border: 0.1em solid;
     border-left: 0.5em solid;
   }
   .rs-alert div:first-child {
-    /* This makes `margin-left` work on the close button `div`. */
-    display: flex;
+    position: relative;
 
-    width: 100%;
     margin: 0;
     padding: 0;
+    width: 100%;
   }
   .rs-alert div:first-child span {
-    display: flex;
-    align-items: center;
-
-    margin: 0;
-    padding: 0;
-
     font-weight: bold;
   }
-  .rs-alert div:first-child div {
-    margin: 0;
-    margin-left: auto;
-    padding: 0;
-  }
-  .rs-alert div:first-child div button {
+  .rs-alert div:first-child button {
+    float: right;
+
     margin: 0;
     padding: 0;
     width: 1.2em;
     height: 1.2em;
 
-    font-size: 1.3em;
+    color: black;
+    opacity: 0.5;
 
-    background: none;
+    background: transparent
+      url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='-2 -2 20 20' fill='%23000'><path d='M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z'/></svg>")
+      center/1.2em auto no-repeat;
     box-shadow: none;
-    border-radius: 0;
-    border: 0;
-    background-color: #9b0b15;
-    color: white;
+    border: none;
+  }
+  .rs-alert div:first-child button:hover {
+    opacity: 0.9;
   }
 
   .rs-alert-info {
