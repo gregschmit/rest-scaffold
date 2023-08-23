@@ -48,19 +48,17 @@ export default class API {
 
     // Handle paginated payload.
     if (
-      !["results", "count", "page", "pageSize", "totalPages"].every((item) =>
-        payload.hasOwnProperty(item),
-      )
+      !Object.values(this.config.paginationParams).every((item) => payload.hasOwnProperty(item))
     ) {
-      return `Bad API response`
+      return "Invalid paginated response"
     }
     return (this.config.data = {
-      results: payload.results,
+      results: payload[this.config.paginationParams.results],
       pagination: {
-        count: parseInt(payload.count),
-        page: parseInt(payload.page),
-        pageSize: parseInt(payload.page_size),
-        totalPages: parseInt(payload.total_pages),
+        count: parseInt(payload[this.config.paginationParams.count]),
+        page: parseInt(payload[this.config.paginationParams.page]),
+        pageSize: parseInt(payload[this.config.paginationParams.pageSize]),
+        totalPages: parseInt(payload[this.config.paginationParams.totalPages]),
       },
     })
   }

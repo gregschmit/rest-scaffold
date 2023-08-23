@@ -1,6 +1,4 @@
 <script>
-  import PlainDiv from "../PlainDiv.svelte"
-
   export let config
 </script>
 

@@ -35,8 +35,6 @@
     <hr>
 
     <div style="width: 100%; padding: 0 10em"></div>
-      <div data-rest-scaffold='{"debug": true, "target": "/api/plain/users", "fieldConfig": {"id": {}, "login": {}, "first_name": {}, "last_name": {}, "note": {}}}'></div>
-
       <div class="wrapper">
         <div class="left">
           <div id="usersScaffold">
@@ -46,7 +44,7 @@
                 el: document.getElementById("usersScaffold"),
                 args: {
                   debug: true,
-                  target: "/api/plain/users",
+                  target: "/api/paged/users",
                   fieldConfig: {
                     id: {},
                     login: {},
@@ -62,7 +60,9 @@
         <div class="right"></div>
       </div>
 
-      <div data-rest-scaffold='{"debug": true, "target": "/api/plain/userz", "fields": ["id", "login"]}'></div>
+      <hr>
+
+      <div data-rest-scaffold='{"debug": true, "target": "/api/plain/users", "fieldConfig": {"id": {}, "login": {}, "first_name": {}, "last_name": {}, "note": {}}}'></div>
     </div>
   </body>
 </html>

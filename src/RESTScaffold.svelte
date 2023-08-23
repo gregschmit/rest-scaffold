@@ -21,8 +21,6 @@
 </script>
 
 <div class="rest-scaffold-main">
-  <Alert type="info" message="This is an info test." />
-  <Alert type="warning" message="This is a warning test." />
   {#if state == "initializing"}
     <Spinner />
   {:else if state == "error"}

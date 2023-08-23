@@ -1,5 +1,13 @@
 import API from "./api"
 
+const DEFAULT_PAGINATION_PARAMS = {
+  count: "count",
+  page: "page",
+  pageSize: "page_size",
+  totalPages: "total_pages",
+  results: "results",
+}
+
 // Represents scaffold configuration, which is derived from the JSON string input of the
 // `data-rest-scaffold` attribute, but with tighter contraints, default values, and properties
 // hydrated from the API.
@@ -13,6 +21,8 @@ export default class Config {
   fields
   fieldConfig
   actionPermissionField
+
+  paginationParams
 
   debug
   updateSeconds
@@ -46,6 +56,8 @@ export default class Config {
     }
 
     this.actionPermissionField = args.actionPermissionField || "can_$action?"
+
+    this.paginationParams = { ...DEFAULT_PAGINATION_PARAMS, ...args.paginationParams }
 
     this.debug = args.debug || false
     this.updateSeconds = args.updateSeconds === undefined ? 5 : args.updateSeconds

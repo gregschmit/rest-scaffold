@@ -1,5 +1,6 @@
 <script>
   import Header from "./Scaffold/Header.svelte"
+  import Footer from "./Scaffold/Footer.svelte"
 
   export let config
 </script>
@@ -23,6 +24,7 @@
     {/each}
   </tbody>
 </table>
+<Footer {config} />
 
 <style>
   table {
