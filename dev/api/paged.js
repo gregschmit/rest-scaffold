@@ -21,7 +21,7 @@ router.post("/reset", (_req, res) => {
 })
 
 router.get("/users", async (req, res) => {
-  await new Promise((r) => setTimeout(r, 700))
+  await new Promise((r) => setTimeout(r, 500))
   let pageSize = parseInt(req.query.page_size) || 10
   let page = parseInt(req.query.page) || 1
   let data = users.slice((page - 1) * pageSize, page * pageSize)

@@ -3,6 +3,7 @@
   import Footer from "./Scaffold/Footer.svelte"
 
   export let config
+  export let data
 </script>
 
 <Header {config} />
@@ -15,7 +16,7 @@
     </tr>
   </thead>
   <tbody>
-    {#each config.data.results as record, i}
+    {#each data.results as record, i}
       <tr>
         {#each config.fields as f}
           <td>{record[f]}</td>
@@ -24,7 +25,7 @@
     {/each}
   </tbody>
 </table>
-<Footer {config} />
+<Footer {config} {data} />
 
 <style>
   table {

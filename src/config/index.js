@@ -8,11 +8,37 @@ const DEFAULT_PAGINATION_PARAMS = {
   results: "results",
 }
 
+const DEFAULT_THEME = {
+  light: {
+    bg: "white",
+    fg: "black",
+    link: "#0d6efd",
+    linkHover: "#0a58ca",
+    alert: {
+      info: { bg: "#cff4fc", fg: "#055160" },
+      warning: { bg: "#fff3cd", fg: "#664d03" },
+      error: { bg: "#f8d7da", fg: "#58151c" },
+    },
+  },
+  dark: {
+    bg: "black",
+    fg: "white",
+    link: "#6ea8fe",
+    linkHover: "#8bb9fe",
+    alert: {
+      info: { bg: "#032830", fg: "#6edff6" },
+      warning: { bg: "#332701", fg: "#ffda6a" },
+      error: { bg: "#2c0b0e", fg: "#ea868f" },
+    },
+  },
+}
+
 // Represents scaffold configuration, which is derived from the JSON string input of the
 // `data-rest-scaffold` attribute, but with tighter contraints, default values, and properties
 // hydrated from the API.
 export default class Config {
   target
+  query
   apiType
   pkField
   title
@@ -22,10 +48,19 @@ export default class Config {
   fieldConfig
   actionPermissionField
 
-  paginationParams
+  pagination
+
+  reload
+  refreshSeconds
+  refresh
+  refreshLock
+
+  mode
+  transparent
+  inputTheme
+  theme
 
   debug
-  updateSeconds
 
   // disabled_builtin_actions: string[]
   // extra_collection_actions: object
@@ -36,11 +71,11 @@ export default class Config {
   // csrfTokenHeader?: string
 
   api
-  initializationError
 
   constructor(args) {
-    // Trim trailing slash off target URL.
-    this.target = args.target.replace(/\/+$/, "")
+    // Trim query and trailing slash off target URL.
+    this.target = args.target.replace(/\?.*/, "").replace(/\/+$/, "")
+    this.query = args.query || {}
 
     this.apiType = args.apiType
     this.pkField = args.pkField || "id"
@@ -57,20 +92,79 @@ export default class Config {
 
     this.actionPermissionField = args.actionPermissionField || "can_$action?"
 
-    this.paginationParams = { ...DEFAULT_PAGINATION_PARAMS, ...args.paginationParams }
+    this.pagination = {
+      params: { ...DEFAULT_PAGINATION_PARAMS, ...args.pagination?.params },
+      page: args.pagination?.page,
+    }
+
+    this.reload = null
+    this.refresh = null
+    this.autoRefreshSeconds = args.refreshSeconds === undefined ? 5 : args.refreshSeconds
+    this.autoRefreshLock = new Set()
+
+    this.mode = args.mode || "light"
+    this.transparent = args.transparent || false
+    this.inputTheme = args.theme
+    this.setTheme()
 
     this.debug = args.debug || false
-    this.updateSeconds = args.updateSeconds === undefined ? 5 : args.updateSeconds
 
     this.api = new API(this)
   }
 
   initialize() {
     if (!this.fields) {
-      this.initializationError = "No fields configured"
-      return false
+      return "No `fields` configured"
     }
 
-    return this.api.initialize()
+    if (!this.refresh) {
+      return "No `refresh` function configured"
+    }
+
+    if (!this.reload) {
+      return "No `reload` function configured"
+    }
+
+    let data = this.api.initialize()
+
+    if (typeof data === "object") {
+      this._autoRefresh()
+    }
+
+    return data
+  }
+
+  setTheme() {
+    this.theme = {
+      ...DEFAULT_THEME[this.mode],
+      ...this.inputTheme?.[this.mode],
+      alert: {
+        info: {
+          ...DEFAULT_THEME[this.mode].alert.info,
+          ...this.inputTheme?.[this.mode]?.alert?.info,
+        },
+        warning: {
+          ...DEFAULT_THEME[this.mode].alert.warning,
+          ...this.inputTheme?.[this.mode]?.alert?.warning,
+        },
+        error: {
+          ...DEFAULT_THEME[this.mode].alert.error,
+          ...this.inputTheme?.[this.mode]?.alert?.error,
+        },
+      },
+    }
+
+    if (this.transparent) {
+      this.theme.bg = "transparent"
+    }
+  }
+
+  _autoRefresh() {
+    if (this.autoRefreshSeconds && this.refresh) {
+      setTimeout(async () => {
+        await this.refresh()
+        _autoRefresh()
+      }, this.autoRefreshSeconds * 1000)
+    }
   }
 }

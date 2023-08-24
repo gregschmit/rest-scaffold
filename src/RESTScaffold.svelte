@@ -8,25 +8,33 @@
 
   export let args
 
-  let state = "initializing"
   let config = new Config(args)
+  let initializationError
+  let data
+
+  config.reload = () => {
+    config = config
+  }
+  config.refresh = async () => {
+    data = await config.api.list()
+  }
 
   onMount(async () => {
-    if (await config.initialize()) {
-      state = "ready"
-    } else {
-      state = "error"
+    data = await config.initialize()
+
+    if (typeof data === "string") {
+      initializationError = data
     }
   })
 </script>
 
 <div class="rest-scaffold-main">
-  {#if state == "initializing"}
-    <Spinner />
-  {:else if state == "error"}
-    <Alert type="error" message={config.initializationError} />
+  {#if initializationError}
+    <Alert type="error" message={initializationError} />
+  {:else if data}
+    <Scaffold {config} {data} />
   {:else}
-    <Scaffold {config} />
+    <Spinner />
   {/if}
 </div>
 

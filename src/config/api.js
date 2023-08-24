@@ -6,6 +6,7 @@ const BUILTIN_MEMBER_ACTIONS = {
   update: { method: "PATCH" },
   delete: { method: "DELETE" },
 }
+const WINDOW = 1
 
 export default class API {
   config
@@ -16,66 +17,96 @@ export default class API {
 
   // Initialize should set up any configuration that is determined by the API itself.
   async initialize() {
-    let result = await this.list()
+    let data = await this.list()
 
-    if (typeof result === "string") {
-      console.log(`GNS: API initialization failed: ${result}`)
-      this.config.initializationError = result
-      return false
+    if (typeof data !== "string") {
+      // TODO: Hydrate the configuration using the fetched records, if any were returned. This
+      // requires the API to return at least one result, but could be a nice starting experience.
+      // TODO: Hydrate the configuration using the `OPTIONS` API.
     }
 
-    // TODO: Hydrate the configuration using the fetched records, if any were returned. This
-    // requires the API to return at least one result, but could be a nice starting experience.
-
-    // TODO: Hydrate the configuration using the `OPTIONS` API.
-
-    return true
+    return data
   }
 
   // Attempt a `GET` on the API root, and normalize any pagination parameters.
   async list() {
-    let result = await this.call({ method: "GET" })
+    let result = await this.call({
+      method: "GET",
+      query: {
+        ...(this.config.pagination.page ? { page: this.config.pagination.page } : null),
+        ...this.config.query,
+      },
+    })
 
     if (!result.response?.ok) {
-      return `Error: ${result.error || result.payload || "Not found"}`
+      return `Error: ${result.error || "Not found"}`
     }
     let payload = result.payload
 
     // Handle flat payload.
     if (Array.isArray(payload)) {
-      return (this.config.data = { results: payload })
+      return { results: payload }
     }
 
     // Handle paginated payload.
     if (
-      !Object.values(this.config.paginationParams).every((item) => payload.hasOwnProperty(item))
+      !Object.values(this.config.pagination.params).every((item) => payload.hasOwnProperty(item))
     ) {
       return "Invalid paginated response"
     }
-    return (this.config.data = {
-      results: payload[this.config.paginationParams.results],
+    const pagination = {
+      count: parseInt(payload[this.config.pagination.params.count]),
+      page: parseInt(payload[this.config.pagination.params.page]),
+      pageSize: parseInt(payload[this.config.pagination.params.pageSize]),
+      totalPages: parseInt(payload[this.config.pagination.params.totalPages]),
+    }
+
+    return {
+      results: payload[this.config.pagination.params.results],
       pagination: {
-        count: parseInt(payload[this.config.paginationParams.count]),
-        page: parseInt(payload[this.config.paginationParams.page]),
-        pageSize: parseInt(payload[this.config.paginationParams.pageSize]),
-        totalPages: parseInt(payload[this.config.paginationParams.totalPages]),
+        ...pagination,
+        display: this.getPaginationDisplay(pagination.page, pagination.totalPages),
       },
-    })
+    }
+  }
+
+  getPaginationDisplay(page, totalPages) {
+    let beforeWindow = [...Array(WINDOW).keys()].map((i) => page - WINDOW + i).filter((i) => i > 0)
+    let afterWindow = [...Array(WINDOW).keys()]
+      .map((i) => page + 1 + i)
+      .filter((i) => i <= totalPages)
+    let startWindow = [...Array(WINDOW).keys()].map((i) => i + 1).filter((i) => i < beforeWindow[0])
+    let endWindow = [...Array(WINDOW).keys()]
+      .map((i) => totalPages - WINDOW + i + 1)
+      .filter((i) => i > afterWindow[afterWindow.length - 1])
+
+    // Merge startWindow into beforeWindow if it's contiguous.
+    if (startWindow[startWindow.length - 1] === beforeWindow[0] - 1) {
+      beforeWindow = [...startWindow, ...beforeWindow]
+      startWindow = []
+    }
+
+    // Merge endWindow into afterWindow if it's contiguous.
+    if (endWindow[0] === afterWindow[afterWindow.length - 1] + 1) {
+      afterWindow = [...afterWindow, ...endWindow]
+      endWindow = []
+    }
+
+    return { startWindow, beforeWindow, afterWindow, endWindow }
   }
 
   async call(opts) {
-    let headers = { "Content-Type": "application/json", ...opts.headers }
-    let target = [this.config.target, opts.path?.replace(/^\/|\/$/, "")].filter(Boolean).join("/")
+    let url = [this.config.target, opts.path?.replace(/^\/|\/$/, "")].filter(Boolean).join("/")
 
-    // Append query if present.
+    // Append query params if present.
     if (opts.query) {
-      target += `?${new URLSearchParams(opts.query)}`
+      url += `?${new URLSearchParams(opts.query)}`
     }
 
     try {
-      let response = await fetch(target, {
+      let response = await fetch(url, {
         method: opts.method,
-        headers: headers,
+        headers: { "Content-Type": "application/json", ...opts.headers },
         body: opts.body ? JSON.stringify(opts.body) : null,
       })
       let payload = await response.json()
