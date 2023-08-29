@@ -34,7 +34,7 @@
   }
 
   .rs-loader .rs-circular .rs-path {
-    stroke: blue;
+    stroke: var(--rs-primary);
     animation: dash 1.5s ease-in-out infinite;
     stroke-linecap: round;
     stroke-width: 4;

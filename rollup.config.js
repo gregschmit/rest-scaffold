@@ -42,6 +42,9 @@ export default {
     svelte({
       // include: 'src/components/**/*.svelte',
       emitCss: false,
+      compilerOptions: {
+        cssHash: ({ hash, css }) => `rest-scaffold-${hash(css)}`,
+      },
     }),
     resolve({
       browser: true,

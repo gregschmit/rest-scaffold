@@ -1,19 +1,30 @@
 <script>
+  import Spinner from "../Spinner.svelte"
+
   export let config
+  export let refreshing
 </script>
 
 <div class="rest-scaffold-header">
   <span class="rest-scaffold-header-title">{config.title}</span>
-  <div>Refresh New</div>
+  <span>
+    {#if refreshing}
+      <span style="width: 2em"><Spinner /></span>
+    {/if}
+  </span>
 </div>
 
 <style>
   .rest-scaffold-header {
     display: flex;
+    justify-content: space-between;
 
     margin: 0;
-    padding: 0;
+    padding: 0.2em;
     width: 100%;
+    box-sizing: border-box;
+
+    font-weight: bold;
   }
 
   .rest-scaffold-header-title {

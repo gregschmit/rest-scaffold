@@ -7,6 +7,19 @@
     <script type="module">
       import RESTScaffold from "./dist/rest-scaffold.js"
       RESTScaffold.setup()
+
+      window._testconf = {
+        debug: true,
+        target: "/api/paged/users",
+        pagination: { pageSize: [5, 2, 10, 20, 50] },
+        fieldConfig: {
+          id: {},
+          login: {},
+          first_name: {},
+          last_name: {},
+          note: {},
+        },
+      }
     </script>
     <style>
       .wrapper { display: flex }
@@ -35,6 +48,7 @@
     <hr>
 
     <div style="width: 100%; padding: 0 10em"></div>
+
       <div class="wrapper">
         <div class="left">
           <div id="usersScaffold">
@@ -42,18 +56,7 @@
               import RESTScaffold from "./dist/rest-scaffold.js"
               RESTScaffold.setup({
                 el: document.getElementById("usersScaffold"),
-                args: {
-                  debug: true,
-                  target: "/api/paged/users?page_size=2",
-                  query: {page_size: 2},
-                  fieldConfig: {
-                    id: {},
-                    login: {},
-                    first_name: {},
-                    last_name: {},
-                    note: {},
-                  },
-                },
+                args: window._testconf,
               })
             </script>
           </div>
@@ -63,9 +66,21 @@
 
       <hr>
 
-      <!--
-        <div data-rest-scaffold='{"debug": true, "target": "/api/plain/users", "fieldConfig": {"id": {}, "login": {}, "first_name": {}, "last_name": {}, "note": {}}}'></div>
-      -->
+      <div class="wrapper" style="background-color: #111">
+        <div class="left">
+          <div id="darkUsersScaffold">
+            <script type="module">
+              import RESTScaffold from "./dist/rest-scaffold.js"
+              RESTScaffold.setup({
+                el: document.getElementById("darkUsersScaffold"),
+                args: {...window._testconf, mode: "dark"},
+              })
+            </script>
+          </div>
+        </div>
+        <div class="right"></div>
+      </div>
+
     </div>
   </body>
 </html>

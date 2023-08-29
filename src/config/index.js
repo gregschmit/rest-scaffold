@@ -8,29 +8,42 @@ const DEFAULT_PAGINATION_PARAMS = {
   results: "results",
 }
 
-const DEFAULT_THEME = {
-  light: {
-    bg: "white",
-    fg: "black",
-    link: "#0d6efd",
-    linkHover: "#0a58ca",
-    alert: {
-      info: { bg: "#cff4fc", fg: "#055160" },
-      warning: { bg: "#fff3cd", fg: "#664d03" },
-      error: { bg: "#f8d7da", fg: "#58151c" },
-    },
-  },
-  dark: {
-    bg: "black",
-    fg: "white",
-    link: "#6ea8fe",
-    linkHover: "#8bb9fe",
-    alert: {
-      info: { bg: "#032830", fg: "#6edff6" },
-      warning: { bg: "#332701", fg: "#ffda6a" },
-      error: { bg: "#2c0b0e", fg: "#ea868f" },
-    },
-  },
+const DEFAULT_LIGHT_THEME = {
+  bg: "white",
+  fg: "black",
+
+  primary: "#0d6efd",
+  primaryHover: "#0a58ca",
+
+  tableHeaderBg: "#eee",
+  tableBorderH: "#aeaeae",
+  tableBorderV: "#d9d9d9",
+
+  alertInfoBg: "#cff4fc",
+  alertInfoFg: "#055160",
+  alertWarningBg: "#fff3cd",
+  alertWarningFg: "#664d03",
+  alertErrorBg: "#f8d7da",
+  alertErrorFg: "#58151c",
+}
+
+const DEFAULT_DARK_THEME = {
+  bg: "#181818",
+  fg: "#f7f7f7",
+
+  primary: "#6ea8fe",
+  primaryHover: "#8bb9fe",
+
+  tableHeaderBg: "#333",
+  tableBorderH: "#666",
+  tableBorderV: "#333",
+
+  alertInfoBg: "#032830",
+  alertInfoFg: "#6edff6",
+  alertWarningBg: "#332701",
+  alertWarningFg: "#ffda6a",
+  alertErrorBg: "#2c0b0e",
+  alertErrorFg: "#ea868f",
 }
 
 // Represents scaffold configuration, which is derived from the JSON string input of the
@@ -51,16 +64,16 @@ export default class Config {
   pagination
 
   reload
-  refreshSeconds
   refresh
-  refreshLock
+  autoRefresh
+  autoRefreshSeconds
+  autoRefreshLock
 
   mode
   transparent
-  inputTheme
+  lightTheme
+  darkTheme
   theme
-
-  debug
 
   // disabled_builtin_actions: string[]
   // extra_collection_actions: object
@@ -94,20 +107,34 @@ export default class Config {
 
     this.pagination = {
       params: { ...DEFAULT_PAGINATION_PARAMS, ...args.pagination?.params },
-      page: args.pagination?.page,
+      pageSize: args.pagination?.pageSize ? [args.pagination?.pageSize].flat() : null,
+      window: args.pagination?.window || 1,
+
+      initialPage: args.pagination?.initialPage,
+      initialPageSize: null,
+    }
+
+    // Initial page size may only be set if the value provided is included in the list of available
+    // page sizes; otherwise, it defaults to the first page size option.
+    if (this.pagination.pageSize) {
+      let initialPageSize = args.pagination?.initialPageSize || null
+      if (this.pagination.pageSize.includes(initialPageSize)) {
+        this.pagination.initialPageSize = initialPageSize
+      } else {
+        this.pagination.initialPageSize = this.pagination.pageSize[0]
+      }
     }
 
     this.reload = null
     this.refresh = null
+    this.autoRefresh = null
     this.autoRefreshSeconds = args.refreshSeconds === undefined ? 5 : args.refreshSeconds
     this.autoRefreshLock = new Set()
 
-    this.mode = args.mode || "light"
     this.transparent = args.transparent || false
-    this.inputTheme = args.theme
-    this.setTheme()
-
-    this.debug = args.debug || false
+    this.lightTheme = args.lightTheme
+    this.darkTheme = args.darkTheme
+    this.setModeAndTheme(args.mode)
 
     this.api = new API(this)
   }
@@ -117,41 +144,25 @@ export default class Config {
       return "No `fields` configured"
     }
 
-    if (!this.refresh) {
-      return "No `refresh` function configured"
-    }
-
     if (!this.reload) {
       return "No `reload` function configured"
     }
 
-    let data = this.api.initialize()
-
-    if (typeof data === "object") {
-      this._autoRefresh()
+    if (!this.refresh) {
+      return "No `refresh` function configured"
     }
 
-    return data
+    if (!this.autoRefresh) {
+      return "No `autoRefresh` function configured"
+    }
+
+    return this.api.initialize()
   }
 
   setTheme() {
     this.theme = {
-      ...DEFAULT_THEME[this.mode],
-      ...this.inputTheme?.[this.mode],
-      alert: {
-        info: {
-          ...DEFAULT_THEME[this.mode].alert.info,
-          ...this.inputTheme?.[this.mode]?.alert?.info,
-        },
-        warning: {
-          ...DEFAULT_THEME[this.mode].alert.warning,
-          ...this.inputTheme?.[this.mode]?.alert?.warning,
-        },
-        error: {
-          ...DEFAULT_THEME[this.mode].alert.error,
-          ...this.inputTheme?.[this.mode]?.alert?.error,
-        },
-      },
+      ...(this.mode == "dark" ? DEFAULT_DARK_THEME : DEFAULT_LIGHT_THEME),
+      ...(this.mode == "dark" ? this.darkTheme : this.lightTheme),
     }
 
     if (this.transparent) {
@@ -159,12 +170,17 @@ export default class Config {
     }
   }
 
-  _autoRefresh() {
-    if (this.autoRefreshSeconds && this.refresh) {
-      setTimeout(async () => {
-        await this.refresh()
-        _autoRefresh()
-      }, this.autoRefreshSeconds * 1000)
+  setModeAndTheme(mode) {
+    if (mode == "light" || mode == "dark") {
+      this.mode = mode
+    } else {
+      this.mode = "light"
+    }
+
+    this.setTheme()
+
+    if (this.reload) {
+      this.reload()
     }
   }
 }

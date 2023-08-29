@@ -2,19 +2,11 @@
   import { onMount } from "svelte"
 
   const VALID_TYPES = ["info", "warning", "error"]
-  const DEFAULT_COLORS = {
-    info: { bg: "#cff4fc", fg: "#055160" },
-    warning: { bg: "#fff3cd", fg: "#664d03" },
-    error: { bg: "#f8d7da", fg: "#58151c" },
-  }
 
   export let type = "info"
   export let message
   export let dismiss
   export let dismissAfter
-  export let colors
-
-  colors = { ...DEFAULT_COLORS, ...colors }
 
   if (!VALID_TYPES.includes(type)) {
     type = "info"
@@ -27,12 +19,7 @@
   })
 </script>
 
-<div
-  class="rs-alert rs-alert-{type}"
-  style="--info-bg: {colors.info.bg}; --info-fg: {colors.info.fg};
-    --warning-bg: {colors.warning.bg}; --warning-fg: {colors.warning.fg};
-    --error-bg: {colors.error.bg}; --error-fg: {colors.error.fg};"
->
+<div class="rs-alert rs-alert-{type}">
   <div>
     {#if dismiss}
       <button on:click={dismiss} />
@@ -87,18 +74,18 @@
   }
 
   .rs-alert-info {
-    background-color: var(--info-bg);
-    border-color: var(--info-fg);
-    color: var(--info-fg);
+    background-color: var(--rs-alert-info-bg);
+    border-color: var(--rs-alert-info-fg);
+    color: var(--rs-alert-info-fg);
   }
   .rs-alert-warning {
-    background-color: var(--warning-bg);
-    border-color: var(--warning-fg);
-    color: var(--warning-fg);
+    background-color: var(--rs-alert-warning-bg);
+    border-color: var(--rs-alert-warning-fg);
+    color: var(--rs-alert-warning-fg);
   }
   .rs-alert-error {
-    background-color: var(--error-bg);
-    border-color: var(--error-fg);
-    color: var(--error-fg);
+    background-color: var(--rs-alert-error-bg);
+    border-color: var(--rs-alert-error-fg);
+    color: var(--rs-alert-error-fg);
   }
 </style>

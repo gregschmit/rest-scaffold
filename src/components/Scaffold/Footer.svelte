@@ -3,17 +3,19 @@
 
   export let config
   export let data
+
+  let pageSize = config.pagination.initialPageSize
 </script>
 
 <div class="rest-scaffold-footer">
   <span>
-    Found {data.results?.length}
+    {data.results?.length}
     {#if data.pagination}
       of {data.pagination.count}
     {/if}
   </span>
   <span>
-    {#if data.pagination}
+    {#if data.pagination && data.pagination.display}
       {#if data.pagination.display.startWindow?.length}
         {#each data.pagination.display.startWindow as i}
           <PageLink {config} {i} />
@@ -34,6 +36,17 @@
         {/each}
       {/if}
     {/if}
+
+    {#if config.pagination.pageSize?.length > 1}
+      <span class="rest-scaffold-pagination-select-wrapper">
+        <select bind:value={pageSize} on:change={() => config.refresh({ page: 1, pageSize })}>
+          {#each config.pagination.pageSize as i}
+            <option value={i}>{i}</option>
+          {/each}
+        </select>
+        <span>per Page</span>
+      </span>
+    {/if}
   </span>
 </div>
 
@@ -43,9 +56,14 @@
     justify-content: space-between;
 
     margin: 0;
-    padding: 0;
+    padding: 0.2em;
     width: 100%;
+    box-sizing: border-box;
 
     font-weight: bold;
+  }
+
+  .rest-scaffold-pagination-select-wrapper {
+    font-weight: normal;
   }
 </style>

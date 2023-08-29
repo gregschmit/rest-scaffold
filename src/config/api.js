@@ -6,7 +6,6 @@ const BUILTIN_MEMBER_ACTIONS = {
   update: { method: "PATCH" },
   delete: { method: "DELETE" },
 }
-const WINDOW = 1
 
 export default class API {
   config
@@ -17,7 +16,10 @@ export default class API {
 
   // Initialize should set up any configuration that is determined by the API itself.
   async initialize() {
-    let data = await this.list()
+    let data = await this.list({
+      page: this.config.pagination.initialPage,
+      pageSize: this.config.pagination.initialPageSize,
+    })
 
     if (typeof data !== "string") {
       // TODO: Hydrate the configuration using the fetched records, if any were returned. This
@@ -29,13 +31,20 @@ export default class API {
   }
 
   // Attempt a `GET` on the API root, and normalize any pagination parameters.
-  async list() {
+  async list(opts = {}) {
+    let builtinQuery = {}
+
+    if (opts.page) {
+      builtinQuery[this.config.pagination.params.page] = opts.page
+    }
+
+    if (opts.pageSize) {
+      builtinQuery[this.config.pagination.params.pageSize] = opts.pageSize
+    }
+
     let result = await this.call({
       method: "GET",
-      query: {
-        ...(this.config.pagination.page ? { page: this.config.pagination.page } : null),
-        ...this.config.query,
-      },
+      query: { ...builtinQuery, ...this.config.query },
     })
 
     if (!result.response?.ok) {
@@ -71,13 +80,19 @@ export default class API {
   }
 
   getPaginationDisplay(page, totalPages) {
-    let beforeWindow = [...Array(WINDOW).keys()].map((i) => page - WINDOW + i).filter((i) => i > 0)
-    let afterWindow = [...Array(WINDOW).keys()]
+    if (!page || !totalPages || totalPages <= 1) {
+      return null
+    }
+
+    const window = this.config.pagination.window
+
+    let beforeWindow = [...Array(window).keys()].map((i) => page - window + i).filter((i) => i > 0)
+    let afterWindow = [...Array(window).keys()]
       .map((i) => page + 1 + i)
       .filter((i) => i <= totalPages)
-    let startWindow = [...Array(WINDOW).keys()].map((i) => i + 1).filter((i) => i < beforeWindow[0])
-    let endWindow = [...Array(WINDOW).keys()]
-      .map((i) => totalPages - WINDOW + i + 1)
+    let startWindow = [...Array(window).keys()].map((i) => i + 1).filter((i) => i < beforeWindow[0])
+    let endWindow = [...Array(window).keys()]
+      .map((i) => totalPages - window + i + 1)
       .filter((i) => i > afterWindow[afterWindow.length - 1])
 
     // Merge startWindow into beforeWindow if it's contiguous.
@@ -96,6 +111,7 @@ export default class API {
   }
 
   async call(opts) {
+    console.log("GNS: API request sent")
     let url = [this.config.target, opts.path?.replace(/^\/|\/$/, "")].filter(Boolean).join("/")
 
     // Append query params if present.
@@ -113,9 +129,7 @@ export default class API {
       let result = { response, payload }
 
       if (!response.ok) {
-        result.error = `${this.config.debug ? `[${response.status} ${response.statusText}]` : ""} ${
-          payload.message
-        }]`.trim()
+        result.error = `[${response.status} ${response.statusText}] ${payload.message}]`.trim()
       }
 
       return result
@@ -124,7 +138,7 @@ export default class API {
         return { error: "Bad response (invalid JSON)" }
       }
 
-      return { error: `Request failed${this.config.debug ? ` (${error.message})` : ""}` }
+      return { error: `Request failed (${error.message})` }
     }
   }
 }
