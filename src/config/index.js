@@ -102,7 +102,7 @@ export default class Config {
       this.fields = Object.keys(args.fieldConfig)
     } else if (this.fields && this.fieldConfig) {
       // For each field, add it to the `fieldConfig` if it's not already there.
-      for (const field in this.fields) {
+      for (const field of this.fields) {
         if (!this.fieldConfig[field]) {
           this.fieldConfig[field] = {}
         }
