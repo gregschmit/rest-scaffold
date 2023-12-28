@@ -52,9 +52,19 @@ export default class API {
     }
     let payload = result.payload
 
+    // Handle null payload.
+    if (!payload) {
+      return "Invalid payload (null)"
+    }
+
     // Handle flat payload.
     if (Array.isArray(payload)) {
       return { results: payload }
+    }
+
+    // Handle payload that is not an object.
+    if (typeof payload !== "object") {
+      return "Invalid payload (not an array or object)"
     }
 
     // Handle paginated payload.
@@ -76,6 +86,7 @@ export default class API {
         ...pagination,
         display: this.getPaginationDisplay(pagination.page, pagination.totalPages),
       },
+      payload: payload,
     }
   }
 

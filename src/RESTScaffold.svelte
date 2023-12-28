@@ -9,10 +9,11 @@
   export let args
 
   let config = new Config(args)
-  let initializationError
   let data
 
-  let refreshing = false
+  let loadError
+
+  let processing = false
   let page = config.pagination.initialPage || null
   let pageSize = config.pagination.initialPageSize || null
 
@@ -22,7 +23,7 @@
 
   config.refresh = async (opts = {}) => {
     if (!opts.auto) {
-      refreshing = true
+      processing = true
     }
 
     if (opts.page) {
@@ -33,30 +34,39 @@
       pageSize = opts.pageSize
     }
 
-    data = await config.api.list({ page, pageSize })
-
-    if (true || !opts.auto) {
-      refreshing = false
+    let result
+    if (data) {
+      result = await config.api.list({ page, pageSize })
+    } else {
+      result = await config.api.initialize()
     }
+    if (typeof result === "string") {
+      loadError = result
+    } else {
+      loadError = null
+      data = result
+    }
+
+    processing = false
   }
 
   config.autoRefresh = () => {
     if (config.autoRefreshSeconds && config.refresh) {
       setTimeout(async () => {
-        if (!config.autoRefreshLock.size) {
-          await config.refresh({ auto: true })
-        }
+        await config.refresh({ auto: true })
         config.autoRefresh()
       }, config.autoRefreshSeconds * 1000)
     }
   }
 
   onMount(async () => {
-    data = await config.initialize()
+    let result = await config.initialize()
 
-    if (typeof data === "string") {
-      initializationError = data
+    if (typeof result === "string") {
+      loadError = result
+      config.autoRefresh()
     } else {
+      data = result
       config.autoRefresh()
     }
   })
@@ -80,11 +90,13 @@
     --rs-alert-error-fg: {config.theme.alertErrorFg};
   "
 >
-  {#if initializationError}
-    <Alert type="error" message={initializationError} />
-  {:else if data}
-    <Scaffold {config} {data} {refreshing} />
-  {:else}
+  {#if loadError}
+    <Alert type="error" message={loadError} />
+  {/if}
+
+  {#if data}
+    <Scaffold {config} {data} {processing} />
+  {:else if !loadError}
     <Spinner size="3em" />
   {/if}
 </div>

@@ -67,7 +67,6 @@ export default class Config {
   refresh
   autoRefresh
   autoRefreshSeconds
-  autoRefreshLock
 
   mode
   transparent
@@ -128,8 +127,7 @@ export default class Config {
     this.reload = null
     this.refresh = null
     this.autoRefresh = null
-    this.autoRefreshSeconds = args.refreshSeconds === undefined ? 5 : args.refreshSeconds
-    this.autoRefreshLock = new Set()
+    this.autoRefreshSeconds = args.autoRefreshSeconds
 
     this.transparent = args.transparent || false
     this.lightTheme = args.lightTheme

@@ -2,13 +2,13 @@
   import Spinner from "../Spinner.svelte"
 
   export let config
-  export let refreshing
+  export let processing
 </script>
 
 <div class="rest-scaffold-header">
   <span class="rest-scaffold-header-title">{config.title}</span>
   <span>
-    {#if refreshing}
+    {#if processing}
       <span style="width: 2em"><Spinner /></span>
     {/if}
   </span>

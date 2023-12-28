@@ -8,10 +8,11 @@
       import RESTScaffold from "./dist/rest-scaffold.js"
       RESTScaffold.setup()
 
-      window._testconf = {
+      window._kitchen_sink_conf = {
         debug: true,
         target: "/api/paged/users",
         pagination: { pageSize: [5, 2, 10, 20, 50] },
+        autoRefreshSeconds: 4,
         fieldConfig: {
           id: {},
           login: {},
@@ -49,6 +50,7 @@
 
     <div style="width: 100%; padding: 0 10em"></div>
 
+      <h2>Kitchen Sink Light Mode:</h2>
       <div class="wrapper">
         <div class="left">
           <div id="usersScaffold">
@@ -56,7 +58,7 @@
               import RESTScaffold from "./dist/rest-scaffold.js"
               RESTScaffold.setup({
                 el: document.getElementById("usersScaffold"),
-                args: window._testconf,
+                args: window._kitchen_sink_conf,
               })
             </script>
           </div>
@@ -66,6 +68,7 @@
 
       <hr>
 
+      <h2>Kitchen Sink Dark Mode:</h2>
       <div class="wrapper" style="background-color: #111">
         <div class="left">
           <div id="darkUsersScaffold">
@@ -73,7 +76,7 @@
               import RESTScaffold from "./dist/rest-scaffold.js"
               RESTScaffold.setup({
                 el: document.getElementById("darkUsersScaffold"),
-                args: {...window._testconf, mode: "dark"},
+                args: {...window._kitchen_sink_conf, mode: "dark"},
               })
             </script>
           </div>

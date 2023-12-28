@@ -12,7 +12,7 @@
     {data.results?.length}
     {#if data.pagination}
       of {data.pagination.count}
-    {/if}
+    {/if} Total
   </span>
   <span>
     {#if data.pagination && data.pagination.display}

@@ -4,10 +4,10 @@
 
   export let config
   export let data
-  export let refreshing
+  export let processing
 </script>
 
-<Header {config} {refreshing} />
+<Header {config} {processing} />
 <div class="rest-scaffold-table-wrapper">
   <table>
     <thead>
