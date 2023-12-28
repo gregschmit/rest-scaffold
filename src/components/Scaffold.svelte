@@ -13,7 +13,7 @@
     <thead>
       <tr>
         {#each config.fields as f}
-          <th>{f}</th>
+          <th>{config.fieldConfig[f].label}</th>
         {/each}
       </tr>
     </thead>

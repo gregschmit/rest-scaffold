@@ -100,6 +100,18 @@ export default class Config {
       this.fieldConfig = this.fields.reduce((h, v) => ({ ...h, [v]: {} }), {})
     } else if (this.fieldConfig && !this.fields) {
       this.fields = Object.keys(args.fieldConfig)
+    } else if (this.fields && this.fieldConfig) {
+      // For each field, add it to the `fieldConfig` if it's not already there.
+      for (const field in this.fields) {
+        if (!this.fieldConfig[field]) {
+          this.fieldConfig[field] = {}
+        }
+      }
+    }
+
+    // Set some reasonable defaults for `fieldConfig` by iterating over `fieldConfig`.
+    for (const field in this.fieldConfig) {
+      this.fieldConfig[field].label ||= field
     }
 
     this.actionPermissionField = args.actionPermissionField || "can_$action?"

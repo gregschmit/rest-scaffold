@@ -6,12 +6,13 @@
 </script>
 
 <div class="rest-scaffold-header">
-  <span class="rest-scaffold-header-title">{config.title}</span>
-  <span>
+  <span class="rest-scaffold-header-title">
+    {config.title}
     {#if processing}
-      <span style="width: 2em"><Spinner /></span>
+      <Spinner size=".8em" />
     {/if}
   </span>
+  <span></span>
 </div>
 
 <style>

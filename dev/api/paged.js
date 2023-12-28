@@ -1,12 +1,6 @@
 import express from "express"
 
-import { USERS } from "./data.js"
-
-// Setup local data, and a function to reset it.
-let users = JSON.parse(JSON.stringify(USERS))
-function reset() {
-  users = JSON.parse(JSON.stringify(USERS))
-}
+import { users, reset } from "./data.js"
 
 // Setup the router.
 let router = express.Router()

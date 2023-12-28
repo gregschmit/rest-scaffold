@@ -10,13 +10,13 @@
 
 <style>
   .rs-loader {
+    display: inline-block;
     position: relative;
-    margin: 0 auto;
   }
 
   .rs-loader:before {
     content: "";
-    display: block;
+    display: inline-block;
     padding-top: 100%;
   }
 

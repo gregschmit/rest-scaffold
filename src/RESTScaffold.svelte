@@ -97,7 +97,9 @@
   {#if data}
     <Scaffold {config} {data} {processing} />
   {:else if !loadError}
-    <Spinner size="3em" />
+    <div style="text-align: center">
+      <Spinner size="3em" />
+    </div>
   {/if}
 </div>
 
