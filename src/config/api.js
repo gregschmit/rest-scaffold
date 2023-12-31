@@ -14,13 +14,8 @@ export default class API {
     this.config = config
   }
 
-  // Initialize should set up any configuration that is determined by the API itself.
-  async initialize() {
-    let data = await this.list({
-      page: this.config.pagination.initialPage,
-      pageSize: this.config.pagination.initialPageSize,
-    })
-
+  // Hydrate the config from the data, potentially also using the `OPTIONS` API.
+  async initialize(data) {
     if (typeof data !== "string") {
       // TODO: Hydrate the configuration using the fetched records, if any were returned. This
       // requires the API to return at least one result, but could be a nice starting experience.
@@ -33,6 +28,10 @@ export default class API {
   // Attempt a `GET` on the API root, and normalize any pagination parameters.
   async list(opts = {}) {
     let builtinQuery = {}
+
+    if (opts.order) {
+      builtinQuery[this.config.orderParam] = opts.order
+    }
 
     if (opts.page) {
       builtinQuery[this.config.pagination.params.page] = opts.page
@@ -59,7 +58,11 @@ export default class API {
 
     // Handle flat payload.
     if (Array.isArray(payload)) {
-      return { results: payload }
+      let data = { results: payload }
+      if (opts.init) {
+        await this.initialize(data)
+      }
+      return data
     }
 
     // Handle payload that is not an object.
@@ -80,7 +83,7 @@ export default class API {
       totalPages: parseInt(payload[this.config.pagination.params.totalPages]),
     }
 
-    return {
+    let data = {
       results: payload[this.config.pagination.params.results],
       pagination: {
         ...pagination,
@@ -88,6 +91,10 @@ export default class API {
       },
       payload: payload,
     }
+    if (opts.init) {
+      await this.initialize(data)
+    }
+    return data
   }
 
   getPaginationDisplay(page, totalPages) {
@@ -122,7 +129,6 @@ export default class API {
   }
 
   async call(opts) {
-    console.log("GNS: API request sent")
     let url = [this.config.target, opts.path?.replace(/^\/|\/$/, "")].filter(Boolean).join("/")
 
     // Append query params if present.

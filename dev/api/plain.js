@@ -14,9 +14,32 @@ router.post("/reset", (_req, res) => {
   res.json({ message: "Data reset." })
 })
 
-router.get("/users", async (_req, res) => {
-  await new Promise((r) => setTimeout(r, 700))
-  res.json(users)
+router.get("/users", async (req, res) => {
+  await setTimeout(() => {}, 700)
+
+  // Clone the users array.
+  let data = [...users]
+
+  // If `order` query param is set, then sort the data by the specified field.
+  if (req.query.order) {
+    const order = req.query.order
+      .split(",")
+      .map((item) => (item.startsWith("-") ? [item.slice(1), -1] : [item, 1]))
+
+    for (const [field, direction] of order) {
+      data.sort((a, b) => {
+        if (a[field] < b[field]) {
+          return -1 * direction
+        } else if (a[field] > b[field]) {
+          return 1 * direction
+        } else {
+          return 0
+        }
+      })
+    }
+  }
+
+  res.json(data)
 })
 
 router.get("/users/:id", (req, res) => {

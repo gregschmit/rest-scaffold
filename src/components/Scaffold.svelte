@@ -5,6 +5,7 @@
   export let config
   export let data
   export let processing
+  export let order
 </script>
 
 <Header {config} {processing} />
@@ -13,7 +14,18 @@
     <thead>
       <tr>
         {#each config.fields as f}
-          <th>{config.fieldConfig[f].label}</th>
+          <th on:click={() => config.refresh({ order: f })}>
+            <span class="rest-scaffold-table-header">{config.fieldConfig[f].label}</span>
+            {#if f in order.parts}
+              {#if order.parts[f]}
+                <span class="rest-scaffold-arrow rest-scaffold-arrow-up">▲</span>
+              {:else}
+                <span class="rest-scaffold-arrow rest-scaffold-arrow-down">▼</span>
+              {/if}
+            {:else}
+              <span class="rest-scaffold-arrow rest-scaffold-arrow-placeholder">▲</span>
+            {/if}
+          </th>
         {/each}
       </tr>
     </thead>
@@ -46,11 +58,14 @@
     padding: 0.8em;
     min-width: 100%;
   }
-
   th {
     background-color: var(--rs-table-header-bg);
-  }
+    user-select: none;
 
+    & .rest-scaffold-table-header {
+      user-select: text;
+    }
+  }
   td,
   th {
     padding: 0.25em;
@@ -74,5 +89,16 @@
   /* Last column should be right-aligned. */
   table tr > td:last-child {
     text-align: right;
+  }
+
+  .rest-scaffold-arrow {
+    font-size: 0.7em;
+    transform: scale(1.5, 1);
+    opacity: 0.5;
+    padding-top: 0.2em;
+    float: right;
+  }
+  .rest-scaffold-arrow-placeholder {
+    opacity: 0;
   }
 </style>

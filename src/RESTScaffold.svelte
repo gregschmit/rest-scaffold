@@ -6,14 +6,59 @@
   import Scaffold from "./components/Scaffold"
   import Alert from "./components/Alert"
 
+  class Order {
+    string
+    parts
+
+    constructor(s) {
+      this.fromString(s)
+    }
+
+    fromString(s) {
+      this.string = s
+      this.parts = {}
+
+      for (let part of s.split(",")) {
+        if (!part) {
+          continue
+        }
+
+        let desc = part.startsWith("-")
+        if (desc) {
+          part = part.slice(1)
+        }
+        this.parts[part] = !desc
+      }
+    }
+
+    fromParts(p) {
+      this.parts = p
+      this.string = Object.keys(p)
+        .filter(Boolean)
+        .map((k) => `${p[k] ? "" : "-"}${k}`)
+        .join(",")
+    }
+
+    addOrder(field, asc) {
+      this.parts[field] = asc
+      this.fromParts(this.parts)
+    }
+
+    removeOrder(field) {
+      delete this.parts[field]
+      this.fromParts(this.parts)
+    }
+  }
+
   export let args
 
   let config = new Config(args)
-  let data
+  let data = null
 
   let loadError
 
   let processing = false
+  let order = new Order("")
   let page = config.pagination.initialPage || null
   let pageSize = config.pagination.initialPageSize || null
 
@@ -26,6 +71,20 @@
       processing = true
     }
 
+    if (opts.order) {
+      if (opts.order in order.parts) {
+        if (order.parts[opts.order]) {
+          order.addOrder(opts.order, false)
+        } else {
+          order.removeOrder(opts.order)
+        }
+      } else {
+        order.addOrder(opts.order, true)
+      }
+
+      order = order
+    }
+
     if (opts.page) {
       page = opts.page
     }
@@ -34,12 +93,9 @@
       pageSize = opts.pageSize
     }
 
-    let result
-    if (data) {
-      result = await config.api.list({ page, pageSize })
-    } else {
-      result = await config.api.initialize()
-    }
+    // If we're initializing, we need to pass that to the list method.
+    let listOpts = { init: data === null, order: order.string, page, pageSize }
+    let result = await config.api.list(listOpts)
     if (typeof result === "string") {
       loadError = result
     } else {
@@ -60,15 +116,8 @@
   }
 
   onMount(async () => {
-    let result = await config.initialize()
-
-    if (typeof result === "string") {
-      loadError = result
-      config.autoRefresh()
-    } else {
-      data = result
-      config.autoRefresh()
-    }
+    await config.refresh()
+    config.autoRefresh()
   })
 </script>
 
@@ -95,7 +144,7 @@
   {/if}
 
   {#if data}
-    <Scaffold {config} {data} {processing} />
+    <Scaffold {config} {data} {processing} {order} />
   {:else if !loadError}
     <div style="text-align: center">
       <Spinner size="3em" />

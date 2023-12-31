@@ -63,6 +63,8 @@ export default class Config {
 
   pagination
 
+  orderParam
+
   reload
   refresh
   autoRefresh
@@ -136,6 +138,8 @@ export default class Config {
       }
     }
 
+    this.orderParam = args.orderParam || "order"
+
     this.reload = null
     this.refresh = null
     this.autoRefresh = null
@@ -147,26 +151,6 @@ export default class Config {
     this.setModeAndTheme(args.mode)
 
     this.api = new API(this)
-  }
-
-  initialize() {
-    if (!this.fields) {
-      return "No `fields` configured"
-    }
-
-    if (!this.reload) {
-      return "No `reload` function configured"
-    }
-
-    if (!this.refresh) {
-      return "No `refresh` function configured"
-    }
-
-    if (!this.autoRefresh) {
-      return "No `autoRefresh` function configured"
-    }
-
-    return this.api.initialize()
   }
 
   setTheme() {

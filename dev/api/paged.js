@@ -15,10 +15,35 @@ router.post("/reset", (_req, res) => {
 })
 
 router.get("/users", async (req, res) => {
-  await new Promise((r) => setTimeout(r, 500))
-  let pageSize = parseInt(req.query.page_size) || 10
-  let page = parseInt(req.query.page) || 1
-  let data = users.slice((page - 1) * pageSize, page * pageSize)
+  await setTimeout(() => {}, 500)
+  const pageSize = parseInt(req.query.page_size) || 10
+  const page = parseInt(req.query.page) || 1
+
+  // Clone the users array.
+  let data = [...users]
+
+  // If `order` query param is set, then sort the data by the specified field.
+  if (req.query.order) {
+    const order = req.query.order
+      .split(",")
+      .map((item) => (item.startsWith("-") ? [item.slice(1), -1] : [item, 1]))
+
+    for (const [field, direction] of order) {
+      data.sort((a, b) => {
+        if (a[field] < b[field]) {
+          return -1 * direction
+        } else if (a[field] > b[field]) {
+          return 1 * direction
+        } else {
+          return 0
+        }
+      })
+    }
+  }
+
+  // Page the data.
+  data = data.slice((page - 1) * pageSize, page * pageSize)
+
   res.json({
     count: users.length,
     page: page,
