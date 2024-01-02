@@ -15,7 +15,13 @@ router.post("/reset", (_req, res) => {
 })
 
 router.get("/users", async (req, res) => {
-  await setTimeout(() => {}, 500)
+  await new Promise((r) => setTimeout(r, 500))
+
+  // if (Math.random() < 0.5) {
+  //   res.status(429).end()
+  //   return
+  // }
+
   const pageSize = parseInt(req.query.page_size) || 10
   const page = parseInt(req.query.page) || 1
 

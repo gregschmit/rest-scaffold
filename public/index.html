@@ -6,7 +6,7 @@
     <title>REST Scaffold Test App</title>
     <script>
       window._kitchen_sink_conf = {
-        debug: true,
+        // transparent: true,
         target: "/api/paged/users",
         pagination: { pageSize: [5, 2, 10, 20, 50] },
         autoRefreshSeconds: 4,
@@ -17,10 +17,13 @@
           last_name: { label: "Last Name" },
           note: { label: "Note" },
         },
+        actions: {
+          refresh: true,
+        }
       }
     </script>
     <style>
-      .wrapper { display: flex }
+      .wrapper { display: flex; }
       .left, .right {
         width: 50%;
         min-height: 50px;
@@ -48,7 +51,7 @@
     <div style="width: 100%; padding: 0 10em"></div>
 
       <h2>Kitchen Sink Light Mode:</h2>
-      <div class="wrapper">
+      <div class="wrapper" style="background-color: #a2c1f5">
         <div class="left">
           <div id="usersScaffold">
             <script type="module">
@@ -66,7 +69,7 @@
       <hr>
 
       <h2>Kitchen Sink Dark Mode:</h2>
-      <div class="wrapper" style="background-color: #111">
+      <div class="wrapper" style="background-color: #444">
         <div class="left">
           <div id="darkUsersScaffold">
             <script type="module">

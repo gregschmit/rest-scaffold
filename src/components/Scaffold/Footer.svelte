@@ -39,7 +39,11 @@
 
     {#if config.pagination.pageSize?.length > 1}
       <span class="rest-scaffold-pagination-select-wrapper">
-        <select bind:value={pageSize} on:change={() => config.refresh({ page: 1, pageSize })}>
+        <select
+          bind:value={pageSize}
+          on:change={() => config.refresh({ page: 1, pageSize })}
+          style="font-size: inherit"
+        >
           {#each config.pagination.pageSize as i}
             <option value={i}>{i}</option>
           {/each}

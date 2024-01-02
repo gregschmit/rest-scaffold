@@ -8,12 +8,20 @@ const DEFAULT_PAGINATION_PARAMS = {
   results: "results",
 }
 
+const DEFAULT_THEME = {
+  fontSize: "0.8em",
+}
+
 const DEFAULT_LIGHT_THEME = {
+  ...DEFAULT_THEME,
+
   bg: "white",
   fg: "black",
 
   primary: "#0d6efd",
-  primaryHover: "#0a58ca",
+
+  link: "#0d6efd",
+  linkHover: "#0a58ca",
 
   tableHeaderBg: "#eee",
   tableBorderH: "#aeaeae",
@@ -28,11 +36,15 @@ const DEFAULT_LIGHT_THEME = {
 }
 
 const DEFAULT_DARK_THEME = {
+  ...DEFAULT_THEME,
+
   bg: "#181818",
   fg: "#f7f7f7",
 
   primary: "#6ea8fe",
-  primaryHover: "#8bb9fe",
+
+  link: "#6ea8fe",
+  linkHover: "#8bb9fe",
 
   tableHeaderBg: "#333",
   tableBorderH: "#666",

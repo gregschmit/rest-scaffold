@@ -41,15 +41,14 @@ export default class API {
       builtinQuery[this.config.pagination.params.pageSize] = opts.pageSize
     }
 
-    let result = await this.call({
+    const { payload, error } = await this.call({
       method: "GET",
       query: { ...builtinQuery, ...this.config.query },
     })
 
-    if (!result.response?.ok) {
-      return `Error: ${result.error || "Not found"}`
+    if (error) {
+      return error
     }
-    let payload = result.payload
 
     // Handle null payload.
     if (!payload) {
@@ -97,6 +96,16 @@ export default class API {
     return data
   }
 
+  async delete(record) {
+    const { error } = await this.call({
+      method: "DELETE",
+      path: String(record[this.config.pkField]),
+      allowBlank: true,
+    })
+
+    return error
+  }
+
   getPaginationDisplay(page, totalPages) {
     if (!page || !totalPages || totalPages <= 1) {
       return null
@@ -136,27 +145,42 @@ export default class API {
       url += `?${new URLSearchParams(opts.query)}`
     }
 
+    let result = {}
     try {
-      let response = await fetch(url, {
+      const response = await fetch(url, {
         method: opts.method,
         headers: { "Content-Type": "application/json", ...opts.headers },
         body: opts.body ? JSON.stringify(opts.body) : null,
       })
-      let payload = await response.json()
-      let result = { response, payload }
 
       if (!response.ok) {
-        result.error = `[${response.status} ${response.statusText}] ${payload.message}]`.trim()
+        result.error = `[${response.status} ${response.statusText}]`
       }
 
-      return result
+      const text = await response.text()
+
+      try {
+        result.payload = JSON.parse(text)
+
+        if (result.error && result.payload.message) {
+          result.error += ` ${result.payload.message}`
+        }
+      } catch (error) {
+        const textTrimmed = text.trim().substring(0, 256).trim()
+
+        if (result.error) {
+          result.error += ` ${textTrimmed}`
+        } else {
+          if (!opts.allowBlank || textTrimmed !== "") {
+            return { error: "Bad response (invalid JSON)" }
+          }
+        }
+      }
     } catch (error) {
-      if (error instanceof SyntaxError) {
-        return { error: "Bad response (invalid JSON)" }
-      }
-
       return { error: `Request failed (${error.message})` }
     }
+
+    return result
   }
 }
 

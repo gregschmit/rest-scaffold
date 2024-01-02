@@ -71,6 +71,10 @@
       processing = true
     }
 
+    if (opts.delete) {
+      await config.api.delete(opts.delete)
+    }
+
     if (opts.order) {
       if (opts.order in order.parts) {
         if (order.parts[opts.order]) {
@@ -124,10 +128,12 @@
 <div
   class="rest-scaffold-main"
   style="
+    --rs-font-size: {config.fontSize};
     --rs-bg: {config.theme.bg};
     --rs-fg: {config.theme.fg};
     --rs-primary: {config.theme.primary};
-    --rs-primary-hover: {config.theme.primaryHover};
+    --rs-link: {config.theme.link};
+    --rs-link-hover: {config.theme.linkHover};
     --rs-table-header-bg: {config.theme.tableHeaderBg};
     --rs-table-border-h: {config.theme.tableBorderH};
     --rs-table-border-v: {config.theme.tableBorderV};
@@ -163,15 +169,32 @@
     color: var(--rs-fg);
 
     font-family: sans-serif;
-    font-size: 0.8em;
+    font-size: var(--rs-font-size);
   }
 
   .rest-scaffold-main :global(a) {
+    color: var(--rs-link);
     text-decoration: none;
-    color: var(--rs-primary);
   }
 
   .rest-scaffold-main :global(a:hover) {
-    color: var(--rs-primary-hover);
+    color: var(--rs-link-hover);
+    text-decoration: underline;
+  }
+
+  :global(button.rest-scaffold-link-button) {
+    color: var(--rs-link);
+    cursor: pointer;
+
+    background: none;
+    border: none;
+    font-family: sans-serif;
+    font-size: inherit;
+    font-weight: bold;
+    padding: 0 0.25em;
+  }
+
+  :global(button.rest-scaffold-link-button:hover) {
+    color: var(--rs-link-hover);
   }
 </style>

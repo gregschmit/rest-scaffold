@@ -15,7 +15,7 @@ router.post("/reset", (_req, res) => {
 })
 
 router.get("/users", async (req, res) => {
-  await setTimeout(() => {}, 700)
+  await new Promise((r) => setTimeout(r, 700))
 
   // Clone the users array.
   let data = [...users]

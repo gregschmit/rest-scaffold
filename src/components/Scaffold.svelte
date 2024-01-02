@@ -27,6 +27,7 @@
             {/if}
           </th>
         {/each}
+        <th></th>
       </tr>
     </thead>
     <tbody>
@@ -35,6 +36,24 @@
           {#each config.fields as f}
             <td>{record[f]}</td>
           {/each}
+          <td>
+            <button
+              on:click={() => {
+                if (confirm("Are you sure you want to delete this record?")) {
+                  config.refresh({ delete: record })
+                }
+              }}
+              class="rest-scaffold-link-button"
+            >
+              Delete
+            </button>
+            <!-- <button on:click={() => config.edit(record)} class="rest-scaffold-link-button">
+              Edit
+            </button>
+            <button on:click={() => config.view(record)} class="rest-scaffold-link-button">
+              Show
+            </button> -->
+          </td>
         </tr>
       {/each}
     </tbody>
