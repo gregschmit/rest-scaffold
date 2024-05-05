@@ -21,15 +21,17 @@ function mount(el, input_args) {
     return
   }
 
-  new RESTScaffold({ target: el, props: { args: args } })
+  const scaffold = new RESTScaffold({ target: el, props: { args: args } })
+  el.restScaffold = scaffold
+  return scaffold
 }
 
 function setupNow(opts = {}) {
   if (opts.el) {
     if (opts.args) {
-      mount(opts.el, opts.args)
+      return mount(opts.el, opts.args)
     } else if (opts.el.dataset?.restScaffold) {
-      mount(opts.el)
+      return mount(opts.el)
     } else {
       opts.el.querySelectorAll(MOUNTABLE_EL).forEach((el) => {
         mount(el)
@@ -50,7 +52,7 @@ function setup(opts = {}) {
       setupNow(opts)
     })
   } else {
-    setupNow(opts)
+    return setupNow(opts)
   }
 }
 

@@ -58,7 +58,7 @@
   let loadError
 
   let processing = false
-  let order = new Order("")
+  let order = new Order(config.initialOrder || "")
   let page = config.pagination.initialPage || null
   let pageSize = config.pagination.initialPageSize || null
 
@@ -123,12 +123,16 @@
     await config.refresh()
     config.autoRefresh()
   })
+
+  export function getConfig() {
+    return config
+  }
 </script>
 
 <div
   class="rest-scaffold-main"
   style="
-    --rs-font-size: {config.fontSize};
+    --rs-font-size: {config.theme.fontSize};
     --rs-bg: {config.theme.bg};
     --rs-fg: {config.theme.fg};
     --rs-primary: {config.theme.primary};
@@ -137,6 +141,7 @@
     --rs-table-header-bg: {config.theme.tableHeaderBg};
     --rs-table-border-h: {config.theme.tableBorderH};
     --rs-table-border-v: {config.theme.tableBorderV};
+    --rs-table-striped-bg: {config.theme.tableStripedBg};
     --rs-alert-info-bg: {config.theme.alertInfoBg};
     --rs-alert-info-fg: {config.theme.alertInfoFg};
     --rs-alert-warning-bg: {config.theme.alertWarningBg};

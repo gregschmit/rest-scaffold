@@ -26,6 +26,7 @@ const DEFAULT_LIGHT_THEME = {
   tableHeaderBg: "#eee",
   tableBorderH: "#aeaeae",
   tableBorderV: "#d9d9d9",
+  tableStripedBg: "#f7f7f7",
 
   alertInfoBg: "#cff4fc",
   alertInfoFg: "#055160",
@@ -49,6 +50,7 @@ const DEFAULT_DARK_THEME = {
   tableHeaderBg: "#333",
   tableBorderH: "#666",
   tableBorderV: "#333",
+  tableStripedBg: "#222",
 
   alertInfoBg: "#032830",
   alertInfoFg: "#6edff6",
@@ -60,7 +62,7 @@ const DEFAULT_DARK_THEME = {
 
 // Represents scaffold configuration, which is derived from the JSON string input of the
 // `data-rest-scaffold` attribute, but with tighter contraints, default values, and properties
-// hydrated from the API.
+// hydrated from the `OPTIONS` API.
 export default class Config {
   target
   query
@@ -69,6 +71,8 @@ export default class Config {
   title
   recordTitle
 
+  inlineEdit
+
   fields
   fieldConfig
   actionPermissionField
@@ -76,6 +80,7 @@ export default class Config {
   pagination
 
   orderParam
+  initialOrder
 
   reload
   refresh
@@ -108,6 +113,8 @@ export default class Config {
     this.title = args.title || "Records"
     this.recordTitle = args.recordTitle || "Record"
 
+    this.inlineEdit = args.inlineEdit || false
+
     this.fields = args.fields
     this.fieldConfig = args.fieldConfig
     if (this.fields && !this.fieldConfig) {
@@ -123,9 +130,13 @@ export default class Config {
       }
     }
 
-    // Set some reasonable defaults for `fieldConfig` by iterating over `fieldConfig`.
+    // Set some reasonable defaults for `fieldConfig`.
     for (const field in this.fieldConfig) {
       this.fieldConfig[field].label ||= field
+
+      if (this.fieldConfig[field].inlineEdit === undefined) {
+        this.fieldConfig[field].inlineEdit = this.inlineEdit
+      }
     }
 
     this.actionPermissionField = args.actionPermissionField || "can_$action?"
@@ -151,6 +162,7 @@ export default class Config {
     }
 
     this.orderParam = args.orderParam || "order"
+    this.initialOrder = args.initialOrder
 
     this.reload = null
     this.refresh = null

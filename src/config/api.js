@@ -14,11 +14,9 @@ export default class API {
     this.config = config
   }
 
-  // Hydrate the config from the data, potentially also using the `OPTIONS` API.
+  // Hydrate the config from the `OPTIONS` API.
   async initialize(data) {
     if (typeof data !== "string") {
-      // TODO: Hydrate the configuration using the fetched records, if any were returned. This
-      // requires the API to return at least one result, but could be a nice starting experience.
       // TODO: Hydrate the configuration using the `OPTIONS` API.
     }
 

@@ -90,6 +90,9 @@
     padding: 0.25em;
     text-align: left;
   }
+  tbody tr:nth-child(even) {
+    background-color: var(--rs-table-striped-bg);
+  }
   tbody tr + tr {
     border-top: 0.1em solid var(--rs-table-border-h);
   }
