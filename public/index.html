@@ -50,40 +50,39 @@
 
     <div style="width: 100%; padding: 0 10em"></div>
 
-      <h2>Kitchen Sink Light Mode:</h2>
-      <div class="wrapper" style="background-color: #a2c1f5">
-        <div class="left">
-          <div id="usersScaffold">
-            <script type="module">
-              import RESTScaffold from "./dist/rest-scaffold.js"
-              RESTScaffold.setup({
-                el: document.getElementById("usersScaffold"),
-                args: window._kitchen_sink_conf,
-              })
-            </script>
-          </div>
+    <h2>Kitchen Sink Light Mode:</h2>
+    <div class="wrapper" style="background-color: #a2c1f5">
+      <div class="left">
+        <div id="usersScaffold">
+          <script type="module">
+            import RESTScaffold from "./dist/rest-scaffold.js"
+            RESTScaffold.setup({
+              el: document.getElementById("usersScaffold"),
+              args: window._kitchen_sink_conf,
+            })
+          </script>
         </div>
-        <div class="right"></div>
       </div>
-
-      <hr>
-
-      <h2>Kitchen Sink Dark Mode:</h2>
-      <div class="wrapper" style="background-color: #444">
-        <div class="left">
-          <div id="darkUsersScaffold">
-            <script type="module">
-              import RESTScaffold from "./dist/rest-scaffold.js"
-              RESTScaffold.setup({
-                el: document.getElementById("darkUsersScaffold"),
-                args: {...window._kitchen_sink_conf, mode: "dark"},
-              })
-            </script>
-          </div>
-        </div>
-        <div class="right"></div>
-      </div>
-
+      <div class="right"></div>
     </div>
+
+    <hr>
+
+    <h2>Kitchen Sink Dark Mode:</h2>
+    <div class="wrapper" style="background-color: #444; color-scheme: dark;">
+      <div class="left">
+        <div id="darkUsersScaffold">
+          <script type="module">
+            import RESTScaffold from "./dist/rest-scaffold.js"
+            RESTScaffold.setup({
+              el: document.getElementById("darkUsersScaffold"),
+              args: {...window._kitchen_sink_conf},
+            })
+          </script>
+        </div>
+      </div>
+      <div class="right"></div>
+    </div>
+
   </body>
 </html>

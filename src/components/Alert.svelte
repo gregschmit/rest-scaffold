@@ -74,18 +74,18 @@
   }
 
   .rs-alert-info {
-    background-color: var(--rs-alert-info-bg);
-    border-color: var(--rs-alert-info-fg);
-    color: var(--rs-alert-info-fg);
+    background-color: light-dark(var(--rs-light-alert-info-bg), var(--rs-dark-alert-info-bg));
+    border-color: light-dark(var(--rs-light-alert-info-fg), var(--rs-dark-alert-info-fg));
+    color: light-dark(var(--rs-light-alert-info-fg), var(--rs-dark-alert-info-fg));
   }
   .rs-alert-warning {
-    background-color: var(--rs-alert-warning-bg);
-    border-color: var(--rs-alert-warning-fg);
-    color: var(--rs-alert-warning-fg);
+    background-color: light-dark(var(--rs-light-alert-warning-bg), var(--rs-dark-alert-warning-bg));
+    border-color: light-dark(var(--rs-light-alert-warning-fg), var(--rs-dark-alert-warning-fg));
+    color: light-dark(var(--rs-light-alert-warning-fg), var(--rs-dark-alert-warning-fg));
   }
   .rs-alert-error {
-    background-color: var(--rs-alert-error-bg);
-    border-color: var(--rs-alert-error-fg);
-    color: var(--rs-alert-error-fg);
+    background-color: light-dark(var(--rs-light-alert-error-bg), var(--rs-dark-alert-error-bg));
+    border-color: light-dark(var(--rs-light-alert-error-fg), var(--rs-dark-alert-error-fg));
+    color: light-dark(var(--rs-light-alert-error-fg), var(--rs-dark-alert-error-fg));
   }
 </style>

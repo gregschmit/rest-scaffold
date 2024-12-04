@@ -130,24 +130,39 @@
 </script>
 
 <div
-  class="rest-scaffold-main"
+  class="rest-scaffold"
   style="
     --rs-font-size: {config.theme.fontSize};
-    --rs-bg: {config.theme.bg};
-    --rs-fg: {config.theme.fg};
-    --rs-primary: {config.theme.primary};
-    --rs-link: {config.theme.link};
-    --rs-link-hover: {config.theme.linkHover};
-    --rs-table-header-bg: {config.theme.tableHeaderBg};
-    --rs-table-border-h: {config.theme.tableBorderH};
-    --rs-table-border-v: {config.theme.tableBorderV};
-    --rs-table-striped-bg: {config.theme.tableStripedBg};
-    --rs-alert-info-bg: {config.theme.alertInfoBg};
-    --rs-alert-info-fg: {config.theme.alertInfoFg};
-    --rs-alert-warning-bg: {config.theme.alertWarningBg};
-    --rs-alert-warning-fg: {config.theme.alertWarningFg};
-    --rs-alert-error-bg: {config.theme.alertErrorBg};
-    --rs-alert-error-fg: {config.theme.alertErrorFg};
+    --rs-light-bg: {config.theme.light.bg};
+    --rs-light-fg: {config.theme.light.fg};
+    --rs-light-primary: {config.theme.light.primary};
+    --rs-light-link: {config.theme.light.link};
+    --rs-light-link-hover: {config.theme.light.linkHover};
+    --rs-light-table-header-bg: {config.theme.light.tableHeaderBg};
+    --rs-light-table-border-h: {config.theme.light.tableBorderH};
+    --rs-light-table-border-v: {config.theme.light.tableBorderV};
+    --rs-light-table-striped-bg: {config.theme.light.tableStripedBg};
+    --rs-light-alert-info-bg: {config.theme.light.alertInfoBg};
+    --rs-light-alert-info-fg: {config.theme.light.alertInfoFg};
+    --rs-light-alert-warning-bg: {config.theme.light.alertWarningBg};
+    --rs-light-alert-warning-fg: {config.theme.light.alertWarningFg};
+    --rs-light-alert-error-bg: {config.theme.light.alertErrorBg};
+    --rs-light-alert-error-fg: {config.theme.light.alertErrorFg};
+    --rs-dark-bg: {config.theme.dark.bg};
+    --rs-dark-fg: {config.theme.dark.fg};
+    --rs-dark-primary: {config.theme.dark.primary};
+    --rs-dark-link: {config.theme.dark.link};
+    --rs-dark-link-hover: {config.theme.dark.linkHover};
+    --rs-dark-table-header-bg: {config.theme.dark.tableHeaderBg};
+    --rs-dark-table-border-h: {config.theme.dark.tableBorderH};
+    --rs-dark-table-border-v: {config.theme.dark.tableBorderV};
+    --rs-dark-table-striped-bg: {config.theme.dark.tableStripedBg};
+    --rs-dark-alert-info-bg: {config.theme.dark.alertInfoBg};
+    --rs-dark-alert-info-fg: {config.theme.dark.alertInfoFg};
+    --rs-dark-alert-warning-bg: {config.theme.dark.alertWarningBg};
+    --rs-dark-alert-warning-fg: {config.theme.dark.alertWarningFg};
+    --rs-dark-alert-error-bg: {config.theme.dark.alertErrorBg};
+    --rs-dark-alert-error-fg: {config.theme.dark.alertErrorFg};
   "
 >
   {#if loadError}
@@ -164,31 +179,31 @@
 </div>
 
 <style>
-  .rest-scaffold-main {
+  .rest-scaffold {
     margin: 0;
     padding: 0.5em 0.3em;
     width: 100%;
     box-sizing: border-box;
 
-    background-color: var(--rs-bg);
-    color: var(--rs-fg);
+    background-color: light-dark(var(--rs-light-bg), var(--rs-dark-bg));
+    color: light-dark(var(--rs-light-fg), var(--rs-dark-fg));
 
     font-family: sans-serif;
     font-size: var(--rs-font-size);
   }
 
-  .rest-scaffold-main :global(a) {
-    color: var(--rs-link);
+  .rest-scaffold :global(a) {
+    color: light-dark(var(--rs-light-link), var(--rs-dark-link));
     text-decoration: none;
   }
 
-  .rest-scaffold-main :global(a:hover) {
-    color: var(--rs-link-hover);
+  .rest-scaffold :global(a:hover) {
+    color: light-dark(var(--rs-light-link-hover), var(--rs-dark-link-hover));
     text-decoration: underline;
   }
 
-  :global(button.rest-scaffold-link-button) {
-    color: var(--rs-link);
+  .rest-scaffold :global(button.rest-scaffold-link-button) {
+    color: light-dark(var(--rs-light-link), var(--rs-dark-link));
     cursor: pointer;
 
     background: none;
@@ -199,7 +214,7 @@
     padding: 0 0.25em;
   }
 
-  :global(button.rest-scaffold-link-button:hover) {
-    color: var(--rs-link-hover);
+  .rest-scaffold :global(button.rest-scaffold-link-button:hover) {
+    color: light-dark(var(--rs-light-link-hover), var(--rs-dark-link-hover));
   }
 </style>

@@ -87,9 +87,6 @@ key.
 
 ### Other Options
 
-`actionsLabel` (`string`, default: `"."`): The label for the actions column in
-the scaffold.
-
 `csrfTokenHeader` (`string`, default: `"X-CSRFToken"`): The HTTP header for
 passing the CSRF Token.
 

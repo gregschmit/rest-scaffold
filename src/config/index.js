@@ -13,8 +13,6 @@ const DEFAULT_THEME = {
 }
 
 const DEFAULT_LIGHT_THEME = {
-  ...DEFAULT_THEME,
-
   bg: "white",
   fg: "black",
 
@@ -37,8 +35,6 @@ const DEFAULT_LIGHT_THEME = {
 }
 
 const DEFAULT_DARK_THEME = {
-  ...DEFAULT_THEME,
-
   bg: "#181818",
   fg: "#f7f7f7",
 
@@ -87,11 +83,8 @@ export default class Config {
   autoRefresh
   autoRefreshSeconds
 
-  mode
-  transparent
-  lightTheme
-  darkTheme
   theme
+  transparent
 
   // disabled_builtin_actions: string[]
   // extra_collection_actions: object
@@ -169,36 +162,25 @@ export default class Config {
     this.autoRefresh = null
     this.autoRefreshSeconds = args.autoRefreshSeconds
 
-    this.transparent = args.transparent || false
-    this.lightTheme = args.lightTheme
-    this.darkTheme = args.darkTheme
-    this.setModeAndTheme(args.mode)
-
-    this.api = new API(this)
-  }
-
-  setTheme() {
     this.theme = {
-      ...(this.mode == "dark" ? DEFAULT_DARK_THEME : DEFAULT_LIGHT_THEME),
-      ...(this.mode == "dark" ? this.darkTheme : this.lightTheme),
+      ...DEFAULT_THEME,
+      ...args.theme,
+      light: {
+        ...DEFAULT_LIGHT_THEME,
+        ...args.theme?.light,
+      },
+      dark: {
+        ...DEFAULT_DARK_THEME,
+        ...args.theme?.dark,
+      },
     }
+    this.transparent = args.transparent || false
 
     if (this.transparent) {
-      this.theme.bg = "transparent"
-    }
-  }
-
-  setModeAndTheme(mode) {
-    if (mode == "light" || mode == "dark") {
-      this.mode = mode
-    } else {
-      this.mode = "light"
+      this.theme.light.bg = "transparent"
+      this.theme.dark.bg = "transparent"
     }
 
-    this.setTheme()
-
-    if (this.reload) {
-      this.reload()
-    }
+    this.api = new API(this)
   }
 }

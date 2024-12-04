@@ -31,9 +31,10 @@
     "morgan": "^1.10.0",
     "nocache": "^4.0.0",
     "nodemon": "^3.0.1",
-    "prettier": "^3.0.1",
+    "prettier": "^3.2.5",
+    "prettier-plugin-svelte": "^3.2.3",
     "rollup": "^3.28.0",
     "rollup-plugin-svelte": "^7.1.6",
-    "svelte": "^4.2.0"
+    "svelte": "^4.2.16"
   }
 }

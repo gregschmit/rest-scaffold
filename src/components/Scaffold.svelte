@@ -78,7 +78,7 @@
     min-width: 100%;
   }
   th {
-    background-color: var(--rs-table-header-bg);
+    background-color: light-dark(var(--rs-light-table-header-bg), var(--rs-dark-table-header-bg));
     user-select: none;
 
     & .rest-scaffold-table-header {
@@ -91,13 +91,15 @@
     text-align: left;
   }
   tbody tr:nth-child(even) {
-    background-color: var(--rs-table-striped-bg);
+    background-color: light-dark(var(--rs-light-table-striped-bg), var(--rs-dark-table-striped-bg));
   }
   tbody tr + tr {
-    border-top: 0.1em solid var(--rs-table-border-h);
+    border-top: 0.1em solid
+      light-dark(var(--rs-light-table-border-h), var(--rs-dark-table-border-h));
   }
   td + td {
-    border-left: 0.1em solid var(--rs-table-border-v);
+    border-left: 0.1em solid
+      light-dark(var(--rs-light-table-border-v), var(--rs-dark-table-border-v));
   }
 
   /* Ensure first and last columns are not wrapped. */

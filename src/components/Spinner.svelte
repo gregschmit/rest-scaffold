@@ -34,7 +34,7 @@
   }
 
   .rs-loader .rs-circular .rs-path {
-    stroke: var(--rs-primary);
+    stroke: light-dark(var(--rs-light-primary), var(--rs-dark-primary));
     animation: dash 1.5s ease-in-out infinite;
     stroke-linecap: round;
     stroke-width: 4;
