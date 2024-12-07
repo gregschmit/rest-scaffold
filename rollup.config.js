@@ -46,7 +46,7 @@ export default {
         css: "injected",
         cssHash: ({ hash, css }) => `rest-scaffold-${hash(css)}`,
         // modernAst: true,
-        // runes: true,
+        runes: true,
       },
     }),
     resolve({

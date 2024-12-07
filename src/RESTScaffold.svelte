@@ -7,8 +7,8 @@
   import Alert from "./components/Alert"
 
   class Order {
-    string
-    parts
+    string = $state(null)
+    parts = $state(null)
 
     constructor(s) {
       this.fromString(s)
@@ -52,19 +52,15 @@
 
   let { args } = $props()
 
-  let config = $state(new Config(args))
+  let config = new Config(args)
   let data = $state(null)
 
-  let loadError
+  let loadError = $state(null)
 
-  let processing = false
-  let order = new Order(config.initialOrder || "")
-  let page = config.pagination.initialPage || null
-  let pageSize = config.pagination.initialPageSize || null
-
-  config.reload = () => {
-    config = config
-  }
+  let processing = $state(false)
+  let order = $state(new Order(config.initialOrder || ""))
+  let page = $state(config.pagination.initialPage || null)
+  let pageSize = $state(config.pagination.initialPageSize || null)
 
   config.refresh = async (opts = {}) => {
     if (!opts.auto) {

@@ -1,8 +1,7 @@
 <script>
   import Spinner from "../Spinner"
 
-  export let config
-  export let processing
+  let { config, processing } = $props()
 </script>
 
 <div class="rest-scaffold-header">

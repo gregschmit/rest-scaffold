@@ -3,10 +3,7 @@
   import Footer from "./Scaffold/Footer"
   import Row from "./Scaffold/Row"
 
-  export let config
-  export let data
-  export let processing
-  export let order
+  let { config, data, processing, order } = $props()
 </script>
 
 <Header {config} {processing} />
@@ -15,7 +12,7 @@
     <thead>
       <tr>
         {#each config.fields as f}
-          <th on:click={() => config.refresh({ order: f })}>
+          <th onclick={() => config.refresh({ order: f })}>
             <span class="rest-scaffold-table-header">{config.fieldConfig[f].label}</span>
             {#if f in order.parts}
               {#if order.parts[f]}

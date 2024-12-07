@@ -1,11 +1,9 @@
 <script>
   import Show from "./Row/Show"
 
-  export let config
-  export let record
-  export let i
+  let { config, record, i } = $props()
 
-  let viewState = null
+  let viewState = $state(null)
 </script>
 
 <tr class="rest-scaffold-record" class:rest-scaffold-even={i % 2}>
@@ -18,7 +16,7 @@
     </button> -->
     {#if config.canDelete}
       <button
-        on:click={() => {
+        onclick={() => {
           if (confirm("Are you sure you want to delete this record?")) {
             config.refresh({ delete: record })
           }
@@ -29,9 +27,7 @@
       </button>
     {/if}
     {#if config.canShow}
-      <button on:click={() => (viewState = "show")} class="rest-scaffold-link-button">
-        Show
-      </button>
+      <button onclick={() => (viewState = "show")} class="rest-scaffold-link-button"> Show </button>
     {/if}
   </td>
 </tr>

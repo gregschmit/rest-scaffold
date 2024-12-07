@@ -1,8 +1,7 @@
 <script>
-  export let config
-  export let i
+  let { config, i } = $props()
 </script>
 
-<button on:click|preventDefault={config.refresh({ page: i })} class="rest-scaffold-link-button">
+<button onclick={() => config.refresh({ page: i })} class="rest-scaffold-link-button">
   {i}
 </button>

@@ -83,7 +83,6 @@ export default class Config {
   orderParam
   initialOrder
 
-  reload
   refresh
   autoRefresh
   autoRefreshSeconds
@@ -166,7 +165,6 @@ export default class Config {
     this.orderParam = args.orderParam || "order"
     this.initialOrder = args.initialOrder
 
-    this.reload = null
     this.refresh = null
     this.autoRefresh = null
     this.autoRefreshSeconds = args.autoRefreshSeconds

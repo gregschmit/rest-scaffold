@@ -3,10 +3,7 @@
 
   const VALID_TYPES = ["info", "warning", "error"]
 
-  export let type = "info"
-  export let message
-  export let dismiss
-  export let dismissAfter
+  let { type = "info", message, dismiss, dismissAfter } = $props()
 
   if (!VALID_TYPES.includes(type)) {
     type = "info"
@@ -22,14 +19,10 @@
 <div class="rs-alert rs-alert-{type}">
   <div>
     {#if dismiss}
-      <button on:click={dismiss}></button>
+      <button onclick={dismiss} aria-label="Close"></button>
     {/if}
     <span>{message}</span>
   </div>
-
-  {#if $$slots["default"]}
-    <slot />
-  {/if}
 </div>
 
 <style>

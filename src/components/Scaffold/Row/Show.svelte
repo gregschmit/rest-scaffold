@@ -1,14 +1,12 @@
 <script>
-  export let config
-  export let record
-  export let viewState
+  let { config, record, viewState } = $props()
 </script>
 
 <tr class="rest-scaffold-member-view rest-scaffold-show">
   <td colspan={config.fields.length + 1}>
     <div>
       <button
-        on:click={() => (viewState = null)}
+        onclick={() => (viewState = null)}
         class="rest-scaffold-link-button"
         style="float: right"
       >
