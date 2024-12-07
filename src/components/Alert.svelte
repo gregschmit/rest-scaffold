@@ -22,7 +22,7 @@
 <div class="rs-alert rs-alert-{type}">
   <div>
     {#if dismiss}
-      <button on:click={dismiss} />
+      <button on:click={dismiss}></button>
     {/if}
     <span>{message}</span>
   </div>

@@ -43,12 +43,17 @@ export default {
       // include: 'src/components/**/*.svelte',
       emitCss: false,
       compilerOptions: {
+        css: "injected",
         cssHash: ({ hash, css }) => `rest-scaffold-${hash(css)}`,
+        // modernAst: true,
+        // runes: true,
       },
     }),
     resolve({
       browser: true,
-      exportConditions: ["svelte"],
+      // Not needed unless we import another Svelte library.
+      // exportConditions: ["svelte"],
+      // Prettier import for Svelte components.
       extensions: [".svelte"],
     }),
   ],

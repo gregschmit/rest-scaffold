@@ -1,9 +1,11 @@
+import { mount } from "svelte"
+
 import RESTScaffold from "./RESTScaffold"
 
 const MOUNTABLE_EL = '[data-rest-scaffold]:not([data-rest-scaffold-mounted="true"])'
 
 // Mount the `RESTScaffold` component on the given element.
-function mount(el, input_args) {
+function mountApp(el, input_args) {
   // We cannot mount unless we have args (either from `input_args` or from the data attribute), or
   // if it's already mounted.
   if (!(input_args || el.dataset?.restScaffold) || el.dataset.restScaffoldMounted) {
@@ -21,7 +23,7 @@ function mount(el, input_args) {
     return
   }
 
-  const scaffold = new RESTScaffold({ target: el, props: { args: args } })
+  const scaffold = mount(RESTScaffold, { target: el, props: { args: args } })
   el.restScaffold = scaffold
   return scaffold
 }
@@ -29,17 +31,17 @@ function mount(el, input_args) {
 function setupNow(opts = {}) {
   if (opts.el) {
     if (opts.args) {
-      return mount(opts.el, opts.args)
+      return mountApp(opts.el, opts.args)
     } else if (opts.el.dataset?.restScaffold) {
-      return mount(opts.el)
+      return mountApp(opts.el)
     } else {
       opts.el.querySelectorAll(MOUNTABLE_EL).forEach((el) => {
-        mount(el)
+        mountApp(el)
       })
     }
   } else {
     document.querySelectorAll(MOUNTABLE_EL).forEach((el) => {
-      mount(el)
+      mountApp(el)
     })
   }
 }

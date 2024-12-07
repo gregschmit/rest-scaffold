@@ -1,5 +1,5 @@
 <script>
-  import Spinner from "../Spinner.svelte"
+  import Spinner from "../Spinner"
 
   export let config
   export let processing

@@ -71,7 +71,12 @@ export default class Config {
 
   fields
   fieldConfig
+
   actionPermissionField
+  canShow
+  canCreate
+  canUpdate
+  canDelete
 
   pagination
 
@@ -127,12 +132,16 @@ export default class Config {
     for (const field in this.fieldConfig) {
       this.fieldConfig[field].label ||= field
 
-      if (this.fieldConfig[field].inlineEdit === undefined) {
+      if (this.fieldConfig[field].inlineEdit == null) {
         this.fieldConfig[field].inlineEdit = this.inlineEdit
       }
     }
 
     this.actionPermissionField = args.actionPermissionField || "can_$action?"
+    this.canShow = args.canShow == null ? true : args.canShow
+    this.canCreate = args.canCreate == null ? true : args.canCreate
+    this.canUpdate = args.canUpdate == null ? true : args.canUpdate
+    this.canDelete = args.canDelete == null ? true : args.canDelete
 
     this.pagination = {
       params: { ...DEFAULT_PAGINATION_PARAMS, ...args.pagination?.params },

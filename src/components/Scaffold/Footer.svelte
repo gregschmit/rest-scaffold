@@ -1,5 +1,5 @@
 <script>
-  import PageLink from "./Footer/PageLink.svelte"
+  import PageLink from "./Footer/PageLink"
 
   export let config
   export let data

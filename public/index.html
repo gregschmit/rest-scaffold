@@ -1,8 +1,8 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>REST Scaffold Test App</title>
     <script>
       window._kitchen_sink_conf = {
@@ -17,14 +17,16 @@
           last_name: { label: "Last Name" },
           note: { label: "Note" },
         },
-        actions: {
-          refresh: true,
-        }
+        // canShow: false,
+        // canDelete: false,
       }
     </script>
     <style>
-      .wrapper { display: flex; }
-      .left, .right {
+      .wrapper {
+        display: flex;
+      }
+      .left,
+      .right {
         width: 50%;
         min-height: 50px;
         min-width: 50px;
@@ -46,7 +48,7 @@
       <li>Home</li>
       <li><a href="/iife.html">IIFE</a></li>
     </ul>
-    <hr>
+    <hr />
 
     <div style="width: 100%; padding: 0 10em"></div>
 
@@ -66,23 +68,22 @@
       <div class="right"></div>
     </div>
 
-    <hr>
+    <hr />
 
     <h2>Kitchen Sink Dark Mode:</h2>
-    <div class="wrapper" style="background-color: #444; color-scheme: dark;">
+    <div class="wrapper" style="background-color: #444; color-scheme: dark">
       <div class="left">
         <div id="darkUsersScaffold">
           <script type="module">
             import RESTScaffold from "./dist/rest-scaffold.js"
             RESTScaffold.setup({
               el: document.getElementById("darkUsersScaffold"),
-              args: {...window._kitchen_sink_conf},
+              args: { ...window._kitchen_sink_conf },
             })
           </script>
         </div>
       </div>
       <div class="right"></div>
     </div>
-
   </body>
 </html>

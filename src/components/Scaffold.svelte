@@ -1,6 +1,7 @@
 <script>
-  import Header from "./Scaffold/Header.svelte"
-  import Footer from "./Scaffold/Footer.svelte"
+  import Header from "./Scaffold/Header"
+  import Footer from "./Scaffold/Footer"
+  import Row from "./Scaffold/Row"
 
   export let config
   export let data
@@ -31,30 +32,8 @@
       </tr>
     </thead>
     <tbody>
-      {#each data.results as record, i}
-        <tr>
-          {#each config.fields as f}
-            <td>{record[f]}</td>
-          {/each}
-          <td>
-            <button
-              on:click={() => {
-                if (confirm("Are you sure you want to delete this record?")) {
-                  config.refresh({ delete: record })
-                }
-              }}
-              class="rest-scaffold-link-button"
-            >
-              Delete
-            </button>
-            <!-- <button on:click={() => config.edit(record)} class="rest-scaffold-link-button">
-              Edit
-            </button>
-            <button on:click={() => config.view(record)} class="rest-scaffold-link-button">
-              Show
-            </button> -->
-          </td>
-        </tr>
+      {#each data.results as record, i (record.id)}
+        <Row {config} {record} {i} />
       {/each}
     </tbody>
   </table>
@@ -80,39 +59,21 @@
   th {
     background-color: light-dark(var(--rs-light-table-header-bg), var(--rs-dark-table-header-bg));
     user-select: none;
-
-    & .rest-scaffold-table-header {
-      user-select: text;
-    }
   }
-  td,
   th {
     padding: 0.25em;
     text-align: left;
   }
-  tbody tr:nth-child(even) {
-    background-color: light-dark(var(--rs-light-table-striped-bg), var(--rs-dark-table-striped-bg));
+
+  th,
+  :global(td) {
+    padding: 0.25em;
+    text-align: left;
   }
-  tbody tr + tr {
+
+  :global(tr + tr) {
     border-top: 0.1em solid
       light-dark(var(--rs-light-table-border-h), var(--rs-dark-table-border-h));
-  }
-  td + td {
-    border-left: 0.1em solid
-      light-dark(var(--rs-light-table-border-v), var(--rs-dark-table-border-v));
-  }
-
-  /* Ensure first and last columns are not wrapped. */
-  table tr > td:first-child,
-  table tr > td:last-child {
-    word-wrap: normal;
-    word-break: normal;
-    white-space: nowrap;
-  }
-
-  /* Last column should be right-aligned. */
-  table tr > td:last-child {
-    text-align: right;
   }
 
   .rest-scaffold-arrow {

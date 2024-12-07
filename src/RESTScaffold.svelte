@@ -50,10 +50,10 @@
     }
   }
 
-  export let args
+  let { args } = $props()
 
-  let config = new Config(args)
-  let data = null
+  let config = $state(new Config(args))
+  let data = $state(null)
 
   let loadError
 

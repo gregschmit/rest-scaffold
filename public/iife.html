@@ -1,12 +1,12 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>REST Scaffold Test App</title>
     <script src="dist/rest-scaffold.iife.js"></script>
     <script>
-      RESTScaffold.setup({defer: true})
+      RESTScaffold.setup({ defer: true })
     </script>
   </head>
   <body>
@@ -15,9 +15,11 @@
       <li><a href="/">Home</a></li>
       <li>IIFE</li>
     </ul>
-    <hr>
+    <hr />
 
     <h2>Plain (Unpaged) API from IIFE:</h2>
-    <div data-rest-scaffold='{"debug": true, "target": "/api/plain/users", "fields": ["id", "login"]}'></div>
+    <div
+      data-rest-scaffold='{"debug": true, "target": "/api/plain/users", "fields": ["id", "login"]}'
+    ></div>
   </body>
 </html>
