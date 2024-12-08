@@ -1,7 +1,10 @@
 <script>
   import Spinner from "../Spinner"
+  import CloseButton from "./CloseButton"
 
   let { config, processing } = $props()
+
+  let viewState = $state(null)
 </script>
 
 <div class="rest-scaffold-header">
@@ -11,8 +14,31 @@
       <Spinner size=".8em" />
     {/if}
   </span>
-  <span></span>
+  <span>
+    {#if config.help}
+      <button class="rest-scaffold-link-button" onclick={() => (viewState = "help")}>Help</button>
+    {/if}
+    {#if config.canRefresh}
+      <button class="rest-scaffold-link-button" onclick={() => config.refresh()}>Refresh</button>
+    {/if}
+    {#if config.canCreate}
+      <button class="rest-scaffold-link-button" onclick={() => (viewState = "new")}>New</button>
+    {/if}
+  </span>
 </div>
+
+{#if viewState === "help"}
+  <div class="rest-scaffold-view rest-scaffold-help">
+    {@html config.help}
+    <CloseButton action={() => (viewState = null)} />
+  </div>
+{/if}
+
+{#if viewState === "new"}
+  <div class="rest-scaffold-view rest-scaffold-new">
+    <CloseButton action={() => (viewState = null)} />
+  </div>
+{/if}
 
 <style>
   .rest-scaffold-header {

@@ -11,6 +11,9 @@
     <td>{record[f]}</td>
   {/each}
   <td>
+    {#if config.canShow}
+      <button onclick={() => (viewState = "show")} class="rest-scaffold-link-button">Show</button>
+    {/if}
     <!-- <button on:click={() => config.edit(record)} class="rest-scaffold-link-button">
       Edit
     </button> -->
@@ -21,13 +24,10 @@
             config.refresh({ delete: record })
           }
         }}
-        class="rest-scaffold-link-button"
+        class="rest-scaffold-link-button rest-scaffold-danger"
       >
         Delete
       </button>
-    {/if}
-    {#if config.canShow}
-      <button onclick={() => (viewState = "show")} class="rest-scaffold-link-button"> Show </button>
     {/if}
   </td>
 </tr>

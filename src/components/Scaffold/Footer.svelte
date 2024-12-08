@@ -3,7 +3,7 @@
 
   let { config, data } = $props()
 
-  let pageSize = $state(config.pagination.initialPageSize)
+  let pageSize = $state(config.pagination.pageSize?.[0])
 </script>
 
 <div class="rest-scaffold-footer">

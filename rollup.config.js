@@ -45,7 +45,7 @@ export default {
       compilerOptions: {
         css: "injected",
         cssHash: ({ hash, css }) => `rest-scaffold-${hash(css)}`,
-        // modernAst: true,
+        modernAst: true,
         runes: true,
       },
     }),

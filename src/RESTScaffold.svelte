@@ -60,7 +60,7 @@
   let processing = $state(false)
   let order = $state(new Order(config.initialOrder || ""))
   let page = $state(config.pagination.initialPage || null)
-  let pageSize = $state(config.pagination.initialPageSize || null)
+  let pageSize = $state(config.pagination.pageSize?.[0])
 
   config.refresh = async (opts = {}) => {
     if (!opts.auto) {
@@ -131,9 +131,12 @@
     --rs-font-size: {config.theme.fontSize};
     --rs-light-bg: {config.theme.light.bg};
     --rs-light-fg: {config.theme.light.fg};
+    --rs-light-view-bg: {config.theme.light.viewBg};
     --rs-light-primary: {config.theme.light.primary};
     --rs-light-link: {config.theme.light.link};
     --rs-light-link-hover: {config.theme.light.linkHover};
+    --rs-light-link-danger: {config.theme.light.linkDanger};
+    --rs-light-link-danger-hover: {config.theme.light.linkDangerHover};
     --rs-light-table-header-bg: {config.theme.light.tableHeaderBg};
     --rs-light-table-border-h: {config.theme.light.tableBorderH};
     --rs-light-table-border-v: {config.theme.light.tableBorderV};
@@ -146,9 +149,12 @@
     --rs-light-alert-error-fg: {config.theme.light.alertErrorFg};
     --rs-dark-bg: {config.theme.dark.bg};
     --rs-dark-fg: {config.theme.dark.fg};
+    --rs-dark-view-bg: {config.theme.dark.viewBg};
     --rs-dark-primary: {config.theme.dark.primary};
     --rs-dark-link: {config.theme.dark.link};
     --rs-dark-link-hover: {config.theme.dark.linkHover};
+    --rs-dark-link-danger: {config.theme.dark.linkDanger};
+    --rs-dark-link-danger-hover: {config.theme.dark.linkDangerHover};
     --rs-dark-table-header-bg: {config.theme.dark.tableHeaderBg};
     --rs-dark-table-border-h: {config.theme.dark.tableBorderH};
     --rs-dark-table-border-v: {config.theme.dark.tableBorderV};
@@ -208,9 +214,30 @@
     font-size: inherit;
     font-weight: bold;
     padding: 0 0.25em;
+
+    &:hover {
+      color: light-dark(var(--rs-light-link-hover), var(--rs-dark-link-hover));
+    }
   }
 
-  .rest-scaffold :global(button.rest-scaffold-link-button:hover) {
-    color: light-dark(var(--rs-light-link-hover), var(--rs-dark-link-hover));
+  .rest-scaffold :global(button.rest-scaffold-danger) {
+    color: light-dark(var(--rs-light-link-danger), var(--rs-dark-link-danger));
+
+    &:hover {
+      color: light-dark(var(--rs-light-link-danger-hover), var(--rs-dark-link-danger-hover));
+    }
+  }
+
+  .rest-scaffold :global(.rest-scaffold-view) {
+    background-color: light-dark(var(--rs-light-view-bg), var(--rs-dark-view-bg));
+  }
+
+  .rest-scaffold :global(.rest-scaffold-view) {
+    padding: 0.5em;
+
+    /* Fix issue where padding doesn't work for `tr` elements. */
+    :global(& > td) {
+      padding: 0.5em;
+    }
   }
 </style>

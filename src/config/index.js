@@ -1,13 +1,5 @@
 import API from "./api"
 
-const DEFAULT_PAGINATION_PARAMS = {
-  count: "count",
-  page: "page",
-  pageSize: "page_size",
-  totalPages: "total_pages",
-  results: "results",
-}
-
 const DEFAULT_THEME = {
   fontSize: "0.8em",
 }
@@ -15,11 +7,14 @@ const DEFAULT_THEME = {
 const DEFAULT_LIGHT_THEME = {
   bg: "white",
   fg: "black",
+  viewBg: "#d9d9d9",
 
   primary: "#0d6efd",
 
   link: "#0d6efd",
   linkHover: "#0a58ca",
+  linkDanger: "#dc3545",
+  linkDangerHover: "#b02a37",
 
   tableHeaderBg: "#eee",
   tableBorderH: "#aeaeae",
@@ -37,11 +32,14 @@ const DEFAULT_LIGHT_THEME = {
 const DEFAULT_DARK_THEME = {
   bg: "#181818",
   fg: "#f7f7f7",
+  viewBg: "#333",
 
   primary: "#6ea8fe",
 
   link: "#6ea8fe",
   linkHover: "#8bb9fe",
+  linkDanger: "#ff5b6b",
+  linkDangerHover: "#ff7b89",
 
   tableHeaderBg: "#333",
   tableBorderH: "#666",
@@ -61,34 +59,46 @@ const DEFAULT_DARK_THEME = {
 // hydrated from the `OPTIONS` API.
 export default class Config {
   target
-  query
+  query = {}
   apiType
-  pkField
-  title
-  recordTitle
+  pkField = "id"
+  title = "Records"
+  recordTitle = "Record"
+  help
 
-  inlineEdit
+  inlineEdit = false
 
   fields
   fieldConfig
 
-  actionPermissionField
-  canShow
-  canCreate
-  canUpdate
-  canDelete
+  actionPermissionField = "can_$action?"
+  canShow = true
+  canCreate = true
+  canUpdate = true
+  canDelete = true
+  canRefresh = true
 
-  pagination
+  pagination = {
+    params: {
+      count: "count",
+      page: "page",
+      pageSize: "page_size",
+      totalPages: "total_pages",
+      results: "results",
+    },
+    pageSize: null,
+    window: 1,
+    initialPage: null,
+  }
 
-  orderParam
+  orderParam = "order"
   initialOrder
 
   refresh
   autoRefresh
   autoRefreshSeconds
 
-  theme
-  transparent
+  theme = { ...DEFAULT_THEME, light: DEFAULT_LIGHT_THEME, dark: DEFAULT_DARK_THEME }
 
   // disabled_builtin_actions: string[]
   // extra_collection_actions: object
@@ -100,24 +110,35 @@ export default class Config {
 
   api
 
+  isObject(obj) {
+    return obj && typeof obj === "object" && !Array.isArray(obj)
+  }
+
+  // Set the properties of an object from a dictionary of arguments, only if the property exists on
+  // the object. Recursively set properties of nested objects.
+  assignArgs(object, args) {
+    for (const key in args) {
+      if (object.hasOwnProperty(key)) {
+        if (this.isObject(object[key]) && this.isObject(args[key])) {
+          this.assignArgs(object[key], args[key])
+        } else {
+          object[key] = args[key]
+        }
+      }
+    }
+  }
+
   constructor(args) {
+    this.assignArgs(this, args)
+
     // Trim query and trailing slash off target URL.
-    this.target = args.target.replace(/\?.*/, "").replace(/\/+$/, "")
-    this.query = args.query || {}
+    this.target = this.target.replace(/\?.*/, "").replace(/\/+$/, "")
 
-    this.apiType = args.apiType
-    this.pkField = args.pkField || "id"
-    this.title = args.title || "Records"
-    this.recordTitle = args.recordTitle || "Record"
-
-    this.inlineEdit = args.inlineEdit || false
-
-    this.fields = args.fields
-    this.fieldConfig = args.fieldConfig
+    // Dynamically populate `fields` and `fieldConfig` if only one is provided.
     if (this.fields && !this.fieldConfig) {
       this.fieldConfig = this.fields.reduce((h, v) => ({ ...h, [v]: {} }), {})
     } else if (this.fieldConfig && !this.fields) {
-      this.fields = Object.keys(args.fieldConfig)
+      this.fields = Object.keys(this.fieldConfig)
     } else if (this.fields && this.fieldConfig) {
       // For each field, add it to the `fieldConfig` if it's not already there.
       for (const field of this.fields) {
@@ -128,66 +149,41 @@ export default class Config {
     }
 
     // Set some reasonable defaults for `fieldConfig`.
+    // TODO: remove this and replace with helper.
     for (const field in this.fieldConfig) {
       this.fieldConfig[field].label ||= field
-
-      if (this.fieldConfig[field].inlineEdit == null) {
-        this.fieldConfig[field].inlineEdit = this.inlineEdit
-      }
     }
 
-    this.actionPermissionField = args.actionPermissionField || "can_$action?"
-    this.canShow = args.canShow == null ? true : args.canShow
-    this.canCreate = args.canCreate == null ? true : args.canCreate
-    this.canUpdate = args.canUpdate == null ? true : args.canUpdate
-    this.canDelete = args.canDelete == null ? true : args.canDelete
-
-    this.pagination = {
-      params: { ...DEFAULT_PAGINATION_PARAMS, ...args.pagination?.params },
-      pageSize: args.pagination?.pageSize ? [args.pagination?.pageSize].flat() : null,
-      window: args.pagination?.window || 1,
-
-      initialPage: args.pagination?.initialPage,
-      initialPageSize: null,
-    }
-
-    // Initial page size may only be set if the value provided is included in the list of available
-    // page sizes; otherwise, it defaults to the first page size option.
-    if (this.pagination.pageSize) {
-      let initialPageSize = args.pagination?.initialPageSize || null
-      if (this.pagination.pageSize.includes(initialPageSize)) {
-        this.pagination.initialPageSize = initialPageSize
-      } else {
-        this.pagination.initialPageSize = this.pagination.pageSize[0]
-      }
-    }
-
-    this.orderParam = args.orderParam || "order"
-    this.initialOrder = args.initialOrder
-
-    this.refresh = null
-    this.autoRefresh = null
-    this.autoRefreshSeconds = args.autoRefreshSeconds
-
-    this.theme = {
-      ...DEFAULT_THEME,
-      ...args.theme,
-      light: {
-        ...DEFAULT_LIGHT_THEME,
-        ...args.theme?.light,
-      },
-      dark: {
-        ...DEFAULT_DARK_THEME,
-        ...args.theme?.dark,
-      },
-    }
-    this.transparent = args.transparent || false
-
-    if (this.transparent) {
-      this.theme.light.bg = "transparent"
-      this.theme.dark.bg = "transparent"
+    // Ensure `pagination.pageSize` is an array.
+    if (!Array.isArray(this.pagination.pageSize)) {
+      this.pagination.pageSize = [this.pagination.pageSize]
     }
 
     this.api = new API(this)
+  }
+
+  // Render a value according to the field configuration.
+  render(field, value) {
+    if (this.fieldConfig[field].render) {
+      return this.fieldConfig[field].render(value)
+    }
+
+    return value
+  }
+
+  // Render a value in a more detailed manner according to the field configuration.
+  renderDetail(field, value) {
+    if (this.fieldConfig[field].renderDetail) {
+      return this.fieldConfig[field].renderDetail(value)
+    } else if (this.fieldConfig[field].render) {
+      return this.fieldConfig[field].render(value)
+    }
+
+    return value
+  }
+
+  // Render an HTML input for a field, given an optional initial value.
+  renderInput(field, { value }) {
+    return `<input type="text" value="${value || ""}" />`
   }
 }
