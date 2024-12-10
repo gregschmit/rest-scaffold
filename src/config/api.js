@@ -27,8 +27,8 @@ export default class API {
   async list(opts = {}) {
     let builtinQuery = {}
 
-    if (opts.order) {
-      builtinQuery[this.config.orderParam] = opts.order
+    if (opts.sort) {
+      builtinQuery[this.config.sortParam] = opts.sort
     }
 
     if (opts.page) {

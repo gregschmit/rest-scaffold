@@ -17,6 +17,7 @@
   "scripts": {
     "build": "rollup -c",
     "watch": "rollup -c -w",
+    "serve": "nodemon dev",
     "dev": "concurrently -k -n \"BLD,SRV\" \"npm:watch\" \"nodemon dev\"",
     "prepublish": "npm run build"
   },
@@ -24,6 +25,7 @@
     "dist"
   ],
   "devDependencies": {
+    "@faker-js/faker": "^9.3.0",
     "@rollup/plugin-node-resolve": "^15",
     "@rollup/plugin-terser": "^0.4.4",
     "concurrently": "^8.2.0",

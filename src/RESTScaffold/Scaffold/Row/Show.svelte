@@ -11,7 +11,7 @@
       <dl style="margin: 0">
         {#each config.fields as f}
           <dt>{config.fieldConfig[f].label}</dt>
-          <dd>{record[f] || "-"}</dd>
+          <dd>{@html config.renderDetail(record, f)}</dd>
         {/each}
       </dl>
     </div>

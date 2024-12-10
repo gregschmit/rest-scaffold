@@ -2,11 +2,11 @@
   import { onMount } from "svelte"
   import Config from "./config/index"
 
-  import Spinner from "./components/Spinner"
-  import Scaffold from "./components/Scaffold"
-  import Alert from "./components/Alert"
+  import Spinner from "./RESTScaffold/Spinner"
+  import Scaffold from "./RESTScaffold/Scaffold"
+  import Alert from "./RESTScaffold/Alert"
 
-  class Order {
+  class Sort {
     string = $state(null)
     parts = $state(null)
 
@@ -39,12 +39,12 @@
         .join(",")
     }
 
-    addOrder(field, asc) {
+    addSort(field, asc) {
       this.parts[field] = asc
       this.fromParts(this.parts)
     }
 
-    removeOrder(field) {
+    removeSort(field) {
       delete this.parts[field]
       this.fromParts(this.parts)
     }
@@ -58,7 +58,7 @@
   let loadError = $state(null)
 
   let processing = $state(false)
-  let order = $state(new Order(config.initialOrder || ""))
+  let sort = $state(new Sort(config.initialSort || ""))
   let page = $state(config.pagination.initialPage || null)
   let pageSize = $state(config.pagination.pageSize?.[0])
 
@@ -71,18 +71,18 @@
       await config.api.delete(opts.delete)
     }
 
-    if (opts.order) {
-      if (opts.order in order.parts) {
-        if (order.parts[opts.order]) {
-          order.addOrder(opts.order, false)
+    if (opts.sort) {
+      if (opts.sort in sort.parts) {
+        if (sort.parts[opts.sort]) {
+          sort.addSort(opts.sort, false)
         } else {
-          order.removeOrder(opts.order)
+          sort.removeSort(opts.sort)
         }
       } else {
-        order.addOrder(opts.order, true)
+        sort.addSort(opts.sort, true)
       }
 
-      order = order
+      sort = sort
     }
 
     if (opts.page) {
@@ -94,7 +94,7 @@
     }
 
     // If we're initializing, we need to pass that to the list method.
-    let listOpts = { init: data === null, order: order.string, page, pageSize }
+    let listOpts = { init: data === null, sort: sort.string, page, pageSize }
     let result = await config.api.list(listOpts)
     if (typeof result === "string") {
       loadError = result
@@ -141,6 +141,8 @@
     --rs-light-table-border-h: {config.theme.light.tableBorderH};
     --rs-light-table-border-v: {config.theme.light.tableBorderV};
     --rs-light-table-striped-bg: {config.theme.light.tableStripedBg};
+    --rs-light-alert-success-bg: {config.theme.light.alertSuccessBg};
+    --rs-light-alert-success-fg: {config.theme.light.alertSuccessFg};
     --rs-light-alert-info-bg: {config.theme.light.alertInfoBg};
     --rs-light-alert-info-fg: {config.theme.light.alertInfoFg};
     --rs-light-alert-warning-bg: {config.theme.light.alertWarningBg};
@@ -159,6 +161,8 @@
     --rs-dark-table-border-h: {config.theme.dark.tableBorderH};
     --rs-dark-table-border-v: {config.theme.dark.tableBorderV};
     --rs-dark-table-striped-bg: {config.theme.dark.tableStripedBg};
+    --rs-dark-alert-success-bg: {config.theme.dark.alertSuccessBg};
+    --rs-dark-alert-success-fg: {config.theme.dark.alertSuccessFg};
     --rs-dark-alert-info-bg: {config.theme.dark.alertInfoBg};
     --rs-dark-alert-info-fg: {config.theme.dark.alertInfoFg};
     --rs-dark-alert-warning-bg: {config.theme.dark.alertWarningBg};
@@ -172,7 +176,7 @@
   {/if}
 
   {#if data}
-    <Scaffold {config} {data} {processing} {order} />
+    <Scaffold {config} {data} {processing} {sort} />
   {:else if !loadError}
     <div style="text-align: center">
       <Spinner size="3em" />
@@ -239,5 +243,35 @@
     :global(& > td) {
       padding: 0.5em;
     }
+  }
+
+  .rest-scaffold :global(.rest-scaffold-badge) {
+    font-size: 0.8em;
+    font-weight: bold;
+    padding: 0.2em 0.4em 0.15em 0.4em;
+    border-radius: 0.8em;
+  }
+
+  .rest-scaffold :global(.rest-scaffold-badge-success) {
+    background-color: light-dark(var(--rs-light-alert-success-bg), var(--rs-dark-alert-success-bg));
+    color: light-dark(var(--rs-light-alert-success-fg), var(--rs-dark-alert-success-fg));
+    border: 0.1em solid
+      light-dark(var(--rs-light-alert-success-fg), var(--rs-dark-alert-success-fg));
+  }
+  .rest-scaffold :global(.rest-scaffold-badge-info) {
+    background-color: light-dark(var(--rs-light-alert-info-bg), var(--rs-dark-alert-info-bg));
+    color: light-dark(var(--rs-light-alert-info-fg), var(--rs-dark-alert-info-fg));
+    border: 0.1em solid light-dark(var(--rs-light-alert-info-fg), var(--rs-dark-alert-info-fg));
+  }
+  .rest-scaffold :global(.rest-scaffold-badge-warning) {
+    background-color: light-dark(var(--rs-light-alert-warning-bg), var(--rs-dark-alert-warning-bg));
+    color: light-dark(var(--rs-light-alert-warning-fg), var(--rs-dark-alert-warning-fg));
+    border: 0.1em solid
+      light-dark(var(--rs-light-alert-warning-fg), var(--rs-dark-alert-warning-fg));
+  }
+  .rest-scaffold :global(.rest-scaffold-badge-error) {
+    background-color: light-dark(var(--rs-light-alert-error-bg), var(--rs-dark-alert-error-bg));
+    color: light-dark(var(--rs-light-alert-error-fg), var(--rs-dark-alert-error-fg));
+    border: 0.1em solid light-dark(var(--rs-light-alert-error-fg), var(--rs-dark-alert-error-fg));
   }
 </style>

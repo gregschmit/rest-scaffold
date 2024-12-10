@@ -21,6 +21,8 @@ const DEFAULT_LIGHT_THEME = {
   tableBorderV: "#d9d9d9",
   tableStripedBg: "#f7f7f7",
 
+  alertSuccessBg: "#a6e0c6",
+  alertSuccessFg: "#024012",
   alertInfoBg: "#cff4fc",
   alertInfoFg: "#055160",
   alertWarningBg: "#fff3cd",
@@ -46,6 +48,8 @@ const DEFAULT_DARK_THEME = {
   tableBorderV: "#333",
   tableStripedBg: "#222",
 
+  alertSuccessBg: "#0b2e13",
+  alertSuccessFg: "#23d950",
   alertInfoBg: "#032830",
   alertInfoFg: "#6edff6",
   alertWarningBg: "#332701",
@@ -53,6 +57,8 @@ const DEFAULT_DARK_THEME = {
   alertErrorBg: "#2c0b0e",
   alertErrorFg: "#ea868f",
 }
+
+class HTMLSafeString extends String {}
 
 // Represents scaffold configuration, which is derived from the JSON string input of the
 // `data-rest-scaffold` attribute, but with tighter contraints, default values, and properties
@@ -91,8 +97,9 @@ export default class Config {
     initialPage: null,
   }
 
-  orderParam = "order"
-  initialOrder
+  sortable = false
+  sortParam = "ordering"
+  initialSort
 
   refresh
   autoRefresh
@@ -149,9 +156,14 @@ export default class Config {
     }
 
     // Set some reasonable defaults for `fieldConfig`.
-    // TODO: remove this and replace with helper.
     for (const field in this.fieldConfig) {
-      this.fieldConfig[field].label ||= field
+      const fcfg = this.fieldConfig[field]
+
+      fcfg.label ||= field
+
+      if (this.sortable && fcfg.sortable == null) {
+        fcfg.sortable = true
+      }
     }
 
     // Ensure `pagination.pageSize` is an array.
@@ -162,28 +174,123 @@ export default class Config {
     this.api = new API(this)
   }
 
-  // Render a value according to the field configuration.
-  render(field, value) {
-    if (this.fieldConfig[field].render) {
-      return this.fieldConfig[field].render(value)
-    }
-
-    return value
+  // Convert a string to an `HtmlSafeString` object.
+  htmlSafe(s) {
+    return new HTMLSafeString(s)
   }
 
-  // Render a value in a more detailed manner according to the field configuration.
-  renderDetail(field, value) {
-    if (this.fieldConfig[field].renderDetail) {
-      return this.fieldConfig[field].renderDetail(value)
-    } else if (this.fieldConfig[field].render) {
-      return this.fieldConfig[field].render(value)
+  // Escape an unsafe string for rendering as HTML.
+  escape(s) {
+    if (s instanceof HTMLSafeString) {
+      return s
     }
 
-    return value
+    let el = document.createElement("span")
+    el.innerText = s
+    return el.innerHTML
   }
 
-  // Render an HTML input for a field, given an optional initial value.
-  renderInput(field, { value }) {
+  formatBoolean(value, { format } = {}) {
+    if (format) {
+      const t = format.true || "True"
+      const f = format.false || "False"
+
+      if (format.style == "text") {
+        return value ? t : f
+      } else if (format.style == "badge") {
+        return `<span class="rest-scaffold-badge ${
+          value ? "rest-scaffold-badge-success" : "rest-scaffold-badge-error"
+        }">${value ? t : f}</span>`
+      }
+    }
+
+    // Default to a checkbox.
+    return this.htmlSafe(
+      `<input disabled="disabled" type="checkbox" ${value ? "checked" : ""}></input>`,
+    )
+  }
+
+  formatDate(value, { format } = {}) {
+    format ||= this.dateFormat
+
+    return new Date(value).toLocaleDateString(undefined, format || undefined)
+  }
+
+  formatTime(value, { format } = {}) {
+    format ||= this.timeFormat
+
+    return new Date(`2000-01-01T${value}Z`).toLocaleTimeString(undefined, format)
+  }
+
+  formatDateTime(value, { format } = {}) {
+    format ||= this.dateTimeFormat
+
+    if (format == "utc") {
+      return new Date(value).toUTCString()
+    } else if (format) {
+      return new Intl.DateTimeFormat(undefined, format).format(value)
+    }
+
+    return new Date(value).toLocaleString()
+  }
+
+  formatNumber(value, { format } = {}) {
+    format ||= this.numberFormat
+
+    if (format) {
+      return new Intl.NumberFormat(undefined, format).format(value)
+    }
+
+    return Number(value).toLocaleString()
+  }
+
+  // Render a record's field according to the field configuration
+  render(record, field) {
+    const fcfg = this.fieldConfig[field]
+
+    if (fcfg.render) {
+      return this.escape(fcfg.render(record, { config: this }))
+    }
+
+    const value = record[field]
+
+    if (fcfg.type == "boolean") {
+      return this.formatBoolean(value, { format: fcfg.format })
+    } else if (fcfg.type == "date") {
+      return this.formatDate(value, { format: fcfg.format })
+    } else if (fcfg.type == "time") {
+      return this.formatTime(value, { format: fcfg.format })
+    } else if (fcfg.type == "datetime") {
+      return this.formatDateTime(value, { format: fcfg.format })
+    } else if (fcfg.type == "number") {
+      return this.formatNumber(value, { format: fcfg.format })
+    }
+
+    // Implicit `string` type.
+    return this.escape(value)
+  }
+
+  // Render a record's field for a detail view.
+  renderDetail(record, field) {
+    const fcfg = this.fieldConfig[field]
+
+    if (fcfg.renderDetail) {
+      return this.escape(fcfg.renderDetail(record, { config: this }))
+    } else if (fcfg.render) {
+      return this.escape(fcfg.render(record, { config: this }))
+    }
+
+    return this.render(record, field)
+  }
+
+  // Render an HTML input for a record's field, given an optional initial value.
+  renderInput(field, { record }) {
+    const fcfg = this.fieldConfig[field]
+
+    if (fcfg.renderInput) {
+      return fcfg.renderInput(value)
+    }
+
     return `<input type="text" value="${value || ""}" />`
   }
 }

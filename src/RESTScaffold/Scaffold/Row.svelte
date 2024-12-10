@@ -8,7 +8,7 @@
 
 <tr class="rest-scaffold-record" class:rest-scaffold-even={i % 2}>
   {#each config.fields as f}
-    <td>{record[f]}</td>
+    <td>{@html config.render(record, f)}</td>
   {/each}
   <td>
     {#if config.canShow}

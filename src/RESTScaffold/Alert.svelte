@@ -1,7 +1,7 @@
 <script>
   import { onMount } from "svelte"
 
-  const VALID_TYPES = ["info", "warning", "error"]
+  const VALID_TYPES = ["success", "info", "warning", "error"]
 
   let { type = "info", message, dismiss, dismissAfter } = $props()
 
@@ -66,6 +66,11 @@
     opacity: 0.9;
   }
 
+  .rs-alert-success {
+    background-color: light-dark(var(--rs-light-alert-success-bg), var(--rs-dark-alert-success-bg));
+    border-color: light-dark(var(--rs-light-alert-success-fg), var(--rs-dark-alert-success-fg));
+    color: light-dark(var(--rs-light-alert-success-fg), var(--rs-dark-alert-success-fg));
+  }
   .rs-alert-info {
     background-color: light-dark(var(--rs-light-alert-info-bg), var(--rs-dark-alert-info-bg));
     border-color: light-dark(var(--rs-light-alert-info-fg), var(--rs-dark-alert-info-fg));

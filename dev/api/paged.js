@@ -28,13 +28,13 @@ router.get("/users", async (req, res) => {
   // Clone the users array.
   let data = [...users]
 
-  // If `order` query param is set, then sort the data by the specified field.
-  if (req.query.order) {
-    const order = req.query.order
+  // If `ordering` query param is set, then sort the data by the specified field.
+  if (req.query.ordering) {
+    const ordering = req.query.ordering
       .split(",")
       .map((item) => (item.startsWith("-") ? [item.slice(1), -1] : [item, 1]))
 
-    for (const [field, direction] of order) {
+    for (const [field, direction] of ordering) {
       data.sort((a, b) => {
         if (a[field] < b[field]) {
           return -1 * direction

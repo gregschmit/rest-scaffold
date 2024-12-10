@@ -9,12 +9,33 @@
         target: "/api/paged/users",
         pagination: { pageSize: [5, 2, 10, 20, 50] },
         autoRefreshSeconds: 4,
+        sortable: true,
         fieldConfig: {
           id: { label: "ID" },
           login: { label: "Login" },
-          first_name: { label: "First Name" },
-          last_name: { label: "Last Name" },
-          note: { label: "Note" },
+          name: { label: "Name" },
+          active: { label: "Active", type: "boolean", dformat: { style: "badge" } },
+          birth_date: { label: "Birth Date", type: "date" },
+          birth_time: { label: "Birth Time", type: "time" },
+          next_exam: { label: "Next Exam", type: "datetime" },
+          risk_score: { label: "Risk Score", type: "number" },
+          balance: {
+            label: "Balance",
+            type: "number",
+            format: { style: "currency", currency: "USD" },
+          },
+          ev: {
+            label: "EV",
+            readonly: true,
+            sortable: false,
+            render: (record, { config }) => {
+              return config.formatNumber(
+                record.balance * (record.risk_score / 10000),
+                { numberFormat: { maximumFractionDigits: 2 } },
+              )
+            },
+          },
+          created_at: { label: "Created At", type: "datetime", readonly: true },
         },
         // canShow: false,
         // canDelete: false,
@@ -27,11 +48,11 @@
       }
       .left,
       .right {
-        width: 50%;
         min-height: 50px;
         min-width: 50px;
       }
       .left {
+        width: 95%;
         overflow-x: auto;
         resize: horizontal;
         border: 2px dashed #f0f;
