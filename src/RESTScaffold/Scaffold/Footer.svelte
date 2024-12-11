@@ -6,7 +6,7 @@
   let pageSize = $state(config.pagination.pageSize?.[0])
 </script>
 
-<div class="rest-scaffold-footer">
+<div class="rs-footer">
   <span>
     {data.results?.length}
     {#if data.pagination}
@@ -37,7 +37,7 @@
     {/if}
 
     {#if config.pagination.pageSize?.length > 1}
-      <span class="rest-scaffold-pagination-select-wrapper">
+      <span class="rs-pagination-select-wrapper">
         <select
           bind:value={pageSize}
           onchange={() => config.refresh({ page: 1, pageSize })}
@@ -54,7 +54,7 @@
 </div>
 
 <style>
-  .rest-scaffold-footer {
+  .rs-footer {
     display: flex;
     justify-content: space-between;
 
@@ -66,7 +66,7 @@
     font-weight: bold;
   }
 
-  .rest-scaffold-pagination-select-wrapper {
+  .rs-pagination-select-wrapper {
     font-weight: normal;
   }
 </style>

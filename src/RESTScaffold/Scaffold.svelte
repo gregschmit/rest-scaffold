@@ -7,23 +7,23 @@
 </script>
 
 <Header {config} {processing} />
-<div class="rest-scaffold-table-wrapper">
+<div class="rs-table-wrapper">
   <table>
     <thead>
       <tr>
-        {#each config.fields as f}
+        {#each config.listFields as f}
           {#if config.fieldConfig[f].sortable}
-            <th class="rest-scaffold-sortable" onclick={() => config.refresh({ sort: f })}>
-              <span class="rest-scaffold-table-header">{config.fieldConfig[f].label}</span>
+            <th class="rs-sortable" onclick={() => config.refresh({ sort: f })}>
+              <span class="rs-table-header">{config.fieldConfig[f].label}</span>
               <span
-                class="rest-scaffold-sort"
-                class:rest-scaffold-sort-asc={f in sort.parts && sort.parts[f]}
-                class:rest-scaffold-sort-desc={f in sort.parts && !sort.parts[f]}
+                class="rs-sort"
+                class:rs-sort-asc={f in sort.parts && sort.parts[f]}
+                class:rs-sort-desc={f in sort.parts && !sort.parts[f]}
               ></span>
             </th>
           {:else}
             <th>
-              <span class="rest-scaffold-table-header">{config.fieldConfig[f].label}</span>
+              <span class="rs-table-header">{config.fieldConfig[f].label}</span>
             </th>
           {/if}
         {/each}
@@ -40,7 +40,7 @@
 <Footer {config} {data} />
 
 <style>
-  .rest-scaffold-table-wrapper {
+  .rs-table-wrapper {
     margin: 0;
     padding: 0;
     width: 100%;
@@ -74,14 +74,14 @@
       light-dark(var(--rs-light-table-border-h), var(--rs-dark-table-border-h));
   }
 
-  .rest-scaffold-sortable {
+  .rs-sortable {
     position: relative;
 
-    .rest-scaffold-table-header {
+    .rs-table-header {
       margin-right: 1em;
     }
 
-    .rest-scaffold-sort {
+    .rs-sort {
       position: absolute;
       right: 0.7em;
       top: 0;
@@ -101,7 +101,7 @@
         bottom: 50%;
       }
 
-      &.rest-scaffold-sort-asc::before {
+      &.rs-sort-asc::before {
         opacity: 1;
       }
 
@@ -116,7 +116,7 @@
         top: 50%;
       }
 
-      &.rest-scaffold-sort-desc::after {
+      &.rs-sort-desc::after {
         opacity: 1;
       }
     }

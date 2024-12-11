@@ -2,7 +2,7 @@ import { mount } from "svelte"
 
 import RESTScaffold from "./RESTScaffold"
 
-const MOUNTABLE_EL = '[data-rest-scaffold]:not([data-rest-scaffold-mounted="true"])'
+const MOUNTABLE_EL = '[data-rest-scaffold]:not([data-rs-mounted="true"])'
 
 // Mount the `RESTScaffold` component on the given element.
 function mountApp(el, input_args) {

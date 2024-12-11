@@ -6,15 +6,15 @@
   let viewState = $state(null)
 </script>
 
-<tr class="rest-scaffold-record" class:rest-scaffold-even={i % 2}>
-  {#each config.fields as f}
-    <td>{@html config.render(record, f)}</td>
+<tr class="rs-record" class:rs-even={i % 2}>
+  {#each config.listFields as f}
+    <td>{@html config._render(f, record)}</td>
   {/each}
   <td>
     {#if config.canShow}
-      <button onclick={() => (viewState = "show")} class="rest-scaffold-link-button">Show</button>
+      <button onclick={() => (viewState = "show")} class="rs-link-button">Show</button>
     {/if}
-    <!-- <button on:click={() => config.edit(record)} class="rest-scaffold-link-button">
+    <!-- <button on:click={() => config.edit(record)} class="rs-link-button">
       Edit
     </button> -->
     {#if config.canDelete}
@@ -24,7 +24,7 @@
             config.refresh({ delete: record })
           }
         }}
-        class="rest-scaffold-link-button rest-scaffold-danger"
+        class="rs-link-button rs-link-danger"
       >
         Delete
       </button>
@@ -37,7 +37,7 @@
 {/if}
 
 <style>
-  tr.rest-scaffold-even {
+  tr.rs-even {
     background-color: light-dark(var(--rs-light-table-striped-bg), var(--rs-dark-table-striped-bg));
   }
   td + td {
@@ -46,15 +46,15 @@
   }
 
   /* Ensure first and last columns are not wrapped. */
-  tr.rest-scaffold-record > td:first-child,
-  tr.rest-scaffold-record > td:last-child {
+  tr.rs-record > td:first-child,
+  tr.rs-record > td:last-child {
     word-wrap: normal;
     word-break: normal;
     white-space: nowrap;
   }
 
   /* Last column should be right-aligned. */
-  tr.rest-scaffold-record > td:last-child {
+  tr.rs-record > td:last-child {
     text-align: right;
   }
 </style>

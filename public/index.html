@@ -10,24 +10,27 @@
         pagination: { pageSize: [5, 2, 10, 20, 50] },
         autoRefreshSeconds: 4,
         sortable: true,
+        listFields: ["id", "login", "name", "active", "is_staff", "next_exam", "risk_score", "balance", "ev"],
         fieldConfig: {
           id: { label: "ID" },
           login: { label: "Login" },
           name: { label: "Name" },
-          active: { label: "Active", type: "boolean", dformat: { style: "badge" } },
+          active: { label: "Active", type: "boolean", format: { style: "badge" } },
+          is_staff: { label: "Is Staff", type: "boolean", format: { style: "badge" } },
+          lucky_number: { label: "Lucky Number", type: "integer" },
           birth_date: { label: "Birth Date", type: "date" },
           birth_time: { label: "Birth Time", type: "time" },
           next_exam: { label: "Next Exam", type: "datetime" },
           risk_score: { label: "Risk Score", type: "number" },
           balance: {
             label: "Balance",
-            type: "number",
+            type: "decimal",
+            inputOptions: { step: 0.01, min: 0 },
             format: { style: "currency", currency: "USD" },
           },
           ev: {
             label: "EV",
-            readonly: true,
-            sortable: false,
+            type: "virtual",
             render: (record, { config }) => {
               return config.formatNumber(
                 record.balance * (record.risk_score / 10000),

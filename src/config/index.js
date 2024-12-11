@@ -9,26 +9,24 @@ const DEFAULT_LIGHT_THEME = {
   fg: "black",
   viewBg: "#d9d9d9",
 
-  primary: "#0d6efd",
-
-  link: "#0d6efd",
-  linkHover: "#0a58ca",
-  linkDanger: "#dc3545",
-  linkDangerHover: "#b02a37",
-
   tableHeaderBg: "#eee",
   tableBorderH: "#aeaeae",
   tableBorderV: "#d9d9d9",
   tableStripedBg: "#f7f7f7",
 
-  alertSuccessBg: "#a6e0c6",
-  alertSuccessFg: "#024012",
-  alertInfoBg: "#cff4fc",
-  alertInfoFg: "#055160",
-  alertWarningBg: "#fff3cd",
-  alertWarningFg: "#664d03",
-  alertErrorBg: "#f8d7da",
-  alertErrorFg: "#58151c",
+  primary: "#0d6efd",
+  primaryHover: "#0a58ca",
+  danger: "#dc3545",
+  dangerHover: "#b02a37",
+
+  infoBg: "#cff4fc",
+  infoFg: "#055160",
+  successBg: "#a6e0c6",
+  successFg: "#024012",
+  warningBg: "#fff3cd",
+  warningFg: "#664d03",
+  errorBg: "#f8d7da",
+  errorFg: "#58151c",
 }
 
 const DEFAULT_DARK_THEME = {
@@ -36,26 +34,24 @@ const DEFAULT_DARK_THEME = {
   fg: "#f7f7f7",
   viewBg: "#333",
 
-  primary: "#6ea8fe",
-
-  link: "#6ea8fe",
-  linkHover: "#8bb9fe",
-  linkDanger: "#ff5b6b",
-  linkDangerHover: "#ff7b89",
-
   tableHeaderBg: "#333",
   tableBorderH: "#666",
   tableBorderV: "#333",
   tableStripedBg: "#222",
 
-  alertSuccessBg: "#0b2e13",
-  alertSuccessFg: "#23d950",
-  alertInfoBg: "#032830",
-  alertInfoFg: "#6edff6",
-  alertWarningBg: "#332701",
-  alertWarningFg: "#ffda6a",
-  alertErrorBg: "#2c0b0e",
-  alertErrorFg: "#ea868f",
+  primary: "#6ea8fe",
+  primaryHover: "#8bb9fe",
+  danger: "#ff5b6b",
+  dangerHover: "#ff7b89",
+
+  infoBg: "#032830",
+  infoFg: "#6edff6",
+  successBg: "#0b2e13",
+  successFg: "#23d950",
+  warningBg: "#332701",
+  warningFg: "#ffda6a",
+  errorBg: "#2c0b0e",
+  errorFg: "#ea868f",
 }
 
 class HTMLSafeString extends String {}
@@ -76,6 +72,10 @@ export default class Config {
 
   fields
   fieldConfig
+  listFields
+  showFields
+  createFields
+  updateFields
 
   actionPermissionField = "can_$action?"
   canShow = true
@@ -123,11 +123,11 @@ export default class Config {
 
   // Set the properties of an object from a dictionary of arguments, only if the property exists on
   // the object. Recursively set properties of nested objects.
-  assignArgs(object, args) {
+  _assignArgs(object, args) {
     for (const key in args) {
       if (object.hasOwnProperty(key)) {
         if (this.isObject(object[key]) && this.isObject(args[key])) {
-          this.assignArgs(object[key], args[key])
+          this._assignArgs(object[key], args[key])
         } else {
           object[key] = args[key]
         }
@@ -136,7 +136,7 @@ export default class Config {
   }
 
   constructor(args) {
-    this.assignArgs(this, args)
+    this._assignArgs(this, args)
 
     // Trim query and trailing slash off target URL.
     this.target = this.target.replace(/\?.*/, "").replace(/\/+$/, "")
@@ -153,6 +153,33 @@ export default class Config {
           this.fieldConfig[field] = {}
         }
       }
+    }
+
+    // Make `pkField` readonly.
+    this.fieldConfig[this.pkField] ||= {}
+    this.fieldConfig[this.pkField].readonly = true
+
+    // Make `virtual` fields readonly and not sortable.
+    for (const field in this.fieldConfig) {
+      if (this.fieldConfig[field].type == "virtual") {
+        this.fieldConfig[field].readonly = true
+        this.fieldConfig[field].sortable = false
+      }
+    }
+
+    // Dynamically set `listFields`, `showFields`, `createFields`, and `updateFields` if they are
+    // not provided.
+    if (!this.listFields) {
+      this.listFields = this.fields
+    }
+    if (!this.showFields) {
+      this.showFields = this.fields
+    }
+    if (!this.createFields) {
+      this.createFields = this.fields
+    }
+    if (!this.updateFields) {
+      this.updateFields = this.fields
     }
 
     // Set some reasonable defaults for `fieldConfig`.
@@ -185,9 +212,12 @@ export default class Config {
       return s
     }
 
+    // Let `innerText` assignment (i.e., the browser) handle escaping.
     let el = document.createElement("span")
-    el.innerText = s
-    return el.innerHTML
+    el.innerText = s || ""
+
+    // Lastly, escape quotes:
+    return el.innerHTML.replace(/"/g, "&quot;")
   }
 
   formatBoolean(value, { format } = {}) {
@@ -198,8 +228,8 @@ export default class Config {
       if (format.style == "text") {
         return value ? t : f
       } else if (format.style == "badge") {
-        return `<span class="rest-scaffold-badge ${
-          value ? "rest-scaffold-badge-success" : "rest-scaffold-badge-error"
+        return `<span class="rs-badge ${
+          value ? "rs-badge-success" : "rs-badge-error"
         }">${value ? t : f}</span>`
       }
     }
@@ -219,7 +249,11 @@ export default class Config {
   formatTime(value, { format } = {}) {
     format ||= this.timeFormat
 
-    return new Date(`2000-01-01T${value}Z`).toLocaleTimeString(undefined, format)
+    if (format == "zone") {
+      return new Date(`2000-01-01T${value}Z`).toLocaleTimeString()
+    }
+
+    return new Date(`2000-01-01T${value}`).toLocaleTimeString(undefined, format || undefined)
   }
 
   formatDateTime(value, { format } = {}) {
@@ -245,7 +279,7 @@ export default class Config {
   }
 
   // Render a record's field according to the field configuration
-  render(record, field) {
+  _render(field, record) {
     const fcfg = this.fieldConfig[field]
 
     if (fcfg.render) {
@@ -262,7 +296,7 @@ export default class Config {
       return this.formatTime(value, { format: fcfg.format })
     } else if (fcfg.type == "datetime") {
       return this.formatDateTime(value, { format: fcfg.format })
-    } else if (fcfg.type == "number") {
+    } else if (["number", "integer", "float", "decimal"].includes(fcfg.type)) {
       return this.formatNumber(value, { format: fcfg.format })
     }
 
@@ -270,27 +304,137 @@ export default class Config {
     return this.escape(value)
   }
 
-  // Render a record's field for a detail view.
-  renderDetail(record, field) {
+  // Render a record's field for a show (detail) view.
+  _renderShow(field, record) {
     const fcfg = this.fieldConfig[field]
 
-    if (fcfg.renderDetail) {
-      return this.escape(fcfg.renderDetail(record, { config: this }))
+    if (fcfg.renderShow) {
+      return this.escape(fcfg.renderShow(record, { config: this }))
     } else if (fcfg.render) {
       return this.escape(fcfg.render(record, { config: this }))
     }
 
-    return this.render(record, field)
+    return this._render(field, record)
+  }
+
+  // Convert an object to an HTML attributes string.
+  toAttributes(obj) {
+    return Object.entries(obj)
+      .map(([k, v]) => `${k}="${v}"`)
+      .join(" ")
+  }
+
+  inputLabel(field) {
+    const fcfg = this.fieldConfig[field]
+
+    return this.htmlSafe(`<label class="rs-label-prefix" for="${field}">${fcfg.label}</label>`)
+  }
+
+  inputString(field, { value } = {}) {
+    const fcfg = this.fieldConfig[field]
+
+    return this.htmlSafe(
+      `<div class="rs-form-field rs-form-field-string rs-form-field-f-${field}">
+        ${this.inputLabel(field)}
+        <input type="text" id="${field}" name="${field}" ${
+          value ? `value="${this.escape(value)}"` : ""
+        } ${fcfg.inputOptions ? this.toAttributes(fcfg.inputOptions) : ""}>
+      </div>`,
+    )
+  }
+
+  inputBoolean(field, { value } = {}) {
+    const fcfg = this.fieldConfig[field]
+
+    return this.htmlSafe(
+      `<div class="rs-form-field rs-form-field-boolean rs-form-field-f-${field}">
+        <label class="rs-label-postfix">
+          <input type="checkbox" id="${field}" name="${field}" ${value ? "checked" : ""} ${
+            fcfg.inputOptions ? this.toAttributes(fcfg.inputOptions) : ""
+          }>
+          <span>${fcfg.label}?</span>
+        </label>
+      </div>`,
+    )
+  }
+
+  inputDate(field, { value } = {}) {
+    const fcfg = this.fieldConfig[field]
+
+    return this.htmlSafe(
+      `<div class="rs-form-field rs-form-field-date rs-form-field-f-${field}">
+        ${this.inputLabel(field)}
+        <input type="date" id="${field}" name="${field}" ${
+          value ? `value="${this.escape(value)}"` : ""
+        } ${fcfg.inputOptions ? this.toAttributes(fcfg.inputOptions) : ""}>
+      </div>`,
+    )
+  }
+
+  inputTime(field, { value } = {}) {
+    const fcfg = this.fieldConfig[field]
+
+    return this.htmlSafe(
+      `<div class="rs-form-field rs-form-field-time rs-form-field-f-${field}">
+        ${this.inputLabel(field)}
+        <input type="time" id="${field}" name="${field}" ${
+          value ? `value="${this.escape(value)}"` : ""
+        } ${fcfg.inputOptions ? this.toAttributes(fcfg.inputOptions) : ""}>
+      </div>`,
+    )
+  }
+
+  inputDateTime(field, { value } = {}) {
+    const fcfg = this.fieldConfig[field]
+
+    return this.htmlSafe(
+      `<div class="rs-form-field rs-form-field-datetime rs-form-field-f-${field}">
+        ${this.inputLabel(field)}
+        <input type="datetime-local" id="${field}" name="${field}" ${
+          value ? `value="${this.escape(value)}"` : ""
+        } ${fcfg.inputOptions ? this.toAttributes(fcfg.inputOptions) : ""}>
+      </div>`,
+    )
+  }
+
+  inputNumber(field, { value } = {}) {
+    const fcfg = this.fieldConfig[field]
+
+    return this.htmlSafe(
+      `<div class="rs-form-field rs-form-field-number rs-form-field-f-${field}">
+        ${this.inputLabel(field)}
+        <input type="number" id="${field}" name="${field}" ${
+          value ? `value="${this.escape(value)}"` : ""
+        } ${fcfg.inputOptions ? this.toAttributes(fcfg.inputOptions) : ""} data-rs-type="${
+          fcfg.type
+        }">
+      </div>`,
+    )
   }
 
   // Render an HTML input for a record's field, given an optional initial value.
-  renderInput(field, { record }) {
+  _renderInput(field, { record } = {}) {
     const fcfg = this.fieldConfig[field]
 
     if (fcfg.renderInput) {
-      return fcfg.renderInput(value)
+      return this.escape(fcfg.renderInput({ record, config: this }))
     }
 
-    return `<input type="text" value="${value || ""}" />`
+    const value = record?.[field]
+
+    if (fcfg.type == "boolean") {
+      return this.inputBoolean(field, { value })
+    } else if (fcfg.type == "date") {
+      return this.inputDate(field, { value })
+    } else if (fcfg.type == "time") {
+      return this.inputTime(field, { value })
+    } else if (fcfg.type == "datetime") {
+      return this.inputDateTime(field, { value })
+    } else if (["number", "integer", "float", "decimal"].includes(fcfg.type)) {
+      return this.inputNumber(field, { value })
+    }
+
+    // Implicit `string` type.
+    return this.inputString(field, { value })
   }
 }

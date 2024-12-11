@@ -16,7 +16,7 @@
   })
 </script>
 
-<div class="rs-alert rs-alert-{type}">
+<div class="rs-alert rs-{type}">
   <div>
     {#if dismiss}
       <button onclick={dismiss} aria-label="Close"></button>
@@ -66,24 +66,24 @@
     opacity: 0.9;
   }
 
-  .rs-alert-success {
-    background-color: light-dark(var(--rs-light-alert-success-bg), var(--rs-dark-alert-success-bg));
-    border-color: light-dark(var(--rs-light-alert-success-fg), var(--rs-dark-alert-success-fg));
-    color: light-dark(var(--rs-light-alert-success-fg), var(--rs-dark-alert-success-fg));
+  .rs-success {
+    background-color: light-dark(var(--rs-light-success-bg), var(--rs-dark-success-bg));
+    border-color: light-dark(var(--rs-light-success-fg), var(--rs-dark-success-fg));
+    color: light-dark(var(--rs-light-success-fg), var(--rs-dark-success-fg));
   }
-  .rs-alert-info {
-    background-color: light-dark(var(--rs-light-alert-info-bg), var(--rs-dark-alert-info-bg));
-    border-color: light-dark(var(--rs-light-alert-info-fg), var(--rs-dark-alert-info-fg));
-    color: light-dark(var(--rs-light-alert-info-fg), var(--rs-dark-alert-info-fg));
+  .rs-info {
+    background-color: light-dark(var(--rs-light-info-bg), var(--rs-dark-info-bg));
+    border-color: light-dark(var(--rs-light-info-fg), var(--rs-dark-info-fg));
+    color: light-dark(var(--rs-light-info-fg), var(--rs-dark-info-fg));
   }
-  .rs-alert-warning {
-    background-color: light-dark(var(--rs-light-alert-warning-bg), var(--rs-dark-alert-warning-bg));
-    border-color: light-dark(var(--rs-light-alert-warning-fg), var(--rs-dark-alert-warning-fg));
-    color: light-dark(var(--rs-light-alert-warning-fg), var(--rs-dark-alert-warning-fg));
+  .rs-warning {
+    background-color: light-dark(var(--rs-light-warning-bg), var(--rs-dark-warning-bg));
+    border-color: light-dark(var(--rs-light-warning-fg), var(--rs-dark-warning-fg));
+    color: light-dark(var(--rs-light-warning-fg), var(--rs-dark-warning-fg));
   }
-  .rs-alert-error {
-    background-color: light-dark(var(--rs-light-alert-error-bg), var(--rs-dark-alert-error-bg));
-    border-color: light-dark(var(--rs-light-alert-error-fg), var(--rs-dark-alert-error-fg));
-    color: light-dark(var(--rs-light-alert-error-fg), var(--rs-dark-alert-error-fg));
+  .rs-error {
+    background-color: light-dark(var(--rs-light-error-bg), var(--rs-dark-error-bg));
+    border-color: light-dark(var(--rs-light-error-fg), var(--rs-dark-error-fg));
+    color: light-dark(var(--rs-light-error-fg), var(--rs-dark-error-fg));
   }
 </style>

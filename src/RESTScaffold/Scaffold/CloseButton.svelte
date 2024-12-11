@@ -2,4 +2,4 @@
   let { action } = $props()
 </script>
 
-<button onclick={action} class="rest-scaffold-link-button" style="float: right">Close</button>
+<button onclick={action} class="rs-link-button" style="float: right">Close</button>

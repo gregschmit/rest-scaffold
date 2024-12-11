@@ -2,6 +2,6 @@
   let { config, i } = $props()
 </script>
 
-<button onclick={() => config.refresh({ page: i })} class="rest-scaffold-link-button">
+<button onclick={() => config.refresh({ page: i })} class="rs-link-button">
   {i}
 </button>

@@ -14,9 +14,14 @@ function mutateCopy(from, to) {
 faker.seed(1234)
 const USERS = Array.from({ length: 40 }, (_, i) => {
   const id = i + 1
-  const login = faker.internet.username()
   let name = faker.person.fullName()
+  const login = faker.internet.username({
+    firstName: name.split(" ")[0],
+    lastName: name.split(" ").slice(-1)[0],
+  })
   const active = faker.datatype.boolean(0.9)
+  const is_staff = faker.datatype.boolean(0.3)
+  const lucky_number = faker.number.int({ min: 10, max: 100 })
   let birth_date = faker.date
     .birthdate({ mode: "age", min: 18, max: 90 })
     .toISOString()
@@ -27,11 +32,12 @@ const USERS = Array.from({ length: 40 }, (_, i) => {
   const balance = faker.finance.amount()
   const created_at = faker.date.past({ years: 10 }).toISOString()
 
+  // Construct a pathologically bad user to test XSS.
   if (i == 1) {
     name = `<b>${name}</b>`
     birth_date = `${birth_date} <script>alert("hi!")</script>`
-    birth_time = `${birth_time} <script>alert("hi!")</script>`
-    next_exam = `${next_exam} <script>alert("hi!")</script>`
+    birth_time = `${birth_time} <script>alert("hey!")</script>`
+    next_exam = `${next_exam} <script>alert("hallo!")</script>`
   }
 
   return {
@@ -39,6 +45,8 @@ const USERS = Array.from({ length: 40 }, (_, i) => {
     login,
     name,
     active,
+    is_staff,
+    lucky_number,
     birth_date,
     birth_time,
     next_exam,

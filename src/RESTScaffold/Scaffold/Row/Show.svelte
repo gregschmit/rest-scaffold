@@ -4,17 +4,16 @@
   let { config, record, viewState } = $props()
 </script>
 
-<tr class="rest-scaffold-view rest-scaffold-show">
+<tr class="rs-view rs-show">
   <td colspan={config.fields.length + 1}>
-    <div>
-      <CloseButton action={() => (viewState = null)} />
-      <dl style="margin: 0">
-        {#each config.fields as f}
-          <dt>{config.fieldConfig[f].label}</dt>
-          <dd>{@html config.renderDetail(record, f)}</dd>
-        {/each}
-      </dl>
-    </div>
+    <CloseButton action={() => (viewState = null)} />
+    <span class="rs-view-title">Show {config.recordTitle}</span>
+    <dl style="margin: 0">
+      {#each config.showFields as f}
+        <dt>{config.fieldConfig[f].label}</dt>
+        <dd>{@html config._renderShow(f, record)}</dd>
+      {/each}
+    </dl>
   </td>
 </tr>
 

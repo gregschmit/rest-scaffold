@@ -1,14 +1,15 @@
 <script>
   import Spinner from "../Spinner"
   import CloseButton from "./CloseButton"
+  import Form from "./Form"
 
   let { config, processing } = $props()
 
   let viewState = $state(null)
 </script>
 
-<div class="rest-scaffold-header">
-  <span class="rest-scaffold-header-title">
+<div class="rs-header">
+  <span class="rs-header-title">
     {config.title}
     {#if processing}
       <Spinner size=".8em" />
@@ -16,32 +17,35 @@
   </span>
   <span>
     {#if config.help}
-      <button class="rest-scaffold-link-button" onclick={() => (viewState = "help")}>Help</button>
+      <button class="rs-link-button" onclick={() => (viewState = "help")}>Help</button>
     {/if}
     {#if config.canRefresh}
-      <button class="rest-scaffold-link-button" onclick={() => config.refresh()}>Refresh</button>
+      <button class="rs-link-button" onclick={() => config.refresh()}>Refresh</button>
     {/if}
     {#if config.canCreate}
-      <button class="rest-scaffold-link-button" onclick={() => (viewState = "new")}>New</button>
+      <button class="rs-link-button" onclick={() => (viewState = "new")}>New</button>
     {/if}
   </span>
 </div>
 
 {#if viewState === "help"}
-  <div class="rest-scaffold-view rest-scaffold-help">
-    {@html config.help}
+  <div class="rs-view rs-help">
     <CloseButton action={() => (viewState = null)} />
+    <span class="rs-view-title">Help</span>
+    {@html config.help}
   </div>
 {/if}
 
 {#if viewState === "new"}
-  <div class="rest-scaffold-view rest-scaffold-new">
+  <div class="rs-view rs-new">
     <CloseButton action={() => (viewState = null)} />
+    <span class="rs-view-title">New {config.recordTitle}</span>
+    <Form {config} {viewState} />
   </div>
 {/if}
 
 <style>
-  .rest-scaffold-header {
+  .rs-header {
     display: flex;
     justify-content: space-between;
 
@@ -53,7 +57,7 @@
     font-weight: bold;
   }
 
-  .rest-scaffold-header-title {
+  .rs-header-title {
     padding-right: 0.5em;
 
     font-size: 1.5em;
