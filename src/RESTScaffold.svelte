@@ -50,9 +50,9 @@
     }
   }
 
-  let { args } = $props()
+  let { opts } = $props()
 
-  let config = new Config(args)
+  let config = new Config(opts)
   let data = $state(null)
 
   let loadError = $state(null)

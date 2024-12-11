@@ -82,10 +82,7 @@
         <div id="usersScaffold">
           <script type="module">
             import RESTScaffold from "./dist/rest-scaffold.js"
-            RESTScaffold.setup({
-              el: document.getElementById("usersScaffold"),
-              args: window._kitchen_sink_conf,
-            })
+            RESTScaffold.mount("#usersScaffold", window._kitchen_sink_conf)
           </script>
         </div>
       </div>
@@ -100,10 +97,7 @@
         <div id="darkUsersScaffold">
           <script type="module">
             import RESTScaffold from "./dist/rest-scaffold.js"
-            RESTScaffold.setup({
-              el: document.getElementById("darkUsersScaffold"),
-              args: { ...window._kitchen_sink_conf },
-            })
+            RESTScaffold.mount("#darkUsersScaffold", window._kitchen_sink_conf)
           </script>
         </div>
       </div>

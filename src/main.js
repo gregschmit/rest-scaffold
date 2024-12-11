@@ -1,62 +1,60 @@
-import { mount } from "svelte"
+import { mount as svelteMount } from "svelte"
 
 import RESTScaffold from "./RESTScaffold"
 
 const MOUNTABLE_EL = '[data-rest-scaffold]:not([data-rs-mounted="true"])'
 
 // Mount the `RESTScaffold` component on the given element.
-function mountApp(el, input_args) {
-  // We cannot mount unless we have args (either from `input_args` or from the data attribute), or
-  // if it's already mounted.
-  if (!(input_args || el.dataset?.restScaffold) || el.dataset.restScaffoldMounted) {
+function mountApp(el, inputOpts = null) {
+  // We cannot mount unless we have opts (either from `inputOpts` or from the data attribute), or if
+  // it's already mounted.
+  if (!(inputOpts || el.dataset?.restScaffold) || el.dataset.restScaffoldMounted) {
     return
   }
 
   el.dataset.restScaffoldMounted = "true"
   el.replaceChildren()
 
-  let args
+  let opts
   try {
-    args = input_args ? input_args : JSON.parse(el.dataset.restScaffold)
+    opts = inputOpts || JSON.parse(el.dataset.restScaffold)
   } catch (e) {
     console.error(`Error parsing JSON from \`data-rest-scaffold\` attr: ${e.message}`)
     return
   }
 
-  const scaffold = mount(RESTScaffold, { target: el, props: { args: args } })
+  const scaffold = svelteMount(RESTScaffold, { target: el, props: { opts } })
   el.restScaffold = scaffold
+
   return scaffold
 }
 
-function setupNow(opts = {}) {
-  if (opts.el) {
-    if (opts.args) {
-      return mountApp(opts.el, opts.args)
-    } else if (opts.el.dataset?.restScaffold) {
-      return mountApp(opts.el)
-    } else {
-      opts.el.querySelectorAll(MOUNTABLE_EL).forEach((el) => {
-        mountApp(el)
-      })
-    }
+function scan() {
+  document.querySelectorAll(MOUNTABLE_EL).forEach((el) => mountApp(el))
+}
+
+function init({ defer = false } = {}) {
+  if (defer) {
+    document.addEventListener("DOMContentLoaded", () => scan())
   } else {
-    document.querySelectorAll(MOUNTABLE_EL).forEach((el) => {
-      mountApp(el)
-    })
+    scan()
   }
 }
 
-function setup(opts = {}) {
-  const should_defer = opts.defer
+function mount(el, opts = {}) {
+  if (typeof el === "string") {
+    el = document.querySelector(el)
+  }
+
+  const shouldDefer = opts.defer
   delete opts.defer
-  if (should_defer) {
-    document.addEventListener("DOMContentLoaded", () => {
-      setupNow(opts)
-    })
+
+  if (shouldDefer) {
+    document.addEventListener("DOMContentLoaded", () => mountApp(el, opts))
   } else {
-    return setupNow(opts)
+    return mountApp(el, opts)
   }
 }
 
 // Export the public API.
-export default { setup }
+export default { init, mount }

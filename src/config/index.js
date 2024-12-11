@@ -123,20 +123,20 @@ export default class Config {
 
   // Set the properties of an object from a dictionary of arguments, only if the property exists on
   // the object. Recursively set properties of nested objects.
-  _assignArgs(object, args) {
-    for (const key in args) {
+  _assignOpts(object, opts) {
+    for (const key in opts) {
       if (object.hasOwnProperty(key)) {
-        if (this.isObject(object[key]) && this.isObject(args[key])) {
-          this._assignArgs(object[key], args[key])
+        if (this.isObject(object[key]) && this.isObject(opts[key])) {
+          this._assignOpts(object[key], opts[key])
         } else {
-          object[key] = args[key]
+          object[key] = opts[key]
         }
       }
     }
   }
 
-  constructor(args) {
-    this._assignArgs(this, args)
+  constructor(opts) {
+    this._assignOpts(this, opts)
 
     // Trim query and trailing slash off target URL.
     this.target = this.target.replace(/\?.*/, "").replace(/\/+$/, "")
