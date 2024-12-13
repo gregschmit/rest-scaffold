@@ -1,0 +1,11 @@
+<%- include('_header') -%>
+<h2>IIFE</h2>
+<script src="dist/rest-scaffold.iife.js"></script>
+<script>
+  RESTScaffold.scan({ defer: true })
+</script>
+<h3>Plain Unpaged:</h3>
+<div
+  data-rest-scaffold='{"target": "http://127.0.0.1:3000/api/plain/users", "fields": ["id", "login", "is_admin", "age", "balance"]}'
+></div>
+<%- include('_footer') -%>

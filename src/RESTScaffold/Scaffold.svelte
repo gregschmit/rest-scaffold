@@ -64,12 +64,12 @@
     text-align: left;
   }
 
-  :global(td) {
+  .rs-table-wrapper :global(td) {
     padding: 0.3em;
     text-align: left;
   }
 
-  :global(tr + tr) {
+  .rs-table-wrapper :global(tr + tr) {
     border-top: 0.1em solid
       light-dark(var(--rs-light-table-border-h), var(--rs-dark-table-border-h));
   }

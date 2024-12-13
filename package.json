@@ -17,7 +17,6 @@
   "scripts": {
     "build": "rollup -c",
     "watch": "rollup -c -w",
-    "serve": "nodemon dev",
     "dev": "concurrently -k -n \"BLD,SRV\" \"npm:watch\" \"nodemon dev\"",
     "prepublish": "npm run build"
   },
@@ -25,14 +24,14 @@
     "dist"
   ],
   "devDependencies": {
-    "@faker-js/faker": "^9.3.0",
     "@rollup/plugin-node-resolve": "^15",
-    "@rollup/plugin-terser": "^0.4.4",
-    "concurrently": "^8.2.0",
-    "express": "^4.18.2",
-    "morgan": "^1.10.0",
-    "nocache": "^4.0.0",
-    "nodemon": "^3.0.1",
+    "@rollup/plugin-terser": "^0",
+    "concurrently": "^8",
+    "ejs": "^3",
+    "express": "^4",
+    "morgan": "^1",
+    "nocache": "^4",
+    "nodemon": "^3",
     "prettier": "^3",
     "prettier-plugin-svelte": "^3",
     "rollup": "^4",

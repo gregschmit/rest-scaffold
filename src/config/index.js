@@ -67,6 +67,7 @@ export default class Config {
   title = "Records"
   recordTitle = "Record"
   help
+  nonFieldErrorsKey = "root"
 
   inlineEdit = false
 
@@ -119,6 +120,16 @@ export default class Config {
 
   isObject(obj) {
     return obj && typeof obj === "object" && !Array.isArray(obj)
+  }
+
+  normalizeErrors(errors) {
+    if (typeof errors === "string") {
+      return errors ? [errors] : true
+    } else if (Array.isArray(errors)) {
+      return errors.length ? errors : true
+    }
+
+    return !!errors
   }
 
   // Set the properties of an object from a dictionary of arguments, only if the property exists on
@@ -330,111 +341,149 @@ export default class Config {
     return this.htmlSafe(`<label class="rs-label-prefix" for="${field}">${fcfg.label}</label>`)
   }
 
-  inputString(field, { value } = {}) {
-    const fcfg = this.fieldConfig[field]
-
+  inputWrapper(field, kind, errors, inputBlock) {
     return this.htmlSafe(
-      `<div class="rs-form-field rs-form-field-string rs-form-field-f-${field}">
-        ${this.inputLabel(field)}
-        <input type="text" id="${field}" name="${field}" ${
-          value ? `value="${this.escape(value)}"` : ""
-        } ${fcfg.inputOptions ? this.toAttributes(fcfg.inputOptions) : ""}>
+      `<div class="rs-form-field rs-form-field-${kind} rs-form-field-f-${field} ${
+        errors ? "rs-invalid" : ""
+      }">
+        ${inputBlock}
+        ${
+          errors && Array.isArray(errors)
+            ? errors.map((e) => `<div class="rs-invalid-text">${this.escape(e)}</div>`).join("")
+            : ""
+        }
       </div>`,
     )
   }
 
-  inputBoolean(field, { value } = {}) {
+  inputString(field, { value, errors } = {}) {
     const fcfg = this.fieldConfig[field]
 
-    return this.htmlSafe(
-      `<div class="rs-form-field rs-form-field-boolean rs-form-field-f-${field}">
-        <label class="rs-label-postfix">
-          <input type="checkbox" id="${field}" name="${field}" ${value ? "checked" : ""} ${
-            fcfg.inputOptions ? this.toAttributes(fcfg.inputOptions) : ""
-          }>
-          <span>${fcfg.label}?</span>
-        </label>
-      </div>`,
+    return this.inputWrapper(
+      field,
+      "string",
+      errors,
+      `${this.inputLabel(field)}<input type="text" id="${field}" name="${field}" ${
+        value ? `value="${this.escape(value)}"` : ""
+      } ${fcfg.inputOptions ? this.toAttributes(fcfg.inputOptions) : ""}>`,
     )
   }
 
-  inputDate(field, { value } = {}) {
+  inputBoolean(field, { value, errors } = {}) {
     const fcfg = this.fieldConfig[field]
 
-    return this.htmlSafe(
-      `<div class="rs-form-field rs-form-field-date rs-form-field-f-${field}">
-        ${this.inputLabel(field)}
-        <input type="date" id="${field}" name="${field}" ${
-          value ? `value="${this.escape(value)}"` : ""
-        } ${fcfg.inputOptions ? this.toAttributes(fcfg.inputOptions) : ""}>
-      </div>`,
+    return this.inputWrapper(
+      field,
+      "boolean",
+      errors,
+      `<label class="rs-label-postfix"><input type="checkbox" id="${field}" name="${field}" ${
+        value ? "checked" : ""
+      } ${fcfg.inputOptions ? this.toAttributes(fcfg.inputOptions) : ""}><span>${
+        fcfg.label
+      }?</span></label>`,
     )
   }
 
-  inputTime(field, { value } = {}) {
+  inputDate(field, { value, errors } = {}) {
     const fcfg = this.fieldConfig[field]
 
-    return this.htmlSafe(
-      `<div class="rs-form-field rs-form-field-time rs-form-field-f-${field}">
-        ${this.inputLabel(field)}
-        <input type="time" id="${field}" name="${field}" ${
-          value ? `value="${this.escape(value)}"` : ""
-        } ${fcfg.inputOptions ? this.toAttributes(fcfg.inputOptions) : ""}>
-      </div>`,
+    return this.inputWrapper(
+      field,
+      "date",
+      errors,
+      `${this.inputLabel(field)}<input type="date" id="${field}" name="${field}" ${
+        value ? `value="${this.escape(value)}"` : ""
+      } ${fcfg.inputOptions ? this.toAttributes(fcfg.inputOptions) : ""}>`,
     )
   }
 
-  inputDateTime(field, { value } = {}) {
+  inputTime(field, { value, errors } = {}) {
     const fcfg = this.fieldConfig[field]
 
-    return this.htmlSafe(
-      `<div class="rs-form-field rs-form-field-datetime rs-form-field-f-${field}">
-        ${this.inputLabel(field)}
-        <input type="datetime-local" id="${field}" name="${field}" ${
-          value ? `value="${this.escape(value)}"` : ""
-        } ${fcfg.inputOptions ? this.toAttributes(fcfg.inputOptions) : ""}>
-      </div>`,
+    return this.inputWrapper(
+      field,
+      "time",
+      errors,
+      `${this.inputLabel(field)}<input type="time" id="${field}" name="${field}" ${
+        value ? `value="${this.escape(value)}"` : ""
+      } ${fcfg.inputOptions ? this.toAttributes(fcfg.inputOptions) : ""}>`,
     )
   }
 
-  inputNumber(field, { value } = {}) {
+  inputDateTime(field, { value, errors } = {}) {
     const fcfg = this.fieldConfig[field]
 
-    return this.htmlSafe(
-      `<div class="rs-form-field rs-form-field-number rs-form-field-f-${field}">
-        ${this.inputLabel(field)}
-        <input type="number" id="${field}" name="${field}" ${
-          value ? `value="${this.escape(value)}"` : ""
-        } ${fcfg.inputOptions ? this.toAttributes(fcfg.inputOptions) : ""} data-rs-type="${
-          fcfg.type
-        }">
-      </div>`,
+    return this.inputWrapper(
+      field,
+      "datetime",
+      errors,
+      `${this.inputLabel(field)}<input type="datetime-local" id="${field}" name="${field}" ${
+        value ? `value="${this.escape(value)}"` : ""
+      } ${fcfg.inputOptions ? this.toAttributes(fcfg.inputOptions) : ""}>`,
+    )
+  }
+
+  inputNumber(field, { value, errors } = {}) {
+    const fcfg = this.fieldConfig[field]
+
+    return this.inputWrapper(
+      field,
+      "number",
+      errors,
+      `${this.inputLabel(field)}<input type="number" id="${field}" name="${field}" ${
+        value ? `value="${this.escape(value)}"` : ""
+      } ${fcfg.inputOptions ? this.toAttributes(fcfg.inputOptions) : ""}>`,
     )
   }
 
   // Render an HTML input for a record's field, given an optional initial value.
-  _renderInput(field, { record } = {}) {
+  _renderInput(field, { record, errors } = {}) {
     const fcfg = this.fieldConfig[field]
+    const normalizedErrors = this.normalizeErrors(errors)
 
     if (fcfg.renderInput) {
-      return this.escape(fcfg.renderInput({ record, config: this }))
+      return this.escape(fcfg.renderInput({ record, config: this, errors: normalizedErrors }))
     }
 
     const value = record?.[field]
 
     if (fcfg.type == "boolean") {
-      return this.inputBoolean(field, { value })
+      return this.inputBoolean(field, { value, errors: normalizedErrors })
     } else if (fcfg.type == "date") {
-      return this.inputDate(field, { value })
+      return this.inputDate(field, { value, errors: normalizedErrors })
     } else if (fcfg.type == "time") {
-      return this.inputTime(field, { value })
+      return this.inputTime(field, { value, errors: normalizedErrors })
     } else if (fcfg.type == "datetime") {
-      return this.inputDateTime(field, { value })
+      return this.inputDateTime(field, { value, errors: normalizedErrors })
     } else if (["number", "integer", "float", "decimal"].includes(fcfg.type)) {
-      return this.inputNumber(field, { value })
+      return this.inputNumber(field, { value, errors: normalizedErrors })
     }
 
     // Implicit `string` type.
-    return this.inputString(field, { value })
+    return this.inputString(field, { value, errors: normalizedErrors })
+  }
+
+  getFormJSON(form) {
+    const data = Object.fromEntries(new FormData(form).entries())
+
+    // Parse booleans.
+    Array.from(form.querySelectorAll('input[type="checkbox"]:not([disabled])')).forEach((el) => {
+      data[el.name] = el.checked
+    })
+
+    // Parse numbers.
+    Array.from(form.querySelectorAll('input[type="number"]:not([disabled])')).forEach((el) => {
+      if (el.getAttribute("data-rs-type") === "integer") {
+        data[el.name] = parseInt(data[el.name])
+      } else if (el.getAttribute("data-rs-type") === "float") {
+        data[el.name] = parseFloat(data[el.name])
+      } else if (el.getAttribute("data-rs-type") === "decimal") {
+        // String is the proper type for decimal numbers.
+      } else {
+        data[el.name] = Number(data[el.name])
+      }
+    })
+
+    return data
   }
 }

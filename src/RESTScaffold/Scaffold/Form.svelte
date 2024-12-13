@@ -1,45 +1,51 @@
 <script>
+  import Alert from "../Alert.svelte"
   import FieldGroup from "./Form/FieldGroup.svelte"
 
   let { config, viewState, record = null } = $props()
+  let errors = $state({})
+  let apiError = $state(null)
+
+  // let topErrorMessage = eff
 
   const fields = record ? config.updateFields : config.createFields
 
-  function submit(event) {
+  async function create(event) {
     event.preventDefault()
 
-    const data = Object.fromEntries(new FormData(event.target).entries())
+    const { payload, error } = await config.api.create(config.getFormJSON(event.target))
 
-    // Parse booleans.
-    Array.from(event.target.querySelectorAll('input[type="checkbox"]')).forEach((el) => {
-      data[el.name] = el.checked
-    })
-
-    // Parse numbners.
-    Array.from(event.target.querySelectorAll('input[type="number"]')).forEach((el) => {
-      // Test if `data-rs-type` is set to `integer`, `float`, `decimal`, or other (`number`).
-      if (el.getAttribute("data-rs-type") === "integer") {
-        data[el.name] = parseInt(data[el.name])
-      } else if (el.getAttribute("data-rs-type") === "float") {
-        data[el.name] = parseFloat(data[el.name])
-      } else if (el.getAttribute("data-rs-type") === "decimal") {
-        // String is the proper type for decimal numbers.
-      } else {
-        data[el.name] = Number(data[el.name])
+    if (error) {
+      if (payload.errors) {
+        errors = payload.errors
       }
-    })
 
-    // Remove hidden inputs.
-    Array.from(event.target.querySelectorAll(".rs-input-hidden")).forEach((el) => {
-      delete data[el.name]
-    })
+      apiError = error
+    } else {
+      errors = {}
+      apiError = null
+      config.refresh()
+      viewState = null
+    }
+  }
 
-    console.log(data)
+  async function update(event) {
+    event.preventDefault()
+    await onsubmit(config.getFormJSON(event.target), record.id)
   }
 </script>
 
-<form onsubmit={submit}>
-  <FieldGroup {config} {fields} {record} />
+<form onsubmit={record ? update : create}>
+  {#if apiError || errors[config.nonFieldErrorsKey]}
+    <Alert
+      type="error"
+      message={apiError && errors[config.nonFieldErrorsKey]
+        ? apiError + ": " + errors[config.nonFieldErrorsKey]
+        : apiError || errors[config.nonFieldErrorsKey]}
+    />
+  {/if}
+
+  <FieldGroup {config} {fields} {record} {errors} />
 
   <input
     type="submit"

@@ -1,5 +1,5 @@
 <script>
-  let { config, fields, record = null, groupName = null } = $props()
+  let { config, fields, record = null, groupName = null, errors = {} } = $props()
 </script>
 
 <div class:rs-form-subgroup={groupName}>
@@ -10,10 +10,10 @@
   {#each fields as f}
     {#if config.isObject(f)}
       {#each Object.keys(f) as subGroupName}
-        <FieldGroup {config} fields={f[subGroupName]} {record} groupName={subGroupName} />
+        <FieldGroup {config} fields={f[subGroupName]} {record} groupName={subGroupName} {errors} />
       {/each}
     {:else if !config.fieldConfig[f].readonly}
-      {@html config._renderInput(f, { record })}
+      {@html config._renderInput(f, { record, errors: errors[f] })}
     {/if}
   {/each}
 </div>

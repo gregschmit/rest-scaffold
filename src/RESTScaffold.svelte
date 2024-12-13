@@ -280,8 +280,7 @@
   .rest-scaffold :global(.rs-button) {
     padding: 0.2em 0.5em;
     margin-right: 0.5em;
-    border: 0.05em solid;
-    border-color: light-dark(black, white);
+    border: 0.05em solid light-dark(black, white);
     border-radius: 0.2em;
 
     &:hover {
@@ -337,8 +336,12 @@
   }
 
   /* Style form inputs. */
-  .rest-scaffold :global(form input) {
-    padding: 0.3em;
+  .rest-scaffold :global(form input),
+  .rest-scaffold :global(form select),
+  .rest-scaffold :global(form textarea) {
+    padding: 0.5em;
+    border: 0.08em solid light-dark(var(--rs-light-fg), var(--rs-dark-fg));
+    border-radius: 0.2em;
 
     :global(&[type="text"], &[type="number"], &[type="password"], &[type="email"]) {
       width: 100%;
@@ -355,6 +358,26 @@
     }
     :global(span) {
       vertical-align: middle;
+    }
+  }
+  .rest-scaffold :global(.rs-invalid) {
+    :global(input, select, textarea) {
+      border-color: light-dark(var(--rs-light-danger), var(--rs-dark-danger));
+    }
+
+    :global(.rs-invalid-text) {
+      color: light-dark(var(--rs-light-danger), var(--rs-dark-danger));
+      font-size: 0.9em;
+      margin: 0.2em 0 0 0.4em;
+    }
+  }
+  .rest-scaffold :global(.rs-form-field-boolean.rs-invalid) {
+    :global(label) {
+      color: light-dark(var(--rs-light-danger), var(--rs-dark-danger));
+    }
+
+    :global(.rs-invalid-text) {
+      margin-left: 2.2em;
     }
   }
 </style>

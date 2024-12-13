@@ -104,6 +104,13 @@ export default class API {
     return error
   }
 
+  async create(record) {
+    return await this.call({
+      method: "POST",
+      body: record,
+    })
+  }
+
   getPaginationDisplay(page, totalPages) {
     if (!page || !totalPages || totalPages <= 1) {
       return null
@@ -135,6 +142,7 @@ export default class API {
     return { startWindow, beforeWindow, afterWindow, endWindow }
   }
 
+  // Perform an HTTP request and return either the payload or an error.
   async call(opts) {
     let url = [this.config.target, opts.path?.replace(/^\/|\/$/, "")].filter(Boolean).join("/")
 

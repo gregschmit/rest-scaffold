@@ -4,8 +4,7 @@ import RESTScaffold from "./RESTScaffold"
 
 const MOUNTABLE_EL = '[data-rest-scaffold]:not([data-rs-mounted="true"])'
 
-// Mount the `RESTScaffold` component on the given element.
-function mountApp(el, inputOpts = null) {
+function mountScaffold(el, inputOpts = null) {
   // We cannot mount unless we have opts (either from `inputOpts` or from the data attribute), or if
   // it's already mounted.
   if (!(inputOpts || el.dataset?.restScaffold) || el.dataset.restScaffoldMounted) {
@@ -29,15 +28,15 @@ function mountApp(el, inputOpts = null) {
   return scaffold
 }
 
-function scan() {
-  document.querySelectorAll(MOUNTABLE_EL).forEach((el) => mountApp(el))
+function mountScaffolds() {
+  document.querySelectorAll(MOUNTABLE_EL).forEach((el) => mountScaffold(el))
 }
 
-function init({ defer = false } = {}) {
+function scan({ defer = false } = {}) {
   if (defer) {
-    document.addEventListener("DOMContentLoaded", () => scan())
+    document.addEventListener("DOMContentLoaded", mountScaffolds)
   } else {
-    scan()
+    mountScaffolds()
   }
 }
 
@@ -50,11 +49,11 @@ function mount(el, opts = {}) {
   delete opts.defer
 
   if (shouldDefer) {
-    document.addEventListener("DOMContentLoaded", () => mountApp(el, opts))
+    document.addEventListener("DOMContentLoaded", () => mountScaffold(el, opts))
   } else {
-    return mountApp(el, opts)
+    return mountScaffold(el, opts)
   }
 }
 
 // Export the public API.
-export default { init, mount }
+export default { mount, scan }

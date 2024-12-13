@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>REST Scaffold Test App</title>
+
+    <style>
+      body {
+        background-color: light-dark(white, black);
+        color: light-dark(black, white);
+        font-family: sans-serif;
+      }
+    </style>
+  </head>
+  <body>
+    <select id="modeSelect" style="float: right">
+      <option value="system">System</option>
+      <option value="light">Light</option>
+      <option value="dark">Dark</option>
+    </select>
+    <script>
+      // Javascript for dark/light mode.
+      ;(() => {
+        // Get the real mode from a selected mode. Anything other than "light" or "dark" is treated as
+        // "system" mode.
+        const getRealMode = (selectedMode) => {
+          if (selectedMode === "light" || selectedMode === "dark") {
+            return selectedMode
+          }
+
+          if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+            return "dark"
+          }
+          return "light"
+        }
+
+        // Set the mode, given a "selected" mode.
+        const setSelectedMode = (selectedMode) => {
+          // Anything except "light" or "dark" is casted to "system".
+          if (selectedMode !== "light" && selectedMode !== "dark") {
+            selectedMode = "system"
+          }
+
+          // Store selected mode in `localStorage`.
+          localStorage.setItem("mode", selectedMode)
+
+          // Set the mode selector to the selected mode.
+          const modeComponent = document.getElementById("modeSelect")
+          if (modeComponent) {
+            modeComponent.value = selectedMode
+          }
+
+          // Get the real mode to use.
+          realMode = getRealMode(selectedMode)
+
+          // Set the `realMode` effects.
+          if (realMode === "light") {
+            document.body.style.colorScheme = "light"
+          } else if (realMode === "dark") {
+            document.body.style.colorScheme = "dark"
+          } else {
+            console.log(`Unknown mode: ${mode}`)
+          }
+        }
+
+        // Initialize dark/light mode before page fully loads to prevent flash.
+        setSelectedMode(localStorage.getItem("mode"))
+
+        // Handle case where user changes mode selector.
+        document.querySelector("#modeSelect").addEventListener("change", (event) => {
+          setSelectedMode(event.target.value)
+        })
+
+        // Handle case where user changes system theme.
+        if (window.matchMedia) {
+          window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
+            const selectedMode = localStorage.getItem("mode")
+            if (selectedMode !== "light" && selectedMode !== "dark") {
+              setSelectedMode("system")
+            }
+          })
+        }
+      })();
+    </script>
+    <h1>REST Scaffold Test App</h1>
+    <ul>
+      <% if (page == "home") { %>
+        <li>Home</li>
+      <% } else { %>
+        <li><a href="/">Home</a></li>
+      <% } %>
+      <% if (page == "iife") { %>
+        <li>IIFE</li>
+      <% } else { %>
+        <li><a href="/iife">IIFE</a></li>
+      <% } %>
+    </ul>
+    <hr />

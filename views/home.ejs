@@ -1,0 +1,74 @@
+<%- include('_header') -%>
+<h2>Home</h2>
+
+<script>
+  window.kitchenSinkOpts = {
+    target: "/api/paged/users",
+    pagination: { pageSize: [5, 2, 10, 20, 50] },
+    autoRefreshSeconds: 4,
+    sortable: true,
+    listFields: ["id", "login", "name", "active", "is_staff", "next_exam", "risk_score", "balance", "ev"],
+    fieldConfig: {
+      id: { label: "ID" },
+      login: { label: "Login" },
+      name: { label: "Name" },
+      active: { label: "Active", type: "boolean", format: { style: "badge" } },
+      is_staff: { label: "Is Staff", type: "boolean", format: { style: "badge" } },
+      lucky_number: { label: "Lucky Number", type: "integer" },
+      birth_date: { label: "Birth Date", type: "date" },
+      birth_time: { label: "Birth Time", type: "time" },
+      next_exam: { label: "Next Exam", type: "datetime" },
+      risk_score: { label: "Risk Score", type: "number" },
+      balance: {
+        label: "Balance",
+        type: "decimal",
+        inputOptions: { step: 0.01, min: 0 },
+        format: { style: "currency", currency: "USD" },
+      },
+      ev: {
+        label: "EV",
+        type: "virtual",
+        render: (record, { config }) => {
+          return config.formatNumber(
+            record.balance * (record.risk_score / 10000),
+            { numberFormat: { maximumFractionDigits: 2 } },
+          )
+        },
+      },
+      created_at: { label: "Created At", type: "datetime", readonly: true },
+    },
+    // canShow: false,
+    // canDelete: false,
+    help: "This is a test scaffold of <strong>users</strong>.",
+  }
+</script>
+
+<h3>Kitchen Sink:</h3>
+<div id="usersScaffold">
+  <script type="module">
+    import RESTScaffold from "./dist/rest-scaffold.js"
+    RESTScaffold.mount("#usersScaffold", {
+      target: "http://127.0.0.1:3000/api/demo/users",
+      pagination: { pageSize: [5, 2, 10, 20, 50] },
+      autoRefreshSeconds: 4,
+      sortable: true,
+      listFields: ["id", "login", "is_admin", "age", "balance", "state", "status"],
+      fieldConfig: {
+        id: { label: "ID" },
+        login: { label: "Login" },
+        is_admin: { label: "Is Admin", type: "boolean", format: { style: "badge" } },
+        age: { label: "Age", type: "integer" },
+        balance: { label: "Balance", type: "decimal", inputOptions: { step: 0.01, min: 0 }, format: { style: "currency", currency: "USD" } },
+        state: { label: "State" },
+        status: { label: "Status" },
+        created_at: { label: "Created At", type: "datetime", readonly: true },
+        updated_at: { label: "Updated At", type: "datetime", readonly: true },
+      },
+      // canShow: false,
+      // canDelete: false,
+      help: "This is a test scaffold of <strong>users</strong>.",
+    })
+  </script>
+</div>
+
+<%- include('_footer') -%>
